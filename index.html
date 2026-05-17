@@ -221,6 +221,7 @@ function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOver
   const transport = resolveTransport(dealer, hubKey, transportOverrides, liveDriveTimes);
 
   // ===== ROAD ONLY: warehouse -> dealer, no flight =====
+  // Cutoff is the slot END (latest dispatch). Delivery = cutoff + drive hours.
   if (transport.mode === 'road_only') {
     const wh = transport.whInfo;
     if (!wh) {
@@ -235,15 +236,17 @@ function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOver
         note: 'No warehouse-to-dealer drive data'
       };
     }
+    const cutoff = slot.end;                        // latest dispatch = slot end
+    const delivery = slot.end + wh.hours;           // arrives drive-hours later
     const tat = params.whLoad + wh.hours;
     return {
       destApt: 'ROAD', destAptName: 'Road from ' + hub.name.split(' ')[0],
       destKm: wh.km, roadKm: wh.km,
       mode: 'road_only', transportSource: transport.source,
       flightHrs: 0, same: false, blocked: false,
-      cutoff: null, cutoffStart: null, cutoffEnd: null,
+      cutoff, cutoffStart: cutoff, cutoffEnd: cutoff,
       flightDepart: null, flightDepartStart: null, flightDepartEnd: null,
-      delivery: null, deliveryStart: null, deliveryEnd: null,
+      delivery, deliveryStart: delivery, deliveryEnd: delivery,
       tatHours: tat, flights: 0,
       driveSource: 'google',
       legs: { l1: params.whLoad, l2: 0, l3: 0, l5: 0, l6: 0, l7: wh.hours }
@@ -1301,14 +1304,23 @@ function JourneyTimeline({ DEALERS, results, tlDealer, setTlDealer, tlHub, setTl
     );
   }
 
-  if (slot.same) {
-    // Pure road journey — no flight
-    const startHr = 8; // arbitrary 08:00 start for visualization
+  if (slot.mode === 'road_only') {
+    // Pure road journey from warehouse to dealer — no flight, no airport
+    // Cutoff is slot end; loading begins (whLoad) hours before cutoff; delivery = cutoff + drive
+    const cutoff   = slot.cutoff;
+    let lStart     = cutoff - slot.legs.l1; if (lStart < 0) lStart += 24;
+    const arrive   = cutoff + slot.legs.l7;
+    events.push({ time: lStart, label: `Order received · processing & loading at ${HUBS[tlHub].short} warehouse`, icon: <Package size={14} />, kind: 'start' });
+    events.push({ time: cutoff, label: `Order ready · CUTOFF · truck departs warehouse by road`, icon: <Truck size={14} />, kind: 'cutoff' });
+    events.push({ time: arrive, label: `DELIVERED at ${dealer.showroom}, ${dealer.city}`, icon: <Package size={14} />, kind: 'end' });
+  } else if (slot.same) {
+    // Same airport (hub == dealer airport) — road from hub area to dealer
+    const startHr = 8;
     const t0 = startHr;
-    const t1 = t0 + slot.legs.l1;                                // loading complete
-    const t2 = t1 + slot.legs.l2;                                // truck at "dest" (= hub airport, but really direct to dealer)
-    const t3 = t2 + slot.legs.l6;                                // vehicle loaded (in same-apt case this is just dest load)
-    const t4 = t3 + slot.legs.l7;                                // delivered
+    const t1 = t0 + slot.legs.l1;
+    const t2 = t1 + slot.legs.l2;
+    const t3 = t2 + slot.legs.l6;
+    const t4 = t3 + slot.legs.l7;
     events.push({ time: t0, label: 'Order received · processing & loading begins', icon: <Package size={14} />, kind: 'start' });
     events.push({ time: t1, label: 'Order processed & loaded · truck departs warehouse', icon: <Truck size={14} />, kind: 'mid' });
     events.push({ time: t2, label: 'Truck arrives at dealer area · vehicle handover', icon: <MapPin size={14} />, kind: 'mid' });
@@ -1355,15 +1367,20 @@ function JourneyTimeline({ DEALERS, results, tlDealer, setTlDealer, tlHub, setTl
       <div style={{ background: 'linear-gradient(135deg, #1c1259 0%, #2d2065 100%)', color: 'white', padding: 18, borderRadius: 4, marginBottom: 20 }}>
         <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.08em', marginBottom: 6 }}>JOURNEY SUMMARY</div>
         <div className="h-display" style={{ fontSize: 22, marginBottom: 4 }}>{HUBS[tlHub].short.toUpperCase()} → {dealer.showroom.toUpperCase()}</div>
-        <div style={{ fontSize: 12, color: '#d6d1c0', marginBottom: 12 }}>{dealer.city}, {dealer.state} · via {slot.destApt} · {slot.flights} flights in {fmtTime(slot.slotStart)}–{fmtTime(slot.slotEnd)} slot</div>
+        <div style={{ fontSize: 12, color: '#d6d1c0', marginBottom: 12 }}>
+          {dealer.city}, {dealer.state}
+          {slot.mode === 'road_only'   ? ' · BY ROAD ('+slot.destKm+' km)' :
+           slot.mode === 'via_airport' ? ' · via ' + slot.destApt + ' + road · '+slot.flights+' flights in '+fmtTime(slot.slotStart)+'–'+fmtTime(slot.slotEnd)+' slot' :
+           ' · via ' + slot.destApt + ' · '+slot.flights+' flights in '+fmtTime(slot.slotStart)+'–'+fmtTime(slot.slotEnd)+' slot'}
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
           <div>
             <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.06em' }}>WAREHOUSE CUTOFF</div>
-            <div className="h-display" style={{ fontSize: 24 }}>{slot.same ? 'road only' : fmtTime(slot.cutoffStart)}</div>
+            <div className="h-display" style={{ fontSize: 24 }}>{slot.same ? 'road only' : slot.mode === 'road_only' ? fmtTime(slot.cutoff) : fmtTime(slot.cutoffStart)}</div>
           </div>
           <div>
             <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.06em' }}>DEALER DELIVERY</div>
-            <div className="h-display" style={{ fontSize: 24 }}>{slot.same ? '—' : fmtDelivery(slot.deliveryStart)}</div>
+            <div className="h-display" style={{ fontSize: 24 }}>{slot.same ? '—' : slot.mode === 'road_only' ? fmtDelivery(slot.delivery) : fmtDelivery(slot.deliveryStart)}</div>
           </div>
           <div>
             <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.06em' }}>TOTAL TAT</div>
@@ -1550,20 +1567,33 @@ function AllTimelinesView({ filtered, sortedSlots, hubSelect, params }) {
 
   const accent = hubInView === 'bhiwandi' ? '#1c1259' : '#b8860b';
 
-  // For each row, build event list using slot.start as the anchor (most conservative)
+  // For each row, build event list. Each event has a `short` label used by the
+  // compact mini-timeline (rendered above each dot) and a full `label` for the
+  // expanded step-by-step view.
   const buildEvents = (dealer, slot) => {
     if (!slot || slot.blocked) return null;
+    if (slot.mode === 'road_only') {
+      // Cutoff = slot end. Pure road dispatch.
+      const cutoff = slot.cutoff;
+      let lStart = cutoff - slot.legs.l1; if (lStart < 0) lStart += 24;
+      const arrive = cutoff + slot.legs.l7;
+      return [
+        { time: lStart, short: 'ORDER',  label: `Order received · loading at ${HUBS[hubInView].short} warehouse`, kind: 'start' },
+        { time: cutoff, short: 'CUTOFF', label: 'CUTOFF · truck departs warehouse by road',                      kind: 'cutoff' },
+        { time: arrive, short: 'DELIV',  label: `Delivered at ${dealer.showroom}`,                                kind: 'end' },
+      ];
+    }
     if (slot.same) {
-      const t0 = 8; // arbitrary start 08:00
+      const t0 = 8;
       const t1 = t0 + slot.legs.l1;
       const t2 = t1 + slot.legs.l2;
       const t3 = t2 + slot.legs.l6;
       const t4 = t3 + slot.legs.l7;
       return [
-        { time: t0, label: 'Order received · processing & loading begins', kind: 'start' },
-        { time: t1, label: 'Order ready · truck departs warehouse', kind: 'cutoff' },
-        { time: t2, label: 'Truck reaches dealer area', kind: 'mid' },
-        { time: t4, label: `Delivered at ${dealer.showroom}`, kind: 'end' },
+        { time: t0, short: 'ORDER',  label: 'Order received · processing & loading begins', kind: 'start' },
+        { time: t1, short: 'CUTOFF', label: 'Order ready · truck departs warehouse',        kind: 'cutoff' },
+        { time: t2, short: 'DEALER', label: 'Truck reaches dealer area',                    kind: 'mid' },
+        { time: t4, short: 'DELIV',  label: `Delivered at ${dealer.showroom}`,              kind: 'end' },
       ];
     }
     const flightDepart = slot.slotStart;
@@ -1576,15 +1606,16 @@ function AllTimelinesView({ filtered, sortedSlots, hubSelect, params }) {
     const clearedDest = flightLand + params.destClear;
     const vehicleLoaded = clearedDest + params.destLoad;
     const dealerArrive = vehicleLoaded + slot.legs.l7;
+    const isVia = slot.mode === 'via_airport';
     return [
-      { time: loadStart, label: 'Order received · processing & loading at warehouse', kind: 'start' },
-      { time: loadDone, label: 'Order ready · CUTOFF · truck departs to airport', kind: 'cutoff' },
-      { time: aptArrive, label: `Reach ${HUBS[hubInView].airportName}`, kind: 'mid' },
-      { time: flightDep, label: `Flight ${HUBS[hubInView].airport} → ${slot.destApt}`, kind: 'flight' },
-      { time: flightLand, label: `Land at ${slot.destApt}`, kind: 'flight' },
-      { time: clearedDest, label: 'Dest clearance complete', kind: 'mid' },
-      { time: vehicleLoaded, label: 'Vehicle loaded · depart to dealer', kind: 'mid' },
-      { time: dealerArrive, label: `Delivered at ${dealer.showroom}`, kind: 'end' },
+      { time: loadStart,    short: 'ORDER',  label: 'Order received · processing & loading at warehouse', kind: 'start' },
+      { time: loadDone,     short: 'CUTOFF', label: 'Order ready · CUTOFF · truck departs to airport',    kind: 'cutoff' },
+      { time: aptArrive,    short: HUBS[hubInView].airport, label: `Reach ${HUBS[hubInView].airportName}`, kind: 'mid' },
+      { time: flightDep,    short: 'DEPART', label: `Flight ${HUBS[hubInView].airport} → ${slot.destApt}`, kind: 'flight' },
+      { time: flightLand,   short: slot.destApt + ' LAND', label: `Land at ${slot.destApt}`, kind: 'flight' },
+      { time: clearedDest,  short: 'CLEAR',  label: 'Dest clearance complete', kind: 'mid' },
+      { time: vehicleLoaded,short: isVia ? 'ROAD' : 'LOADED', label: isVia ? `Vehicle loaded · road to ${dealer.city}` : 'Vehicle loaded · depart to dealer', kind: 'mid' },
+      { time: dealerArrive, short: 'DELIV',  label: `Delivered at ${dealer.showroom}`, kind: 'end' },
     ];
   };
 
@@ -1613,7 +1644,12 @@ function AllTimelinesView({ filtered, sortedSlots, hubSelect, params }) {
               <div style={{ width: 32, height: 32, background: accent, color: hubInView === 'bhiwandi' ? '#fcd307' : '#ffffff', display: 'grid', placeItems: 'center', borderRadius: 4, fontWeight: 800, fontSize: 11 }}>{r.dealer.id}</div>
               <div>
                 <div style={{ color: '#1c1259', fontWeight: 700, fontSize: 14 }}>{r.dealer.showroom}</div>
-                <div style={{ fontSize: 10, color: '#7a7390' }}>{r.dealer.city}, {r.dealer.state} · PIN {r.dealer.pin} · via {hubData[0]?.destApt}</div>
+                <div style={{ fontSize: 10, color: '#7a7390' }}>
+                  {r.dealer.city}, {r.dealer.state} · PIN {r.dealer.pin}
+                  {hubData[0]?.mode === 'road_only'   ? ' · BY ROAD (' + hubData[0].destKm + ' km)' :
+                   hubData[0]?.mode === 'via_airport' ? ' · via ' + hubData[0].destApt + ' + road' :
+                   ' · via ' + (hubData[0]?.destApt || '—')}
+                </div>
               </div>
               <div style={{ marginLeft: 'auto', fontSize: 10, color: '#7a7390', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{r.dealer.code}</div>
             </div>
@@ -1651,11 +1687,26 @@ function AllTimelinesView({ filtered, sortedSlots, hubSelect, params }) {
                       {/* Cutoff */}
                       <div>
                         <div style={{ fontSize: 9, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Cutoff</div>
-                        <div className="h-display" style={{ fontSize: 16, color: accent }}>{slot.same ? 'road' : fmtTime(slot.cutoffStart)}</div>
-                        {!slot.same && <div style={{ fontSize: 9, color: '#a8a3b8' }}>to {fmtTime(slot.cutoffEnd)}</div>}
+                        <div className="h-display" style={{ fontSize: 16, color: accent }}>
+                          {slot.same ? 'road' : slot.mode === 'road_only' ? fmtTime(slot.cutoff) : fmtTime(slot.cutoffStart)}
+                        </div>
+                        {!slot.same && slot.mode !== 'road_only' && <div style={{ fontSize: 9, color: '#a8a3b8' }}>to {fmtTime(slot.cutoffEnd)}</div>}
+                        {slot.mode === 'road_only' && <div style={{ fontSize: 9, color: '#9a3412' }}>by road</div>}
                       </div>
-                      {/* Mini horizontal timeline */}
+                      {/* Mini horizontal timeline with point labels + inter-point durations */}
                       <div>
+                        {/* Top row: per-point short labels */}
+                        <div style={{ position: 'relative', height: 14, marginBottom: 2 }}>
+                          {events.map((e, i) => {
+                            const pct = span > 0 ? ((e.time - startT) / span) * 100 : 0;
+                            return (
+                              <div key={i} style={{ position: 'absolute', left: `${pct}%`, transform: 'translateX(-50%)', fontSize: 8, fontWeight: 700, color: e.kind === 'cutoff' ? '#b8860b' : e.kind === 'end' ? accent : e.kind === 'flight' ? '#b8860b' : '#4a4366', letterSpacing: '0.04em', whiteSpace: 'nowrap', textAlign: 'center' }}>
+                                {e.short}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {/* The bar itself with dots */}
                         <div style={{ position: 'relative', height: 6, background: `linear-gradient(90deg, ${accent} 0%, #fcd307 100%)`, borderRadius: 3 }}>
                           {events.map((e, i) => {
                             const pct = span > 0 ? ((e.time - startT) / span) * 100 : 0;
@@ -1664,16 +1715,38 @@ function AllTimelinesView({ filtered, sortedSlots, hubSelect, params }) {
                             );
                           })}
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#7a7390', marginTop: 4, letterSpacing: '0.04em' }}>
-                          <span>{fmtTime(startT)}</span>
-                          <span>{fmtDelivery(endT)}</span>
+                        {/* Time markers under each dot */}
+                        <div style={{ position: 'relative', height: 12, marginTop: 4 }}>
+                          {events.map((e, i) => {
+                            const pct = span > 0 ? ((e.time - startT) / span) * 100 : 0;
+                            return (
+                              <div key={i} style={{ position: 'absolute', left: `${pct}%`, transform: 'translateX(-50%)', fontSize: 8, color: '#7a7390', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
+                                {fmtDelivery(e.time)}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {/* Inter-point durations (rendered in the gap below) */}
+                        <div style={{ position: 'relative', height: 12, marginTop: 2 }}>
+                          {events.slice(1).map((e, i) => {
+                            const prev = events[i];
+                            const midPct = span > 0 ? (((e.time + prev.time) / 2 - startT) / span) * 100 : 0;
+                            const dt = e.time - prev.time;
+                            return (
+                              <div key={i} style={{ position: 'absolute', left: `${midPct}%`, transform: 'translateX(-50%)', fontSize: 8, color: '#a8a3b8', fontStyle: 'italic', whiteSpace: 'nowrap' }}>
+                                +{dt.toFixed(1)}h
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                       {/* Delivery */}
                       <div>
                         <div style={{ fontSize: 9, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Delivery</div>
-                        <div className="h-display" style={{ fontSize: 16, color: '#1c1259' }}>{slot.same ? '—' : fmtDelivery(slot.deliveryStart)}</div>
-                        {!slot.same && <div style={{ fontSize: 9, color: '#a8a3b8' }}>to {fmtDelivery(slot.deliveryEnd)}</div>}
+                        <div className="h-display" style={{ fontSize: 16, color: '#1c1259' }}>
+                          {slot.same ? '—' : slot.mode === 'road_only' ? fmtDelivery(slot.delivery) : fmtDelivery(slot.deliveryStart)}
+                        </div>
+                        {!slot.same && slot.mode !== 'road_only' && <div style={{ fontSize: 9, color: '#a8a3b8' }}>to {fmtDelivery(slot.deliveryEnd)}</div>}
                       </div>
                       {/* TAT */}
                       <div style={{ textAlign: 'right' }}>
@@ -1944,6 +2017,8 @@ function FlightsView({ filtered, sortedSlots, routeFlightOverrides, setRouteFlig
         <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#fff7ed', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>1 flight (sparse)</span>
         <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#fef2f2', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>No flight (blocked)</span>
         <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#f3f1e8', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>Same airport (road)</span>
+        <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#fff7ed', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>By road (no flight)</span>
+        <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#e0e7ff', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>Via intermediate airport (*)</span>
       </div>
 
       {/* Table */}
@@ -1965,13 +2040,25 @@ function FlightsView({ filtered, sortedSlots, routeFlightOverrides, setRouteFlig
           </thead>
           <tbody>
             {filtered.map(r => {
-              const destApt = r.dealer ? (CITY_AIRPORT[r.dealer.city]?.code || '—') : '—';
-              const bTotal = totalForRoute('BOM', destApt);
-              const sTotal = totalForRoute('MAA', destApt);
+              const isRoadOnly = (hubKey) => r[hubKey] && r[hubKey][0] && r[hubKey][0].mode === 'road_only';
+              const isViaAirport = (hubKey) => r[hubKey] && r[hubKey][0] && r[hubKey][0].mode === 'via_airport';
+              const intermediate = (hubKey) => r[hubKey] && r[hubKey][0] ? r[hubKey][0].destApt : null;
+              const defaultDestApt = r.dealer ? (CITY_AIRPORT[r.dealer.city]?.code || '—') : '—';
+              const bRouteDest = isViaAirport('bhiwandi')      ? intermediate('bhiwandi')      : defaultDestApt;
+              const sRouteDest = isViaAirport('sriperumbudur') ? intermediate('sriperumbudur') : defaultDestApt;
+              const bTotal = isRoadOnly('bhiwandi')      ? null : totalForRoute('BOM', bRouteDest);
+              const sTotal = isRoadOnly('sriperumbudur') ? null : totalForRoute('MAA', sRouteDest);
 
-              const renderCell = (originAirport, slotIndex) => {
-                const info = getCount(originAirport, destApt, slotIndex);
-                const overrideKey = `${originAirport}-${destApt}-${slotIndex}`;
+              const renderCell = (originAirport, slotIndex, hubKey, routeDest) => {
+                if (isRoadOnly(hubKey)) {
+                  return (
+                    <td key={`${originAirport}-rd-${slotIndex}`} style={{ ...td, textAlign: 'center', padding: 4, background: '#fff7ed', color: '#9a3412', fontWeight: 700, fontSize: 9, letterSpacing: '0.04em' }}>
+                      BY ROAD
+                    </td>
+                  );
+                }
+                const info = getCount(originAirport, routeDest, slotIndex);
+                const overrideKey = `${originAirport}-${routeDest}-${slotIndex}`;
                 const isEditing = editing === overrideKey;
                 return (
                   <td key={overrideKey} style={{ ...td, textAlign: 'center', padding: 4, ...cellStyle(info) }}>
@@ -1999,6 +2086,12 @@ function FlightsView({ filtered, sortedSlots, routeFlightOverrides, setRouteFlig
                 );
               };
 
+              const destBadge = (hubKey, routeDest) => {
+                if (isRoadOnly(hubKey)) return <span className="pill" style={{ background: '#fff7ed', color: '#9a3412' }}>ROAD</span>;
+                if (isViaAirport(hubKey)) return <span className="pill" style={{ background: '#e0e7ff', color: '#1c1259' }}>{routeDest}*</span>;
+                return <span className="pill" style={{ background: '#f3f1e8', color: '#1c1259' }}>{routeDest}</span>;
+              };
+
               return (
                 <tr key={r.dealer.id} style={{ borderBottom: '1px solid #efece2' }}>
                   <td style={{ ...td, fontWeight: 600, color: '#1c1259' }}>
@@ -2006,18 +2099,28 @@ function FlightsView({ filtered, sortedSlots, routeFlightOverrides, setRouteFlig
                     <div style={{ fontSize: 9, color: '#7a7390', fontWeight: 400 }}>{r.dealer.city}, {r.dealer.state}</div>
                   </td>
                   <td style={{ ...td, textAlign: 'center' }}>
-                    <span className="pill" style={{ background: '#f3f1e8', color: '#1c1259' }}>{destApt}</span>
+                    {/* show per-hub route dest stacked when they differ */}
+                    {showB && showS && (bRouteDest !== sRouteDest || isRoadOnly('bhiwandi') !== isRoadOnly('sriperumbudur')) ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+                        <span style={{ fontSize: 8, color: '#7a7390' }}>BOM:</span>
+                        {destBadge('bhiwandi', bRouteDest)}
+                        <span style={{ fontSize: 8, color: '#7a7390', marginTop: 2 }}>MAA:</span>
+                        {destBadge('sriperumbudur', sRouteDest)}
+                      </div>
+                    ) : (
+                      destBadge(showB ? 'bhiwandi' : 'sriperumbudur', showB ? bRouteDest : sRouteDest)
+                    )}
                   </td>
-                  {showB && sortedSlots.map((s, idx) => renderCell('BOM', idx))}
+                  {showB && sortedSlots.map((s, idx) => renderCell('BOM', idx, 'bhiwandi', bRouteDest))}
                   {showB && (
                     <td style={{ ...td, textAlign: 'center', background: '#faf9f5', borderRight: '1px solid #e5e2d8', fontWeight: 700, color: '#1c1259' }}>
-                      {bTotal > 0 ? bTotal : '—'}
+                      {isRoadOnly('bhiwandi') ? '—' : (bTotal > 0 ? bTotal : '—')}
                     </td>
                   )}
-                  {showS && sortedSlots.map((s, idx) => renderCell('MAA', idx))}
+                  {showS && sortedSlots.map((s, idx) => renderCell('MAA', idx, 'sriperumbudur', sRouteDest))}
                   {showS && (
                     <td style={{ ...td, textAlign: 'center', background: '#faf9f5', fontWeight: 700, color: '#b8860b' }}>
-                      {sTotal > 0 ? sTotal : '—'}
+                      {isRoadOnly('sriperumbudur') ? '—' : (sTotal > 0 ? sTotal : '—')}
                     </td>
                   )}
                 </tr>

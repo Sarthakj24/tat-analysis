@@ -30,7 +30,7 @@
         "23": { "mode": "via_airport", "intermediate": "DEL", "note": "Ludhiana from Delhi" },
         "25": { "mode": "via_airport", "intermediate": "AMD", "note": "Vadodara from Ahmedabad" },
         "26": { "mode": "via_airport", "intermediate": "DEL", "note": "Jammu from Delhi" },
-        "29": { "mode": "road_only", "note": "Rajkot by road" },
+        "29": { "mode": "via_airport", "intermediate": "AMD", "note": "Rajkot via Ahmedabad" },
         "30": { "mode": "via_airport", "intermediate": "DEL", "note": "Dehradun from Delhi" },
         "33": { "mode": "via_airport", "intermediate": "DEL", "note": "Chandigarh from Delhi" },
         "35": { "mode": "via_airport", "intermediate": "DEL", "note": "Lucknow from Delhi" },
