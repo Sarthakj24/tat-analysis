@@ -1,0 +1,1435 @@
+{
+  "fetched_at": "2026-05-17T07:37:23.773178+00:00",
+  "source": "manual_estimates_v1",
+  "note": "Sensible defaults based on typical India domestic flight frequency. Tap any cell in the dashboard to override with real data from your logistics partner or live API.",
+  "slots": [
+    {
+      "id": 1,
+      "label": "01-12",
+      "start": 1,
+      "end": 12
+    },
+    {
+      "id": 2,
+      "label": "12-15",
+      "start": 12,
+      "end": 15
+    },
+    {
+      "id": 3,
+      "label": "15-18",
+      "start": 15,
+      "end": 18
+    },
+    {
+      "id": 4,
+      "label": "18-24",
+      "start": 18,
+      "end": 24
+    }
+  ],
+  "routes": {
+    "BOM-DEL": {
+      "origin": "BOM",
+      "destination": "DEL",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 10
+        },
+        {
+          "slot": "12-15",
+          "flights": 5
+        },
+        {
+          "slot": "15-18",
+          "flights": 5
+        },
+        {
+          "slot": "18-24",
+          "flights": 8
+        }
+      ],
+      "total_daily": 28,
+      "frequency": "daily"
+    },
+    "BOM-BLR": {
+      "origin": "BOM",
+      "destination": "BLR",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 6
+        },
+        {
+          "slot": "12-15",
+          "flights": 3
+        },
+        {
+          "slot": "15-18",
+          "flights": 3
+        },
+        {
+          "slot": "18-24",
+          "flights": 5
+        }
+      ],
+      "total_daily": 17,
+      "frequency": "daily"
+    },
+    "BOM-MAA": {
+      "origin": "BOM",
+      "destination": "MAA",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "flights": 3
+        },
+        {
+          "slot": "18-24",
+          "flights": 4
+        }
+      ],
+      "total_daily": 12,
+      "frequency": "daily"
+    },
+    "BOM-HYD": {
+      "origin": "BOM",
+      "destination": "HYD",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 4
+        },
+        {
+          "slot": "12-15",
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "flights": 3
+        },
+        {
+          "slot": "18-24",
+          "flights": 4
+        }
+      ],
+      "total_daily": 13,
+      "frequency": "daily"
+    },
+    "BOM-CCU": {
+      "origin": "BOM",
+      "destination": "CCU",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "flights": 3
+        }
+      ],
+      "total_daily": 10,
+      "frequency": "daily"
+    },
+    "BOM-AMD": {
+      "origin": "BOM",
+      "destination": "AMD",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "flights": 3
+        }
+      ],
+      "total_daily": 10,
+      "frequency": "daily"
+    },
+    "BOM-COK": {
+      "origin": "BOM",
+      "destination": "COK",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "flights": 3
+        }
+      ],
+      "total_daily": 9,
+      "frequency": "daily"
+    },
+    "BOM-BBI": {
+      "origin": "BOM",
+      "destination": "BBI",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 6,
+      "frequency": "daily"
+    },
+    "BOM-JAI": {
+      "origin": "BOM",
+      "destination": "JAI",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 6,
+      "frequency": "daily"
+    },
+    "BOM-LKO": {
+      "origin": "BOM",
+      "destination": "LKO",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 6,
+      "frequency": "daily"
+    },
+    "BOM-PAT": {
+      "origin": "BOM",
+      "destination": "PAT",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 4,
+      "frequency": "daily"
+    },
+    "BOM-NAG": {
+      "origin": "BOM",
+      "destination": "NAG",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 6,
+      "frequency": "daily"
+    },
+    "BOM-IDR": {
+      "origin": "BOM",
+      "destination": "IDR",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 6,
+      "frequency": "daily"
+    },
+    "BOM-IXC": {
+      "origin": "BOM",
+      "destination": "IXC",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 6,
+      "frequency": "daily"
+    },
+    "BOM-VTZ": {
+      "origin": "BOM",
+      "destination": "VTZ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 4,
+      "frequency": "daily"
+    },
+    "BOM-RPR": {
+      "origin": "BOM",
+      "destination": "RPR",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 3,
+      "frequency": "low-frequency"
+    },
+    "BOM-VGA": {
+      "origin": "BOM",
+      "destination": "VGA",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 2,
+      "frequency": "low-frequency"
+    },
+    "BOM-IXM": {
+      "origin": "BOM",
+      "destination": "IXM",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 3,
+      "frequency": "low-frequency"
+    },
+    "BOM-MYQ": {
+      "origin": "BOM",
+      "destination": "MYQ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "BOM-CJB": {
+      "origin": "BOM",
+      "destination": "CJB",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 3,
+      "frequency": "low-frequency"
+    },
+    "BOM-RAJ": {
+      "origin": "BOM",
+      "destination": "RAJ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 2,
+      "frequency": "low-frequency"
+    },
+    "BOM-BDQ": {
+      "origin": "BOM",
+      "destination": "BDQ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 2,
+      "frequency": "low-frequency"
+    },
+    "BOM-AGR": {
+      "origin": "BOM",
+      "destination": "AGR",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "BOM-IXJ": {
+      "origin": "BOM",
+      "destination": "IXJ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 2,
+      "frequency": "low-frequency"
+    },
+    "BOM-DED": {
+      "origin": "BOM",
+      "destination": "DED",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "total_daily": 1,
+      "frequency": "alt-day"
+    },
+    "BOM-STV": {
+      "origin": "BOM",
+      "destination": "STV",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "BOM-PNQ": {
+      "origin": "BOM",
+      "destination": "PNQ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "BOM-ISK": {
+      "origin": "BOM",
+      "destination": "ISK",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "BOM-KLH": {
+      "origin": "BOM",
+      "destination": "KLH",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "BOM-BOM": {
+      "origin": "BOM",
+      "destination": "BOM",
+      "same_airport": true
+    },
+    "MAA-DEL": {
+      "origin": "MAA",
+      "destination": "DEL",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 4
+        },
+        {
+          "slot": "12-15",
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "flights": 3
+        },
+        {
+          "slot": "18-24",
+          "flights": 4
+        }
+      ],
+      "total_daily": 13,
+      "frequency": "daily"
+    },
+    "MAA-BOM": {
+      "origin": "MAA",
+      "destination": "BOM",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "flights": 3
+        },
+        {
+          "slot": "18-24",
+          "flights": 4
+        }
+      ],
+      "total_daily": 12,
+      "frequency": "daily"
+    },
+    "MAA-BLR": {
+      "origin": "MAA",
+      "destination": "BLR",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 8
+        },
+        {
+          "slot": "12-15",
+          "flights": 4
+        },
+        {
+          "slot": "15-18",
+          "flights": 4
+        },
+        {
+          "slot": "18-24",
+          "flights": 6
+        }
+      ],
+      "total_daily": 22,
+      "frequency": "daily"
+    },
+    "MAA-CCU": {
+      "origin": "MAA",
+      "destination": "CCU",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 6,
+      "frequency": "daily"
+    },
+    "MAA-HYD": {
+      "origin": "MAA",
+      "destination": "HYD",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 4
+        },
+        {
+          "slot": "12-15",
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "flights": 3
+        }
+      ],
+      "total_daily": 11,
+      "frequency": "daily"
+    },
+    "MAA-COK": {
+      "origin": "MAA",
+      "destination": "COK",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 8,
+      "frequency": "daily"
+    },
+    "MAA-AMD": {
+      "origin": "MAA",
+      "destination": "AMD",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 4,
+      "frequency": "daily"
+    },
+    "MAA-IXM": {
+      "origin": "MAA",
+      "destination": "IXM",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 7,
+      "frequency": "daily"
+    },
+    "MAA-CJB": {
+      "origin": "MAA",
+      "destination": "CJB",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 4
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "flights": 2
+        }
+      ],
+      "total_daily": 9,
+      "frequency": "daily"
+    },
+    "MAA-MYQ": {
+      "origin": "MAA",
+      "destination": "MYQ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 2,
+      "frequency": "low-frequency"
+    },
+    "MAA-VGA": {
+      "origin": "MAA",
+      "destination": "VGA",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 3,
+      "frequency": "low-frequency"
+    },
+    "MAA-VTZ": {
+      "origin": "MAA",
+      "destination": "VTZ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 5,
+      "frequency": "daily"
+    },
+    "MAA-BBI": {
+      "origin": "MAA",
+      "destination": "BBI",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 4,
+      "frequency": "daily"
+    },
+    "MAA-PNQ": {
+      "origin": "MAA",
+      "destination": "PNQ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 3,
+      "frequency": "low-frequency"
+    },
+    "MAA-NAG": {
+      "origin": "MAA",
+      "destination": "NAG",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 2,
+      "frequency": "low-frequency"
+    },
+    "MAA-LKO": {
+      "origin": "MAA",
+      "destination": "LKO",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 2,
+      "frequency": "low-frequency"
+    },
+    "MAA-PAT": {
+      "origin": "MAA",
+      "destination": "PAT",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 1,
+      "frequency": "alt-day"
+    },
+    "MAA-IDR": {
+      "origin": "MAA",
+      "destination": "IDR",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "total_daily": 1,
+      "frequency": "alt-day"
+    },
+    "MAA-IXC": {
+      "origin": "MAA",
+      "destination": "IXC",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "total_daily": 1,
+      "frequency": "alt-day"
+    },
+    "MAA-JAI": {
+      "origin": "MAA",
+      "destination": "JAI",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 1
+        }
+      ],
+      "total_daily": 2,
+      "frequency": "low-frequency"
+    },
+    "MAA-RPR": {
+      "origin": "MAA",
+      "destination": "RPR",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "total_daily": 1,
+      "frequency": "alt-day"
+    },
+    "MAA-AGR": {
+      "origin": "MAA",
+      "destination": "AGR",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "MAA-IXJ": {
+      "origin": "MAA",
+      "destination": "IXJ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "MAA-DED": {
+      "origin": "MAA",
+      "destination": "DED",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "MAA-STV": {
+      "origin": "MAA",
+      "destination": "STV",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "MAA-BDQ": {
+      "origin": "MAA",
+      "destination": "BDQ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "MAA-RAJ": {
+      "origin": "MAA",
+      "destination": "RAJ",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "MAA-ISK": {
+      "origin": "MAA",
+      "destination": "ISK",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "MAA-KLH": {
+      "origin": "MAA",
+      "destination": "KLH",
+      "slots": [
+        {
+          "slot": "01-12",
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "flights": 0
+        }
+      ],
+      "note": "No direct flights \u2014 usually routed via connecting hub or surface",
+      "frequency": "none"
+    },
+    "MAA-MAA": {
+      "origin": "MAA",
+      "destination": "MAA",
+      "same_airport": true
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "warehousenow-tat-dashboard",
+  "version": "1.0.0",
+  "description": "Transit-time analyzer for Warehouse Now / VinFast dealer network",
+  "private": true,
+  "scripts": {
+    "refresh-flights": "node -r dotenv/config scripts/fetch_flights.js",
+    "refresh-drive-times": "node -r dotenv/config scripts/fetch_drive_times.js",
+    "refresh-all": "npm run refresh-flights && npm run refresh-drive-times",
+    "serve": "npx serve ."
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

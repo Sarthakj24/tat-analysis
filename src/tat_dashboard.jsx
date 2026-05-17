@@ -1,0 +1,1812 @@
+import React, { useState, useMemo } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Search, Plus, X, Sparkles, Truck, Plane, Download, Settings2, ArrowRight, MapPin, Clock, Package } from 'lucide-react';
+
+// ============ DEALER MASTER ============
+const DEALERS = [
+  { id: 1, code: 'KL301', name: 'Coastline Garages', showroom: 'VF Cochin', city: 'Ernakulam', state: 'Kerala', pin: '682021' },
+  { id: 2, code: 'TN101', name: 'Maansarovar Motors', showroom: 'VF Chennai', city: 'Chennai', state: 'Tamil Nadu', pin: '600032' },
+  { id: 3, code: 'KA101', name: 'Raaja Auto Work', showroom: 'VF Mahadevapura', city: 'Bengaluru', state: 'Karnataka', pin: '560100' },
+  { id: 4, code: 'GJ101', name: 'Chandan Car LLP', showroom: 'VF Surat', city: 'Surat', state: 'Gujarat', pin: '394210' },
+  { id: 5, code: 'MH101', name: 'Dhone E-Mobility', showroom: 'VF Baner, Pune', city: 'Pune', state: 'Maharashtra', pin: '412307' },
+  { id: 6, code: 'MH101-2', name: 'Dhone E-Mobility', showroom: 'VF Hadapsar, Pune', city: 'Pune', state: 'Maharashtra', pin: '411028' },
+  { id: 7, code: 'AP102', name: 'Sri Sri Automobility', showroom: 'VF Vijayawada', city: 'Vijayawada', state: 'Andhra Pradesh', pin: '520007' },
+  { id: 8, code: 'TG101', name: 'Nanesh Automotives', showroom: 'VF Hyderabad', city: 'Hyderabad', state: 'Telangana', pin: '500036' },
+  { id: 9, code: 'TG101-2', name: 'Nanesh Automotives', showroom: 'VF Begumpet', city: 'Hyderabad', state: 'Telangana', pin: '500003' },
+  { id: 10, code: 'OD102', name: 'AMP Wheels', showroom: 'VF Bhubaneswar', city: 'Bhubaneswar', state: 'Odisha', pin: '754001' },
+  { id: 11, code: 'HR303', name: 'Haritash Mobility', showroom: 'VF Gurugram', city: 'Gurugram', state: 'Haryana', pin: '122051' },
+  { id: 12, code: 'DL101', name: 'YouWe Group', showroom: 'VF Okhla', city: 'Delhi', state: 'Delhi', pin: '110020' },
+  { id: 13, code: 'DL101-2', name: 'YouWe Group', showroom: 'VF Bhikaji Cama', city: 'Delhi', state: 'Delhi', pin: '110029' },
+  { id: 14, code: 'WB301', name: 'Auto Hitech', showroom: 'VF Kolkata', city: 'Kolkata', state: 'West Bengal', pin: '700091' },
+  { id: 15, code: 'GJ303', name: 'Harsolia Moto Corp', showroom: 'VF Ahmedabad', city: 'Ahmedabad', state: 'Gujarat', pin: '380060' },
+  { id: 16, code: 'UP302', name: 'Vinwin Victory', showroom: 'VF Agra', city: 'Agra', state: 'Uttar Pradesh', pin: '283202' },
+  { id: 17, code: 'UP302-2', name: 'Vinwin Victory', showroom: 'VF Noida', city: 'Noida', state: 'Uttar Pradesh', pin: '201305' },
+  { id: 18, code: 'RJ302', name: 'Velocity Fintrust', showroom: 'VF Jaipur', city: 'Jaipur', state: 'Rajasthan', pin: '302019' },
+  { id: 19, code: 'MH102', name: 'M S Motors', showroom: 'VF Mumbai South', city: 'Mumbai', state: 'Maharashtra', pin: '400070' },
+  { id: 20, code: 'MH306', name: 'AdityaPrakash Motors', showroom: 'VF Nagpur', city: 'Nagpur', state: 'Maharashtra', pin: '440016' },
+  { id: 21, code: 'AP102-2', name: 'Sri Sri Automobility', showroom: 'VF Vishakhapatnam', city: 'Vishakhapatnam', state: 'Andhra Pradesh', pin: '530016' },
+  { id: 22, code: 'HR304', name: 'Arya Holidays', showroom: 'VF Golf Course Rd', city: 'Gurugram', state: 'Haryana', pin: '122001' },
+  { id: 23, code: 'PB301', name: 'Eco Drive', showroom: 'VF Ludhiana', city: 'Ludhiana', state: 'Punjab', pin: '141003' },
+  { id: 24, code: 'KA101-2', name: 'Raaja Auto Work', showroom: 'VF Mission Road', city: 'Bengaluru', state: 'Karnataka', pin: '560027' },
+  { id: 25, code: 'GJ102', name: 'Navjivan Electric', showroom: 'VF Vadodara', city: 'Vadodara', state: 'Gujarat', pin: '390010' },
+  { id: 26, code: 'JK301', name: 'Abrol Garages', showroom: 'VF Jammu', city: 'Jammu', state: 'J&K', pin: '180011' },
+  { id: 27, code: 'TN302', name: 'PPS Auto', showroom: 'VF Madurai', city: 'Madurai', state: 'Tamil Nadu', pin: '625008' },
+  { id: 28, code: 'UP101', name: 'Velocity Fintrust', showroom: 'VF Ghaziabad', city: 'Ghaziabad', state: 'Uttar Pradesh', pin: '201001' },
+  { id: 29, code: 'GJ103', name: 'Gopinath Motor', showroom: 'VF Rajkot', city: 'Rajkot', state: 'Gujarat', pin: '360002' },
+  { id: 30, code: 'UK202', name: 'Motor Experts', showroom: 'Motor Experts Dehradun', city: 'Dehradun', state: 'Uttarakhand', pin: '248146' },
+  { id: 31, code: 'CG301', name: 'Krishna Auto World', showroom: 'VF Raipur', city: 'Raipur', state: 'Chhattisgarh', pin: '492001' },
+  { id: 32, code: 'HR101', name: 'YouWe Group', showroom: 'VF Faridabad', city: 'Faridabad', state: 'Haryana', pin: '121007' },
+  { id: 33, code: 'CH301', name: 'Luxury Goldwheels', showroom: 'VF Chandigarh', city: 'Chandigarh', state: 'Chandigarh', pin: '160002' },
+  { id: 34, code: 'IN00003', name: 'Prince Win Craft', showroom: 'VF Indore', city: 'Indore', state: 'Madhya Pradesh', pin: '452012' },
+  { id: 35, code: 'UP214', name: 'Motor Mall', showroom: 'Motor Mall Lucknow', city: 'Lucknow', state: 'Uttar Pradesh', pin: '226028' },
+  { id: 36, code: 'MH308', name: 'Shreekripa Automobiles', showroom: 'VF Nashik', city: 'Nashik', state: 'Maharashtra', pin: '422010' },
+  { id: 37, code: 'MH309', name: 'Sadhana Automobile', showroom: 'VF Sangli', city: 'Sangli', state: 'Maharashtra', pin: '416416' },
+  { id: 38, code: 'MH307', name: 'Sadhana Automobile', showroom: 'VF Kolhapur', city: 'Kolhapur', state: 'Maharashtra', pin: '416001' },
+  { id: 39, code: 'IN00006', name: 'Honnassiri Motors', showroom: 'VF Mysore', city: 'Mysore', state: 'Karnataka', pin: '570017' },
+  { id: 40, code: 'IN00009', name: 'Casaduro Enterprises', showroom: 'Casaduro VinFast', city: 'Vijayawada', state: 'Andhra Pradesh', pin: '520008' },
+  { id: 41, code: 'IN00010', name: 'Suryabala Trucks', showroom: 'Suryabala VinFast', city: 'Erode', state: 'Tamil Nadu', pin: '638112' },
+  { id: 42, code: 'IN00002', name: 'Velocity Fintrust', showroom: 'VF Patparganj', city: 'Delhi', state: 'Delhi', pin: '110092' },
+  { id: 43, code: 'IN00012', name: 'Pataliputra Motors', showroom: 'VF Patna', city: 'Patna', state: 'Bihar', pin: '800008' },
+  { id: 44, code: 'IN00008', name: 'ARKS Automotives', showroom: 'Lakshmi VinFast', city: 'Bengaluru', state: 'Karnataka', pin: '560064' },
+  { id: 45, code: 'IN00004', name: 'Aarna Trading', showroom: 'Eternity VinFast', city: 'Lucknow', state: 'Uttar Pradesh', pin: '226028' },
+];
+
+const CITY_AIRPORT = {
+  'Ernakulam': { code: 'COK', name: 'Kochi', km: 19 }, 'Chennai': { code: 'MAA', name: 'Chennai', km: 8 },
+  'Bengaluru': { code: 'BLR', name: 'Bengaluru', km: 39 }, 'Surat': { code: 'STV', name: 'Surat', km: 15 },
+  'Pune': { code: 'PNQ', name: 'Pune', km: 13 }, 'Vijayawada': { code: 'VGA', name: 'Vijayawada', km: 20 },
+  'Hyderabad': { code: 'HYD', name: 'Hyderabad', km: 33 }, 'Bhubaneswar': { code: 'BBI', name: 'Bhubaneswar', km: 17 },
+  'Gurugram': { code: 'DEL', name: 'Delhi', km: 21 }, 'Delhi': { code: 'DEL', name: 'Delhi', km: 31 },
+  'Kolkata': { code: 'CCU', name: 'Kolkata', km: 11 }, 'Ahmedabad': { code: 'AMD', name: 'Ahmedabad', km: 13 },
+  'Agra': { code: 'AGR', name: 'Agra', km: 28 }, 'Noida': { code: 'DEL', name: 'Delhi', km: 41 },
+  'Jaipur': { code: 'JAI', name: 'Jaipur', km: 2 }, 'Mumbai': { code: 'BOM', name: 'Mumbai', km: 13 },
+  'Nagpur': { code: 'NAG', name: 'Nagpur', km: 10 }, 'Vishakhapatnam': { code: 'VTZ', name: 'Vizag', km: 11 },
+  'Ludhiana': { code: 'IXC', name: 'Chandigarh', km: 121 }, 'Vadodara': { code: 'BDQ', name: 'Vadodara', km: 13 },
+  'Jammu': { code: 'IXJ', name: 'Jammu', km: 6 }, 'Madurai': { code: 'IXM', name: 'Madurai', km: 11 },
+  'Ghaziabad': { code: 'DEL', name: 'Delhi', km: 53 }, 'Rajkot': { code: 'RAJ', name: 'Rajkot', km: 38 },
+  'Dehradun': { code: 'DED', name: 'Dehradun', km: 31 }, 'Raipur': { code: 'RPR', name: 'Raipur', km: 21 },
+  'Faridabad': { code: 'DEL', name: 'Delhi', km: 34 }, 'Chandigarh': { code: 'IXC', name: 'Chandigarh', km: 5 },
+  'Indore': { code: 'IDR', name: 'Indore', km: 11 }, 'Lucknow': { code: 'LKO', name: 'Lucknow', km: 18 },
+  'Nashik': { code: 'ISK', name: 'Nashik', km: 32 }, 'Sangli': { code: 'KLH', name: 'Kolhapur', km: 47 },
+  'Kolhapur': { code: 'KLH', name: 'Kolhapur', km: 3 }, 'Mysore': { code: 'MYQ', name: 'Mysore', km: 16 },
+  'Erode': { code: 'CJB', name: 'Coimbatore', km: 100 }, 'Patna': { code: 'PAT', name: 'Patna', km: 16 },
+};
+
+// Per-dealer airport + driving km. Computed from Google Places lat/lng of each dealer's
+// ship-to address, then haversine × 1.35 urban-India multiplier. Overrides CITY_AIRPORT
+// when present. Source: places_search lookup of each ship-to address from Dealer_Data__3_.xlsx.
+const DEALER_KM = {
+  1: 19,    2: 8,     3: 51,    4: 15,    5: 14,    6: 11,    7: 18,    8: 36,
+  9: 31,    10: 17,   11: 30,   12: 30,   13: 30,   14: 11,   15: 13,   16: 28,
+  17: 41,   18: 2,    19: 13,   20: 10,   21: 11,   22: 12,   23: 121,  24: 39,
+  25: 13,   26: 6,    27: 11,   28: 53,   29: 38,   30: 31,   31: 21,   32: 37,
+  33: 5,    34: 11,   35: 34,   36: 32,   37: 47,   38: 3,    39: 16,   40: 21,
+  41: 100,  42: 31,   43: 16,   44: 27,   45: 3
+};
+
+const FLIGHT_HRS = {
+  BOM: { COK:1.7,MAA:1.8,BLR:1.7,STV:0,PNQ:0,VGA:1.5,HYD:1.3,BBI:2.3,DEL:2.2,CCU:2.7,AMD:1.0,AGR:2.0,JAI:1.7,BOM:0,NAG:1.3,VTZ:1.8,IXC:2.3,BDQ:0,IXJ:2.5,IXM:2.0,RAJ:1.0,DED:2.3,RPR:1.7,IDR:1.2,LKO:2.0,ISK:0,KLH:0.8,MYQ:1.8,CJB:1.8,PAT:2.5 },
+  MAA: { COK:1.0,MAA:0,BLR:0.8,STV:2.2,PNQ:1.7,VGA:1.0,HYD:1.2,BBI:2.0,DEL:2.8,CCU:2.3,AMD:2.2,AGR:2.7,JAI:2.5,BOM:1.8,NAG:1.8,VTZ:1.2,IXC:3.2,BDQ:2.2,IXJ:3.5,IXM:1.0,RAJ:2.3,DED:3.0,RPR:2.0,IDR:2.2,LKO:2.7,ISK:1.8,KLH:1.5,MYQ:0.8,CJB:0.8,PAT:2.7 }
+};
+
+const HUBS = {
+  bhiwandi: { name: 'Bhiwandi Warehouse', short: 'BOM', airport: 'BOM', airportName: 'BOM', accent: '#1c1259' },
+  sriperumbudur: { name: 'Sriperumbudur Warehouse', short: 'MAA', airport: 'MAA', airportName: 'MAA', accent: '#b8860b' }
+};
+
+// Per-route per-slot flight counts. Slots are [01-12, 12-15, 15-18, 18-24].
+// Defaults are realistic India-domestic estimates; replace with live API data when available.
+// 'same' = same airport (road only); array of 4 zeros = no direct flight.
+const ROUTE_FLIGHTS = {
+  'BOM-DEL': [10, 5, 5, 8], 'BOM-BLR': [6, 3, 3, 5], 'BOM-MAA': [3, 2, 3, 4],
+  'BOM-HYD': [4, 2, 3, 4], 'BOM-CCU': [3, 2, 2, 3], 'BOM-AMD': [3, 2, 2, 3],
+  'BOM-COK': [3, 1, 2, 3], 'BOM-BBI': [2, 1, 1, 2], 'BOM-JAI': [2, 1, 1, 2],
+  'BOM-LKO': [2, 1, 1, 2], 'BOM-PAT': [1, 1, 1, 1], 'BOM-NAG': [2, 1, 1, 2],
+  'BOM-IDR': [2, 1, 1, 2], 'BOM-IXC': [2, 1, 1, 2], 'BOM-VTZ': [1, 1, 1, 1],
+  'BOM-RPR': [1, 0, 1, 1], 'BOM-VGA': [1, 0, 0, 1], 'BOM-IXM': [1, 0, 1, 1],
+  'BOM-MYQ': [0, 0, 0, 0], 'BOM-CJB': [1, 1, 0, 1], 'BOM-RAJ': [1, 0, 0, 1],
+  'BOM-BDQ': [1, 0, 0, 1], 'BOM-AGR': [0, 0, 0, 0], 'BOM-IXJ': [1, 0, 0, 1],
+  'BOM-DED': [1, 0, 0, 0], 'BOM-STV': [0, 0, 0, 0], 'BOM-PNQ': [0, 0, 0, 0],
+  'BOM-ISK': [0, 0, 0, 0], 'BOM-KLH': [0, 0, 0, 0], 'BOM-BOM': 'same',
+  'MAA-DEL': [4, 2, 3, 4], 'MAA-BOM': [3, 2, 3, 4], 'MAA-BLR': [8, 4, 4, 6],
+  'MAA-CCU': [2, 1, 1, 2], 'MAA-HYD': [4, 2, 2, 3], 'MAA-COK': [3, 1, 2, 2],
+  'MAA-AMD': [1, 1, 1, 1], 'MAA-IXM': [3, 1, 1, 2], 'MAA-CJB': [4, 1, 2, 2],
+  'MAA-MYQ': [1, 0, 0, 1], 'MAA-VGA': [1, 1, 0, 1], 'MAA-VTZ': [2, 1, 1, 1],
+  'MAA-BBI': [1, 1, 1, 1], 'MAA-PNQ': [1, 1, 0, 1], 'MAA-NAG': [1, 0, 0, 1],
+  'MAA-LKO': [1, 0, 0, 1], 'MAA-PAT': [0, 0, 0, 1], 'MAA-IDR': [1, 0, 0, 0],
+  'MAA-IXC': [1, 0, 0, 0], 'MAA-JAI': [1, 0, 0, 1], 'MAA-RPR': [1, 0, 0, 0],
+  'MAA-AGR': [0, 0, 0, 0], 'MAA-IXJ': [0, 0, 0, 0], 'MAA-DED': [0, 0, 0, 0],
+  'MAA-STV': [0, 0, 0, 0], 'MAA-BDQ': [0, 0, 0, 0], 'MAA-RAJ': [0, 0, 0, 0],
+  'MAA-ISK': [0, 0, 0, 0], 'MAA-KLH': [0, 0, 0, 0], 'MAA-MAA': 'same',
+};
+const ROUTE_FLIGHTS_SOURCE = 'Realistic defaults from India aviation knowledge — replace with live API data when available.';
+
+// ============ HELPERS ============
+const fmtTime = (h) => {
+  if (h == null || isNaN(h)) return '—';
+  const inDay = ((h % 24) + 24) % 24;
+  let hh = Math.floor(inDay), mm = Math.round((inDay - hh) * 60);
+  if (mm === 60) { hh += 1; mm = 0; }
+  if (hh >= 24) hh -= 24;
+  return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+};
+const fmtDelivery = (h) => {
+  if (h == null || isNaN(h)) return '—';
+  const dayOff = Math.floor(h / 24);
+  return dayOff === 0 ? fmtTime(h) : `${fmtTime(h)} +${dayOff}d`;
+};
+const fmtHrs = (h) => {
+  if (h == null || isNaN(h)) return '—';
+  if (h < 24) return `${h.toFixed(1)}h`;
+  const d = Math.floor(h/24), r = h%24;
+  return r < 0.3 ? `${d}d` : `${d}d ${r.toFixed(1)}h`;
+};
+
+// Anchor mode: which time within range = the flight departure time used for calc
+// 'start' | 'mid' | 'end'
+const anchorTime = (slot, mode) => {
+  if (mode === 'start') return slot.start;
+  if (mode === 'end') return slot.end;
+  return (slot.start + slot.end) / 2;
+};
+
+// ============ CALCULATION ============
+function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes) {
+  const city = CITY_AIRPORT[dealer.city];
+  if (!city) return null;
+  const hub = HUBS[hubKey];
+  const destApt = city.code;
+
+  // Distance: per-dealer override > live drive_times.json > DEALER_KM static > city default
+  let km;
+  let driveHrs = null;
+  if (kmOverride != null) {
+    km = kmOverride;
+  } else if (liveDriveTimes && liveDriveTimes[dealer.id]) {
+    km = liveDriveTimes[dealer.id].km;
+    driveHrs = liveDriveTimes[dealer.id].hours;
+  } else if (DEALER_KM[dealer.id] != null) {
+    km = DEALER_KM[dealer.id];
+  } else {
+    km = city.km;
+  }
+
+  const flightHrs = flightOverride != null ? flightOverride : FLIGHT_HRS[hub.airport][destApt];
+  const same = hub.airport === destApt;
+  const hubHrs = params[`${hubKey}HubHrs`];
+
+  // Per-route per-slot flight count.
+  // Priority: user override > live AeroAPI data > hardcoded ROUTE_FLIGHTS preset > 0
+  const routeKey = `${hub.airport}-${destApt}`;
+  let routeFlightCount;
+  const overrideKey = `${routeKey}-${slotIndex}`;
+  if (routeFlightOverrides && routeFlightOverrides[overrideKey] != null) {
+    routeFlightCount = routeFlightOverrides[overrideKey];
+  } else if (liveRouteFlights && Array.isArray(liveRouteFlights[routeKey])) {
+    routeFlightCount = liveRouteFlights[routeKey][slotIndex] ?? 0;
+  } else if (ROUTE_FLIGHTS[routeKey] === 'same') {
+    routeFlightCount = 0;
+  } else if (Array.isArray(ROUTE_FLIGHTS[routeKey])) {
+    routeFlightCount = ROUTE_FLIGHTS[routeKey][slotIndex] ?? 0;
+  } else {
+    routeFlightCount = 0;
+  }
+
+  const blocked = !same && routeFlightCount === 0;
+
+  // Time used for the math (within the slot range)
+  const flightTime = anchorTime(slot, anchorMode);
+
+  // Airport → dealer drive time: use real Google Routes hours when available, else km / roadSpeed estimate
+  const dealerDriveHrs = driveHrs != null ? driveHrs : (km / params.roadSpeed);
+
+  const preFlight = params.whLoad + hubHrs + (same ? 0 : params.originClear);
+  const postFlight = (same ? 0 : params.destClear) + params.destLoad + dealerDriveHrs;
+
+  if (same) {
+    const tat = params.whLoad + hubHrs + params.destLoad + dealerDriveHrs;
+    return {
+      destApt, destAptName: city.name, destKm: km, flightHrs: 0, same: true, blocked: false,
+      cutoff: null, cutoffStart: null, cutoffEnd: null,
+      flightDepart: null, flightDepartStart: null, flightDepartEnd: null,
+      delivery: null, deliveryStart: null, deliveryEnd: null,
+      tatHours: tat,
+      flights: 0,
+      driveSource: driveHrs != null ? 'google' : 'estimated',
+      legs: { l1: params.whLoad, l2: hubHrs, l3: 0, l5: 0, l6: params.destLoad, l7: dealerDriveHrs }
+    };
+  }
+
+  if (blocked) {
+    return {
+      destApt, destAptName: city.name, destKm: km, flightHrs, same: false, blocked: true,
+      cutoff: null, cutoffStart: null, cutoffEnd: null,
+      flightDepart: null, flightDepartStart: null, flightDepartEnd: null,
+      delivery: null, deliveryStart: null, deliveryEnd: null,
+      tatHours: null,
+      flights: 0,
+      legs: null
+    };
+  }
+
+  // Single-point math (using the selected anchor)
+  let cutoff = flightTime - preFlight;
+  if (cutoff < 0) cutoff += 24;
+  const delivery = flightTime + flightHrs + postFlight;
+  const tat = preFlight + flightHrs + postFlight;
+
+  // Range math (start and end of slot)
+  let cutoffStart = slot.start - preFlight; if (cutoffStart < 0) cutoffStart += 24;
+  let cutoffEnd   = slot.end   - preFlight; if (cutoffEnd   < 0) cutoffEnd   += 24;
+  const deliveryStart = slot.start + flightHrs + postFlight;
+  const deliveryEnd   = slot.end   + flightHrs + postFlight;
+
+  return {
+    destApt, destAptName: city.name, destKm: km, flightHrs, same: false, blocked: false,
+    cutoff, cutoffStart, cutoffEnd,
+    flightDepart: flightTime, flightDepartStart: slot.start, flightDepartEnd: slot.end,
+    delivery, deliveryStart, deliveryEnd,
+    tatHours: tat,
+    flights: routeFlightCount,
+    driveSource: driveHrs != null ? 'google' : 'estimated',
+    legs: {
+      l1: params.whLoad,
+      l2: hubHrs,
+      l3: params.originClear,
+      l5: flightHrs,
+      l6: params.destClear + params.destLoad,
+      l7: dealerDriveHrs
+    }
+  };
+}
+
+function calcAllSlots(dealer, hubKey, params, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes) {
+  const sorted = [...params.slots].sort((a,b) => a.start - b.start);
+  return sorted.map((s, idx) => ({
+    slotId: s.id, slotStart: s.start, slotEnd: s.end,
+    ...calcForSlot(dealer, hubKey, params, s, idx, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes)
+  })).filter(r => r.destApt);
+}
+
+// ============ MAIN ============
+export default function Dashboard() {
+  const [params, setParams] = useState({
+    roadSpeed: 20,
+    whLoad: 1.0,
+    originClear: 2.0,
+    destClear: 1.5,
+    destLoad: 1.0,
+    bhiwandiHubHrs: 2.0,         // Drive time Bhiwandi → BOM (hours)
+    sriperumbudurHubHrs: 1.75,   // Drive time Sriperumbudur → MAA (hours)
+    slots: [
+      { id: 1, start: 1,  end: 12, flights: 2 },
+      { id: 2, start: 12, end: 15, flights: 3 },
+      { id: 3, start: 15, end: 18, flights: 4 },
+      { id: 4, start: 18, end: 24, flights: 3 },
+    ]
+  });
+
+  const [anchorMode, setAnchorMode] = useState('start'); // start | mid | end
+  const [hubSelect, setHubSelect] = useState('both'); // bhiwandi | sriperumbudur | both
+  const [view, setView] = useState('cities');
+  const [tableMode, setTableMode] = useState('all-slots');
+  const [selectedSlotId, setSelectedSlotId] = useState(3);
+  const [search, setSearch] = useState('');
+  const [stateFilter, setStateFilter] = useState('all');
+  const [expanded, setExpanded] = useState(null);
+  const [overrides, setOverrides] = useState({});
+  const [routeFlightOverrides, setRouteFlightOverrides] = useState({});
+  const [showSettings, setShowSettings] = useState(true);
+
+  // Live data loaded from /data/*.json at startup (overrides hardcoded defaults when present)
+  const [liveRouteFlights, setLiveRouteFlights] = useState(null);
+  const [liveDriveTimes, setLiveDriveTimes] = useState(null);
+  const [dataLoaded, setDataLoaded] = useState({ flights: false, drives: false, flightsErr: null, drivesErr: null });
+
+  useEffect(() => {
+    // Load real flight counts from AeroAPI run (data/flight_counts.json)
+    fetch('data/flight_counts.json')
+      .then(r => r.ok ? r.json() : Promise.reject('not-found'))
+      .then(json => {
+        // Convert AeroAPI output { routes: { 'BOM-DEL': { slots: [{flights:10}, ...] } } } to ROUTE_FLIGHTS shape
+        const flat = {};
+        if (json.routes) {
+          for (const [key, r] of Object.entries(json.routes)) {
+            if (r.same_airport) { flat[key] = 'same'; continue; }
+            if (Array.isArray(r.slots)) {
+              flat[key] = r.slots.map(s => s.rounded_avg ?? s.flights ?? 0);
+            }
+          }
+        }
+        setLiveRouteFlights(flat);
+        setDataLoaded(d => ({ ...d, flights: true }));
+      })
+      .catch(e => setDataLoaded(d => ({ ...d, flightsErr: String(e) })));
+
+    fetch('data/drive_times.json')
+      .then(r => r.ok ? r.json() : Promise.reject('not-found'))
+      .then(json => {
+        // Output shape: { dealers: { '1': { km: 19, hours: 0.45 }, ... } }
+        setLiveDriveTimes(json.dealers || {});
+        setDataLoaded(d => ({ ...d, drives: true }));
+      })
+      .catch(e => setDataLoaded(d => ({ ...d, drivesErr: String(e) })));
+  }, []);
+
+  // Timeline tab state
+  const [tlDealer, setTlDealer] = useState(12);
+  const [tlHub, setTlHub] = useState('bhiwandi');
+  const [tlSlotId, setTlSlotId] = useState(3);
+
+  const [aiQuery, setAiQuery] = useState('');
+  const [aiHistory, setAiHistory] = useState([]);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const sortedSlots = useMemo(() => [...params.slots].sort((a,b)=>a.start-b.start), [params.slots]);
+
+  const results = useMemo(() => DEALERS.map(d => {
+    const ov = overrides[d.id] || {};
+    return {
+      dealer: d,
+      bhiwandi: calcAllSlots(d, 'bhiwandi', params, anchorMode, ov.km, ov.flightBom, routeFlightOverrides, liveRouteFlights, liveDriveTimes),
+      sriperumbudur: calcAllSlots(d, 'sriperumbudur', params, anchorMode, ov.km, ov.flightMaa, routeFlightOverrides, liveRouteFlights, liveDriveTimes)
+    };
+  }), [params, overrides, anchorMode, routeFlightOverrides, liveRouteFlights, liveDriveTimes]);
+
+  const filtered = useMemo(() => results.filter(r => {
+    if (search) {
+      const s = search.toLowerCase();
+      if (!(r.dealer.name.toLowerCase().includes(s) || r.dealer.city.toLowerCase().includes(s) || r.dealer.showroom.toLowerCase().includes(s) || r.dealer.code.toLowerCase().includes(s) || r.dealer.state.toLowerCase().includes(s))) return false;
+    }
+    if (stateFilter !== 'all' && r.dealer.state !== stateFilter) return false;
+    return true;
+  }), [results, search, stateFilter]);
+
+  const states = useMemo(() => [...new Set(DEALERS.map(d => d.state))].sort(), []);
+
+  const updateParam = (k, v) => setParams(p => ({ ...p, [k]: v }));
+  const updateSlot = (id, field, val) => setParams(p => ({
+    ...p, slots: p.slots.map(s => s.id === id ? { ...s, [field]: val } : s)
+  }));
+
+  const setOverride = (dealerId, field, value) => {
+    setOverrides(o => ({ ...o, [dealerId]: { ...(o[dealerId] || {}), [field]: value } }));
+  };
+
+  const showB = hubSelect !== 'sriperumbudur';
+  const showS = hubSelect !== 'bhiwandi';
+
+  // === AI ===
+  const askAI = async () => {
+    if (!aiQuery.trim()) return;
+    setAiLoading(true);
+    const userQ = aiQuery;
+    setAiQuery('');
+
+    const dataSummary = filtered.map(r => {
+      const obj = { dealer: r.dealer.showroom, city: r.dealer.city, state: r.dealer.state };
+      if (showB) obj.bom_hub = r.bhiwandi.map(s => s.blocked ? { slot: `${fmtTime(s.slotStart)}-${fmtTime(s.slotEnd)}`, status: 'NO_FLIGHT' } : {
+        slot: `${fmtTime(s.slotStart)}-${fmtTime(s.slotEnd)}`, flights: s.flights,
+        cutoff: s.same ? 'road-only' : `${fmtTime(s.cutoffStart)}-${fmtTime(s.cutoffEnd)}`,
+        delivery: s.same ? 'road-only' : `${fmtTime(s.deliveryStart)}-${fmtTime(s.deliveryEnd)}`,
+        hours: s.tatHours?.toFixed(1)
+      });
+      if (showS) obj.maa_hub = r.sriperumbudur.map(s => s.blocked ? { slot: `${fmtTime(s.slotStart)}-${fmtTime(s.slotEnd)}`, status: 'NO_FLIGHT' } : {
+        slot: `${fmtTime(s.slotStart)}-${fmtTime(s.slotEnd)}`, flights: s.flights,
+        cutoff: s.same ? 'road-only' : `${fmtTime(s.cutoffStart)}-${fmtTime(s.cutoffEnd)}`,
+        delivery: s.same ? 'road-only' : `${fmtTime(s.deliveryStart)}-${fmtTime(s.deliveryEnd)}`,
+        hours: s.tatHours?.toFixed(1)
+      });
+      return obj;
+    });
+
+    const prompt = `You are a logistics analyst presenting transit-time data for Warehouse Now to a client. Be concise (2-4 sentences; bullets only if listing >3 items).
+
+Current hub selection: ${hubSelect === 'bhiwandi' ? 'BOM hub only' : hubSelect === 'sriperumbudur' ? 'MAA hub only' : 'both hubs'}. Time anchor mode: ${anchorMode}.
+
+The two hubs are referred to by their origin airports: BOM Hub (Bhiwandi warehouse → Mumbai BOM airport) and MAA Hub (Sriperumbudur warehouse → Chennai MAA airport).
+
+Dataset (${filtered.length} dealers; slots are time ranges, cutoff/delivery shown as ranges; bom_hub and maa_hub keys carry per-slot data):
+${JSON.stringify(dataSummary, null, 1)}
+
+Question: ${userQ}
+
+Concepts:
+- Slots are time ranges (e.g. 12:00-15:00). Within a slot, cutoff/delivery are also ranges.
+- "flights" = number of flights available in that slot. If 0/NO_FLIGHT, route is blocked for that slot.
+- Same-airport routes are road-only.
+- Cutoff = latest the warehouse must finish loading. Delivery = when goods reach dealer.
+
+Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and dealer names.`;
+
+    try {
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1200, messages: [{ role: "user", content: prompt }] })
+      });
+      const data = await resp.json();
+      const text = data.content?.map(c => c.text || '').filter(Boolean).join('\n') || 'No response.';
+      setAiHistory(h => [...h, { q: userQ, a: text }]);
+    } catch (e) {
+      setAiHistory(h => [...h, { q: userQ, a: `Error: ${e.message}` }]);
+    } finally { setAiLoading(false); }
+  };
+
+  // === CSV ===
+  const exportCSV = () => {
+    const slotCols = [];
+    if (showB) sortedSlots.forEach(s => { slotCols.push(`BOM ${fmtTime(s.start)}-${fmtTime(s.end)} cutoff`); slotCols.push(`BOM delivery`); });
+    if (showS) sortedSlots.forEach(s => { slotCols.push(`MAA ${fmtTime(s.start)}-${fmtTime(s.end)} cutoff`); slotCols.push(`MAA delivery`); });
+    const rows = [['#','Dealer Code','Showroom','Dealer','City','State','Pin','Dest Airport', ...slotCols]];
+    filtered.forEach(r => {
+      const row = [r.dealer.id, r.dealer.code, r.dealer.showroom, r.dealer.name, r.dealer.city, r.dealer.state, r.dealer.pin, r.bhiwandi[0]?.destApt ?? ''];
+      const addCells = (slots) => slots.forEach(s => {
+        if (s.blocked) { row.push('NO FLIGHT'); row.push('NO FLIGHT'); }
+        else if (s.same) { row.push('road only'); row.push(fmtHrs(s.tatHours)); }
+        else { row.push(`${fmtTime(s.cutoffStart)}-${fmtTime(s.cutoffEnd)}`); row.push(`${fmtTime(s.deliveryStart)}-${fmtTime(s.deliveryEnd)}`); }
+      });
+      if (showB) addCells(r.bhiwandi);
+      if (showS) addCells(r.sriperumbudur);
+      rows.push(row);
+    });
+    const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'warehousenow_tat_export.csv'; a.click();
+  };
+
+  // === Chart ===
+  const chartData = useMemo(() => {
+    return filtered.map(r => {
+      const b = r.bhiwandi.find(s => s.slotId === selectedSlotId) || r.bhiwandi[r.bhiwandi.length-1];
+      const s = r.sriperumbudur.find(s => s.slotId === selectedSlotId) || r.sriperumbudur[r.sriperumbudur.length-1];
+      const obj = { name: `${r.dealer.city.slice(0,12)} (${r.dealer.code.slice(0,5)})` };
+      if (showB) obj.BOM = b?.blocked ? 0 : (b?.tatHours ?? 0);
+      if (showS) obj.MAA = s?.blocked ? 0 : (s?.tatHours ?? 0);
+      return obj;
+    }).sort((a,b) => {
+      const av = Math.min(a.BOM || 999, a.MAA || 999);
+      const bv = Math.min(b.BOM || 999, b.MAA || 999);
+      return av - bv;
+    });
+  }, [filtered, selectedSlotId, showB, showS]);
+
+  const stats = useMemo(() => {
+    const total = filtered.length;
+    let bw=0, sw=0, eq=0, sumB=0, sumS=0, cntB=0, cntS=0;
+    filtered.forEach(r => {
+      const b = r.bhiwandi.find(s => s.slotId === selectedSlotId) || r.bhiwandi[r.bhiwandi.length-1];
+      const s = r.sriperumbudur.find(s => s.slotId === selectedSlotId) || r.sriperumbudur[r.sriperumbudur.length-1];
+      const bH = b?.blocked ? null : b?.tatHours;
+      const sH = s?.blocked ? null : s?.tatHours;
+      if (bH != null) { sumB += bH; cntB++; }
+      if (sH != null) { sumS += sH; cntS++; }
+      if (bH != null && sH != null) {
+        if (Math.abs(bH - sH) < 0.5) eq++;
+        else if (bH < sH) bw++;
+        else sw++;
+      }
+    });
+    return { total, bw, sw, eq, avgB: cntB ? sumB/cntB : null, avgS: cntS ? sumS/cntS : null };
+  }, [filtered, selectedSlotId]);
+
+  const selectedSlot = sortedSlots.find(s => s.id === selectedSlotId) || sortedSlots[sortedSlots.length-1];
+
+  return (
+    <div style={{ fontFamily: "'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace", background: '#faf9f5', color: '#1c1259', minHeight: '100vh' }}>
+      <style>{`
+        * { box-sizing: border-box; }
+        body { margin: 0; }
+        .h-display { font-family: 'Bebas Neue', 'Oswald', 'Impact', sans-serif; letter-spacing: 0.02em; }
+        .scrollx::-webkit-scrollbar { height: 8px; }
+        .scrollx::-webkit-scrollbar-thumb { background: #d6d1c0; border-radius: 4px; }
+        input, select { background: #ffffff; color: #1c1259; border: 1px solid #d6d1c0; padding: 6px 10px; border-radius: 4px; font-family: inherit; font-size: 12px; }
+        input:focus, select:focus { outline: none; border-color: #1c1259; box-shadow: 0 0 0 2px rgba(252,211,7,0.3); }
+        .btn { background: #ffffff; color: #1c1259; border: 1px solid #d6d1c0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 12px; transition: all 0.15s; }
+        .btn:hover { border-color: #1c1259; background: #faf9f5; }
+        .btn-primary { background: #fcd307; border-color: #fcd307; color: #1c1259; font-weight: 700; }
+        .btn-primary:hover { background: #e8c000; border-color: #e8c000; }
+        .row-hover:hover { background: #f3f1e8; }
+        .pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+        .scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .scrollbar::-webkit-scrollbar-track { background: #faf9f5; }
+        .scrollbar::-webkit-scrollbar-thumb { background: #d6d1c0; border-radius: 4px; }
+        .scrollbar::-webkit-scrollbar-thumb:hover { background: #b8b29c; }
+        .hubseg { background: #ffffff; border: 1px solid #d6d1c0; border-radius: 4px; padding: 4px; display: inline-flex; gap: 2px; }
+        .hubseg button { border: none; background: transparent; padding: 5px 14px; color: #4a4366; cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; border-radius: 3px; text-transform: uppercase; transition: all 0.15s; }
+        .hubseg button.active.bhiwandi { background: #1c1259; color: #fcd307; }
+        .hubseg button.active.sriperumbudur { background: #b8860b; color: #ffffff; }
+        .hubseg button.active.both { background: #fcd307; color: #1c1259; }
+        @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+      `}</style>
+
+      <header style={{ borderBottom: '1px solid #e5e2d8', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#ffffff', position: 'sticky', top: 0, zIndex: 50, gap: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ width: 36, height: 36, background: '#1c1259', display: 'grid', placeItems: 'center', fontWeight: 800, fontSize: 13, color: '#fcd307', borderRadius: 4, letterSpacing: '0.04em' }}>TAT</div>
+          <div>
+            <h1 className="h-display" style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#1c1259' }}>TRANSIT TIME ANALYZER</h1>
+            <div style={{ fontSize: 10, color: '#7a7390', marginTop: 2, letterSpacing: '0.06em' }}>WAREHOUSE NOW · 45 VINFAST DEALERS</div>
+            <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 3, background: liveRouteFlights ? '#dcfce7' : '#fef9c3', color: liveRouteFlights ? '#166534' : '#854d0e', fontWeight: 600, letterSpacing: '0.04em' }}>
+                FLIGHTS: {liveRouteFlights ? 'LIVE (AeroAPI)' : 'EST.'}
+              </span>
+              <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 3, background: liveDriveTimes ? '#dcfce7' : '#fef9c3', color: liveDriveTimes ? '#166534' : '#854d0e', fontWeight: 600, letterSpacing: '0.04em' }}>
+                DRIVE TIMES: {liveDriveTimes ? 'LIVE (Google Routes)' : 'EST.'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Hub selector */}
+        <div className="hubseg">
+          <button className={hubSelect === 'bhiwandi' ? 'active bhiwandi' : ''} onClick={() => setHubSelect('bhiwandi')}>● BOM Hub</button>
+          <button className={hubSelect === 'sriperumbudur' ? 'active sriperumbudur' : ''} onClick={() => setHubSelect('sriperumbudur')}>● MAA Hub</button>
+          <button className={hubSelect === 'both' ? 'active both' : ''} onClick={() => setHubSelect('both')}>● Both</button>
+        </div>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn" onClick={() => setShowSettings(s => !s)}>
+            <Settings2 size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+            {showSettings ? 'Hide' : 'Inputs'}
+          </button>
+          <button className="btn" onClick={exportCSV}>
+            <Download size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} /> CSV
+          </button>
+        </div>
+      </header>
+
+      <div style={{ display: 'grid', gridTemplateColumns: showSettings ? '320px 1fr' : '1fr' }}>
+        {showSettings && (
+          <aside style={{ borderRight: '1px solid #e5e2d8', padding: 20, height: 'calc(100vh - 73px)', overflowY: 'auto', position: 'sticky', top: 73, background: '#ffffff' }} className="scrollbar">
+            <h3 className="h-display" style={{ fontSize: 14, margin: '0 0 16px', color: '#1c1259', letterSpacing: '0.1em', borderBottom: '2px solid #fcd307', paddingBottom: 8 }}>OPERATING PARAMETERS</h3>
+
+            <Section title="Hub → Origin Airport">
+              <div style={{ fontSize: 10, color: '#7a7390', marginBottom: 8 }}>Direct drive time in hours.</div>
+              {showB && (
+                <Field label="Bhiwandi → BOM" value={params.bhiwandiHubHrs} onChange={v => updateParam('bhiwandiHubHrs', +v)} type="number" step="0.25" min="0" />
+              )}
+              {showS && (
+                <Field label="Sriperumbudur → MAA" value={params.sriperumbudurHubHrs} onChange={v => updateParam('sriperumbudurHubHrs', +v)} type="number" step="0.25" min="0" />
+              )}
+            </Section>
+
+            <Section title="Dealer-Side Road Speed">
+              <Field label="Speed (km/hr) for dest airport → dealer" value={params.roadSpeed} onChange={v => updateParam('roadSpeed', +v)} type="number" step="1" min="5" max="80" />
+              <div style={{ fontSize: 10, color: '#7a7390', marginTop: 4 }}>= {(params.roadSpeed * 2).toFixed(0)} km per 2 hrs · applies to per-dealer airport-to-showroom distances</div>
+            </Section>
+
+            <Section title="Time Buffers (hours)">
+              <Field label="Order Processing & Loading at Warehouse" value={params.whLoad} onChange={v => updateParam('whLoad', +v)} type="number" step="0.5" />
+              <Field label="Origin airport clearance" value={params.originClear} onChange={v => updateParam('originClear', +v)} type="number" step="0.5" />
+              <Field label="Dest airport clearance" value={params.destClear} onChange={v => updateParam('destClear', +v)} type="number" step="0.5" />
+              <Field label="Vehicle loading at dest" value={params.destLoad} onChange={v => updateParam('destLoad', +v)} type="number" step="0.5" />
+            </Section>
+
+            <Section title="Flight Slots">
+              <div style={{ fontSize: 10, color: '#7a7390', marginBottom: 8 }}>Fixed time ranges. Per-route flight counts are in the <b style={{color:'#1c1259'}}>Slots × Flights</b> tab.</div>
+              {sortedSlots.map((s, i) => (
+                <div key={s.id} style={{ display: 'grid', gridTemplateColumns: '14px 1fr', columnGap: 8, alignItems: 'center', marginBottom: 6 }}>
+                  <div style={{ fontSize: 10, color: '#a8a3b8' }}>{i+1}</div>
+                  <div style={{ padding: '6px 10px', background: '#f3f1e8', border: '1px solid #e5e2d8', borderRadius: 4, fontSize: 11, color: '#1c1259', fontWeight: 600, letterSpacing: '0.04em' }}>
+                    {fmtTime(s.start)} – {fmtTime(s.end)}
+                  </div>
+                </div>
+              ))}
+            </Section>
+
+            <Section title="Time Anchor Within Slot">
+              <div style={{ fontSize: 10, color: '#7a7390', marginBottom: 6 }}>For single-point math (Cutoff/Delivery shown as time, not range)</div>
+              <select value={anchorMode} onChange={e => setAnchorMode(e.target.value)} style={{ width: '100%' }}>
+                <option value="start">Start of slot (most conservative cutoff)</option>
+                <option value="mid">Midpoint of slot</option>
+                <option value="end">End of slot (latest cutoff)</option>
+              </select>
+            </Section>
+          </aside>
+        )}
+
+        <main style={{ padding: 24, minWidth: 0 }}>
+
+          {/* Selected slot benchmark */}
+          <div style={{ marginBottom: 16, padding: '10px 14px', background: '#1c1259', color: '#fcd307', borderRadius: 4, fontSize: 11, letterSpacing: '0.06em', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+            <div>STATS · CHART · COMPARE BENCHMARK SLOT: <b style={{ color: 'white' }}>{selectedSlot ? `${fmtTime(selectedSlot.start)}–${fmtTime(selectedSlot.end)}` : '—'}</b> <span style={{ opacity: 0.7 }}>({selectedSlot?.flights} flights)</span></div>
+            <select value={selectedSlotId} onChange={e => setSelectedSlotId(+e.target.value)} style={{ background: '#ffffff', color: '#1c1259', fontSize: 11, padding: '3px 8px' }}>
+              {sortedSlots.map(s => <option key={s.id} value={s.id}>{fmtTime(s.start)}–{fmtTime(s.end)} ({s.flights} flts)</option>)}
+            </select>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 20 }}>
+            <Stat label="Dealers" value={stats.total} sub="locations" />
+            {showB && <Stat label="BOM avg TAT" value={fmtHrs(stats.avgB)} sub="end-to-end" accent="#1c1259" />}
+            {showS && <Stat label="MAA avg TAT" value={fmtHrs(stats.avgS)} sub="end-to-end" accent="#b8860b" />}
+            {showB && showS && <Stat label="Faster hub" value={stats.bw > stats.sw ? 'BOM' : stats.sw > stats.bw ? 'MAA' : 'Tie'} sub={`${stats.bw}B / ${stats.sw}M / ${stats.eq}≈`} />}
+            {(!showB || !showS) && <Stat label="Slot flights" value={selectedSlot?.flights ?? 0} sub={selectedSlot ? `${fmtTime(selectedSlot.start)}–${fmtTime(selectedSlot.end)}` : ''} accent="#fcd307" />}
+          </div>
+
+          <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid #e5e2d8', marginBottom: 16, overflowX: 'auto' }}>
+            {[
+              { k: 'cities', label: 'Cities' },
+              { k: 'flights', label: 'Slots × Flights', icon: <Plane size={11} /> },
+              { k: 'table', label: 'Master Table' },
+              { k: 'compare', label: 'Hub Comparison', disabled: hubSelect !== 'both' },
+              { k: 'timeline', label: 'Journey Timeline', icon: <MapPin size={11} /> },
+              { k: 'all-timelines', label: 'All Timelines', icon: <MapPin size={11} /> },
+              { k: 'chart', label: 'Chart' },
+              { k: 'ai', label: 'AI Analyst', icon: <Sparkles size={11} /> }
+            ].map(t => (
+              <button key={t.k} onClick={() => !t.disabled && setView(t.k)} disabled={t.disabled} style={{
+                background: 'none', border: 'none', padding: '8px 14px',
+                color: t.disabled ? '#c4bda8' : (view === t.k ? '#1c1259' : '#7a7390'),
+                borderBottom: view === t.k ? '3px solid #fcd307' : '3px solid transparent',
+                cursor: t.disabled ? 'not-allowed' : 'pointer',
+                fontFamily: 'inherit', fontSize: 12, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase',
+                display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap'
+              }} title={t.disabled ? "Select 'Both' hubs to enable comparison" : ''}>
+                {t.icon}{t.label}
+              </button>
+            ))}
+          </div>
+
+          {view !== 'ai' && view !== 'timeline' && (
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 200 }}>
+                <Search size={12} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#a8a3b8' }} />
+                <input placeholder="Search dealer / city / code…" value={search} onChange={e => setSearch(e.target.value)} style={{ width: '100%', paddingLeft: 28 }} />
+              </div>
+              <select value={stateFilter} onChange={e => setStateFilter(e.target.value)}>
+                <option value="all">All states</option>
+                {states.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+              {view === 'table' && (
+                <div style={{ display: 'flex', border: '1px solid #d6d1c0', borderRadius: 4, overflow: 'hidden' }}>
+                  <button onClick={() => setTableMode('all-slots')} style={{ background: tableMode === 'all-slots' ? '#1c1259' : '#ffffff', color: tableMode === 'all-slots' ? '#fcd307' : '#1c1259', border: 'none', padding: '6px 12px', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600 }}>ALL SLOTS</button>
+                  <button onClick={() => setTableMode('single-slot')} style={{ background: tableMode === 'single-slot' ? '#1c1259' : '#ffffff', color: tableMode === 'single-slot' ? '#fcd307' : '#1c1259', border: 'none', padding: '6px 12px', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600 }}>SINGLE SLOT</button>
+                </div>
+              )}
+              {view === 'table' && tableMode === 'single-slot' && (
+                <select value={selectedSlotId} onChange={e => setSelectedSlotId(+e.target.value)}>
+                  {sortedSlots.map(s => <option key={s.id} value={s.id}>{fmtTime(s.start)}–{fmtTime(s.end)}</option>)}
+                </select>
+              )}
+              <div style={{ fontSize: 11, color: '#7a7390', marginLeft: 'auto' }}>{filtered.length} / {DEALERS.length} dealers</div>
+            </div>
+          )}
+
+          {view === 'cities' && (
+            <CitiesView filtered={filtered} />
+          )}
+
+          {view === 'flights' && (
+            <FlightsView filtered={filtered} sortedSlots={sortedSlots} routeFlightOverrides={routeFlightOverrides} setRouteFlightOverrides={setRouteFlightOverrides} showB={showB} showS={showS} />
+          )}
+
+          {view === 'table' && tableMode === 'all-slots' && (
+            <AllSlotsTable filtered={filtered} sortedSlots={sortedSlots} showB={showB} showS={showS} expanded={expanded} setExpanded={setExpanded} overrides={overrides} setOverride={setOverride} anchorMode={anchorMode} />
+          )}
+          {view === 'table' && tableMode === 'single-slot' && (
+            <SingleSlotTable filtered={filtered} slotId={selectedSlotId} showB={showB} showS={showS} expanded={expanded} setExpanded={setExpanded} overrides={overrides} setOverride={setOverride} anchorMode={anchorMode} />
+          )}
+
+          {view === 'compare' && (
+            <div>
+              <div style={{ fontSize: 11, color: '#7a7390', marginBottom: 12 }}>Comparing hubs at <b style={{ color: '#1c1259' }}>{fmtTime(selectedSlot?.start ?? 18)}–{fmtTime(selectedSlot?.end ?? 21)}</b> flight slot.</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 12 }}>
+                {filtered.map(r => <CompareCard key={r.dealer.id} r={r} slotId={selectedSlotId} />)}
+              </div>
+            </div>
+          )}
+
+          {view === 'timeline' && (
+            <JourneyTimeline DEALERS={DEALERS} results={results} tlDealer={tlDealer} setTlDealer={setTlDealer} tlHub={tlHub} setTlHub={setTlHub} tlSlotId={tlSlotId} setTlSlotId={setTlSlotId} sortedSlots={sortedSlots} hubSelect={hubSelect} params={params} />
+          )}
+
+          {view === 'all-timelines' && (
+            <AllTimelinesView filtered={filtered} sortedSlots={sortedSlots} hubSelect={hubSelect} params={params} />
+          )}
+
+          {view === 'chart' && (
+            <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, padding: 20, height: 700 }}>
+              <div style={{ fontSize: 11, color: '#7a7390', marginBottom: 12 }}>End-to-end TAT for <b style={{ color: '#1c1259' }}>{fmtTime(selectedSlot?.start ?? 18)}–{fmtTime(selectedSlot?.end ?? 21)}</b> slot (blocked = 0)</div>
+              <ResponsiveContainer width="100%" height="92%">
+                <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 100, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="2 2" stroke="#e5e2d8" />
+                  <XAxis type="number" stroke="#7a7390" style={{ fontSize: 11 }} label={{ value: 'Total TAT (hours)', position: 'bottom', fill: '#7a7390', fontSize: 11 }} />
+                  <YAxis type="category" dataKey="name" stroke="#7a7390" style={{ fontSize: 10 }} width={140} />
+                  <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #1c1259', borderRadius: 4 }} labelStyle={{ color: '#1c1259', fontWeight: 700 }} itemStyle={{ color: '#1c1259' }} />
+                  {showB && <Bar dataKey="BOM" fill="#1c1259" radius={[0, 2, 2, 0]} />}
+                  {showS && <Bar dataKey="MAA" fill="#b8860b" radius={[0, 2, 2, 0]} />}
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+
+          {view === 'ai' && (
+            <div>
+              <div style={{ background: 'linear-gradient(135deg, #1c1259 0%, #2d2065 100%)', border: '1px solid #1c1259', borderRadius: 4, padding: 20, marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                  <Sparkles size={16} color="#fcd307" />
+                  <h3 className="h-display" style={{ margin: 0, fontSize: 16, color: '#fcd307', letterSpacing: '0.06em' }}>AI LOGISTICS ANALYST</h3>
+                </div>
+                <div style={{ fontSize: 12, color: '#d6d1c0', marginBottom: 12 }}>Currently analyzing: <b style={{ color: '#fcd307' }}>{hubSelect === 'both' ? 'Both hubs' : HUBS[hubSelect].short}</b> · {filtered.length} dealers</div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <input value={aiQuery} onChange={e => setAiQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && askAI()} placeholder="Ask anything…" style={{ flex: 1 }} disabled={aiLoading} />
+                  <button className="btn btn-primary" onClick={askAI} disabled={aiLoading || !aiQuery.trim()}>
+                    {aiLoading ? 'Thinking…' : 'Ask'}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
+                  {[
+                    'Latest warehouse cutoff for Delhi dealers from BOM hub',
+                    'Which dealers get same-day delivery from MAA hub?',
+                    'Dealers with no available flights in latest slot',
+                    'Where does MAA hub beat BOM hub on TAT?'
+                  ].map(q => (
+                    <button key={q} style={{ fontSize: 10, padding: '6px 10px', background: 'rgba(252,211,7,0.12)', border: '1px solid rgba(252,211,7,0.4)', color: '#fcd307', borderRadius: 4, cursor: 'pointer', fontFamily: 'inherit' }} onClick={() => { setAiQuery(q); }}>{q}</button>
+                  ))}
+                </div>
+              </div>
+              {aiHistory.length === 0 && !aiLoading && (
+                <div style={{ textAlign: 'center', padding: 40, color: '#a8a3b8', fontSize: 12 }}>Ask a question to begin.</div>
+              )}
+              {aiHistory.slice().reverse().map((h, i) => (
+                <div key={i} style={{ marginBottom: 16, border: '1px solid #e5e2d8', borderRadius: 4, padding: 16, background: '#ffffff' }}>
+                  <div style={{ fontSize: 11, color: '#7a7390', marginBottom: 6, letterSpacing: '0.04em', textTransform: 'uppercase' }}>You asked</div>
+                  <div style={{ fontSize: 13, color: '#1c1259', marginBottom: 12, fontWeight: 600 }}>{h.q}</div>
+                  <div style={{ fontSize: 11, color: '#b8860b', marginBottom: 6, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Answer</div>
+                  <div style={{ fontSize: 12, color: '#2d2640', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{h.a}</div>
+                </div>
+              ))}
+              {aiLoading && (
+                <div style={{ padding: 20, textAlign: 'center', color: '#7a7390', fontSize: 12 }}>
+                  <div style={{ display: 'inline-block', width: 8, height: 8, background: '#1c1259', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
+                  &nbsp; Claude is analyzing…
+                </div>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
+
+      <footer style={{ padding: '14px 24px', borderTop: '1px solid #e5e2d8', fontSize: 10, color: '#7a7390', textAlign: 'center', letterSpacing: '0.06em', background: '#ffffff' }}>
+        CUTOFF = FLIGHT TIME − (WAREHOUSE LOAD + ROAD TO ORIGIN APT + ORIGIN CLEARANCE) · DELIVERY = FLIGHT TIME + FLIGHT + DEST CLEARANCE + LOAD + ROAD TO DEALER · WAREHOUSE NOW
+      </footer>
+    </div>
+  );
+}
+
+// ============ SUBCOMPONENTS ============
+const th = { padding: '10px 12px', fontWeight: 600, fontSize: 10, letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap', color: '#4a4366' };
+const td = { padding: '10px 12px', verticalAlign: 'top', whiteSpace: 'nowrap', fontSize: 12 };
+
+function Stat({ label, value, sub, accent }) {
+  return (
+    <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, padding: 14 }}>
+      <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{label}</div>
+      <div className="h-display" style={{ fontSize: 26, color: accent || '#1c1259', fontWeight: 700, marginTop: 4, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: 10, color: '#a8a3b8', marginTop: 4 }}>{sub}</div>
+    </div>
+  );
+}
+function Section({ title, children }) {
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8, fontWeight: 600 }}>{title}</div>
+      {children}
+    </div>
+  );
+}
+function Field({ label, value, onChange, type = 'text', step, min, max }) {
+  return (
+    <div style={{ marginBottom: 8 }}>
+      <div style={{ fontSize: 10, color: '#4a4366', marginBottom: 4 }}>{label}</div>
+      <input type={type} value={value} step={step} min={min} max={max} onChange={e => onChange(e.target.value)} style={{ width: '100%' }} />
+    </div>
+  );
+}
+
+function CellCutoffDelivery({ slot, accent }) {
+  if (slot.blocked) return (
+    <td colSpan={2} style={{ ...td, textAlign: 'center', background: '#fef2f2', color: '#991b1b', fontWeight: 700, borderLeft: '1px solid #efece2', fontSize: 11 }}>
+      NO FLIGHT
+    </td>
+  );
+  if (slot.same) return (<>
+    <td style={{ ...td, textAlign: 'right', color: '#a8a3b8', borderLeft: '1px solid #efece2' }}>road</td>
+    <td style={{ ...td, color: '#a8a3b8' }}>{fmtHrs(slot.tatHours)}</td>
+  </>);
+  return (<>
+    <td style={{ ...td, textAlign: 'right', color: accent, fontWeight: 600, borderLeft: '1px solid #efece2', lineHeight: 1.3 }}>
+      <div>{fmtTime(slot.cutoffStart)}</div>
+      <div style={{ fontSize: 10, color: '#7a7390', fontWeight: 400 }}>to {fmtTime(slot.cutoffEnd)}</div>
+    </td>
+    <td style={{ ...td, color: '#4a4366', lineHeight: 1.3 }}>
+      <div>{fmtDelivery(slot.deliveryStart)}</div>
+      <div style={{ fontSize: 10, color: '#a8a3b8', fontWeight: 400 }}>to {fmtDelivery(slot.deliveryEnd)}</div>
+    </td>
+  </>);
+}
+
+function AllSlotsTable({ filtered, sortedSlots, showB, showS, expanded, setExpanded, overrides, setOverride, anchorMode }) {
+  return (
+    <div style={{ border: '1px solid #e5e2d8', borderRadius: 4, overflowX: 'auto', background: '#ffffff' }} className="scrollx">
+      <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1000 }}>
+        <thead>
+          <tr style={{ background: '#f3f1e8', borderBottom: '2px solid #1c1259' }}>
+            <th style={th}>Dealer</th>
+            <th style={th}>City / APT</th>
+            {showB && (
+              <th colSpan={sortedSlots.length * 2} style={{ ...th, background: '#1c1259', color: '#fcd307', textAlign: 'center' }}>
+                BOM HUB · CUTOFF → DELIVERY (ranges)
+              </th>
+            )}
+            {showS && (
+              <th colSpan={sortedSlots.length * 2} style={{ ...th, background: '#b8860b', color: '#ffffff', textAlign: 'center' }}>
+                MAA HUB · CUTOFF → DELIVERY (ranges)
+              </th>
+            )}
+          </tr>
+          <tr style={{ background: '#f3f1e8', borderBottom: '1px solid #e5e2d8' }}>
+            <th style={th}></th>
+            <th style={th}></th>
+            {showB && sortedSlots.map(s => (
+              <React.Fragment key={`b-${s.id}`}>
+                <th style={{ ...th, color: '#1c1259', textAlign: 'right', borderLeft: '1px solid #e5e2d8' }}>{fmtTime(s.start)}–{fmtTime(s.end)}<div style={{fontSize:9,color:'#7a7390',fontWeight:400}}>{s.flights} flights</div></th>
+                <th style={{ ...th, color: '#1c1259', textAlign: 'left' }}>Deliver</th>
+              </React.Fragment>
+            ))}
+            {showS && sortedSlots.map(s => (
+              <React.Fragment key={`s-${s.id}`}>
+                <th style={{ ...th, color: '#b8860b', textAlign: 'right', borderLeft: '1px solid #e5e2d8' }}>{fmtTime(s.start)}–{fmtTime(s.end)}<div style={{fontSize:9,color:'#7a7390',fontWeight:400}}>{s.flights} flights</div></th>
+                <th style={{ ...th, color: '#b8860b', textAlign: 'left' }}>Deliver</th>
+              </React.Fragment>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {filtered.map(r => {
+            const isExp = expanded === r.dealer.id;
+            return (
+              <React.Fragment key={r.dealer.id}>
+                <tr className="row-hover" style={{ borderBottom: '1px solid #efece2', cursor: 'pointer' }} onClick={() => setExpanded(isExp ? null : r.dealer.id)}>
+                  <td style={td}>
+                    <div style={{ color: '#1c1259', fontWeight: 600 }}>{r.dealer.showroom}</div>
+                    <div style={{ fontSize: 10, color: '#7a7390' }}>{r.dealer.code} · {r.dealer.state}</div>
+                  </td>
+                  <td style={td}>
+                    <div>{r.dealer.city}</div>
+                    <div style={{ fontSize: 10, color: '#7a7390' }}>via {r.bhiwandi[0]?.destApt}</div>
+                  </td>
+                  {showB && r.bhiwandi.map(s => <CellCutoffDelivery key={`b-${s.slotId}`} slot={s} accent="#1c1259" />)}
+                  {showS && r.sriperumbudur.map(s => <CellCutoffDelivery key={`s-${s.slotId}`} slot={s} accent="#b8860b" />)}
+                </tr>
+                {isExp && (
+                  <tr style={{ background: '#faf9f5' }}>
+                    <td colSpan={2 + (showB ? sortedSlots.length * 2 : 0) + (showS ? sortedSlots.length * 2 : 0)} style={{ padding: 16, borderBottom: '1px solid #e5e2d8' }}>
+                      <DealerDetail r={r} showB={showB} showS={showS} overrides={overrides[r.dealer.id] || {}} setOverride={(f,v) => setOverride(r.dealer.id, f, v)} anchorMode={anchorMode} />
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function SingleSlotTable({ filtered, slotId, showB, showS, expanded, setExpanded, overrides, setOverride, anchorMode }) {
+  return (
+    <div style={{ border: '1px solid #e5e2d8', borderRadius: 4, overflowX: 'auto', background: '#ffffff' }} className="scrollx">
+      <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
+        <thead>
+          <tr style={{ background: '#f3f1e8', borderBottom: '2px solid #1c1259' }}>
+            <th style={th}>#</th>
+            <th style={th}>Dealer / Showroom</th>
+            <th style={th}>City</th>
+            <th style={th}>State</th>
+            <th style={th}>APT</th>
+            {showB && <>
+              <th style={{ ...th, color: '#1c1259', textAlign: 'right' }}>BOM Cutoff</th>
+              <th style={{ ...th, color: '#1c1259' }}>Delivery</th>
+              <th style={{ ...th, color: '#1c1259' }}>TAT</th>
+            </>}
+            {showS && <>
+              <th style={{ ...th, color: '#b8860b', textAlign: 'right' }}>MAA Cutoff</th>
+              <th style={{ ...th, color: '#b8860b' }}>Delivery</th>
+              <th style={{ ...th, color: '#b8860b' }}>TAT</th>
+            </>}
+            {showB && showS && <th style={th}>Faster</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {filtered.map(r => {
+            const isExp = expanded === r.dealer.id;
+            const b = r.bhiwandi.find(s => s.slotId === slotId) || r.bhiwandi[r.bhiwandi.length-1];
+            const s = r.sriperumbudur.find(s => s.slotId === slotId) || r.sriperumbudur[r.sriperumbudur.length-1];
+            let faster = '—';
+            if (b && s && !b.blocked && !s.blocked) {
+              faster = b.tatHours < s.tatHours - 0.5 ? 'B' : s.tatHours < b.tatHours - 0.5 ? 'S' : '=';
+            } else if (b?.blocked && s && !s.blocked) faster = 'S';
+            else if (s?.blocked && b && !b.blocked) faster = 'B';
+
+            const cellB = (slot) => {
+              if (slot.blocked) return <>
+                <td colSpan={3} style={{ ...td, background: '#fef2f2', color: '#991b1b', textAlign: 'center', fontWeight: 700 }}>NO FLIGHT</td>
+              </>;
+              if (slot.same) return <>
+                <td style={{ ...td, textAlign: 'right', color: '#a8a3b8' }}>road only</td>
+                <td style={td}>—</td>
+                <td style={td}>{fmtHrs(slot.tatHours)}</td>
+              </>;
+              return <>
+                <td style={{ ...td, textAlign: 'right', color: slot._accent, fontWeight: 700, fontSize: 13 }}>{fmtTime(slot.cutoff)}</td>
+                <td style={td}>{fmtDelivery(slot.delivery)}</td>
+                <td style={td}>{fmtHrs(slot.tatHours)}</td>
+              </>;
+            };
+            const bC = b ? { ...b, _accent: '#1c1259' } : null;
+            const sC = s ? { ...s, _accent: '#b8860b' } : null;
+
+            return (
+              <React.Fragment key={r.dealer.id}>
+                <tr className="row-hover" style={{ borderBottom: '1px solid #efece2', cursor: 'pointer' }} onClick={() => setExpanded(isExp ? null : r.dealer.id)}>
+                  <td style={{ ...td, color: '#a8a3b8' }}>{r.dealer.id}</td>
+                  <td style={td}>
+                    <div style={{ color: '#1c1259', fontWeight: 600 }}>{r.dealer.showroom}</div>
+                    <div style={{ fontSize: 10, color: '#7a7390' }}>{r.dealer.name} · {r.dealer.code}</div>
+                  </td>
+                  <td style={td}>{r.dealer.city}<div style={{fontSize:10,color:'#7a7390'}}>PIN {r.dealer.pin}</div></td>
+                  <td style={{ ...td, color: '#4a4366' }}>{r.dealer.state}</td>
+                  <td style={td}><span className="pill" style={{ background: '#f3f1e8', color: '#1c1259' }}>{b?.destApt}</span></td>
+                  {showB && bC && cellB(bC)}
+                  {showS && sC && cellB(sC)}
+                  {showB && showS && (
+                    <td style={td}>
+                      {faster === 'B' && <span className="pill" style={{ background: 'rgba(28,18,89,0.10)', color: '#1c1259' }}>B</span>}
+                      {faster === 'S' && <span className="pill" style={{ background: 'rgba(184,134,11,0.14)', color: '#b8860b' }}>S</span>}
+                      {faster === '=' && <span className="pill" style={{ background: '#f3f1e8', color: '#4a4366' }}>≈</span>}
+                      {faster === '—' && <span style={{ color: '#a8a3b8', fontSize: 10 }}>—</span>}
+                    </td>
+                  )}
+                </tr>
+                {isExp && (
+                  <tr style={{ background: '#faf9f5' }}>
+                    <td colSpan={20} style={{ padding: 16, borderBottom: '1px solid #e5e2d8' }}>
+                      <DealerDetail r={r} showB={showB} showS={showS} overrides={overrides[r.dealer.id] || {}} setOverride={(f,v) => setOverride(r.dealer.id, f, v)} anchorMode={anchorMode} />
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function DealerDetail({ r, showB, showS, overrides, setOverride, anchorMode }) {
+  const bRef = r.bhiwandi[0];
+  const sRef = r.sriperumbudur[0];
+  return (
+    <div>
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', marginBottom: 6, textTransform: 'uppercase', fontWeight: 600 }}>Per-Dealer Overrides</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, maxWidth: 600 }}>
+          <Field label={`Airport → dealer (km)`} value={overrides.km ?? bRef?.destKm ?? ''} type="number" step="1" onChange={v => setOverride('km', v === '' ? null : +v)} />
+          {showB && <Field label={`Flight BOM→${bRef?.destApt} (hr)`} value={overrides.flightBom ?? bRef?.flightHrs ?? 0} type="number" step="0.1" onChange={v => setOverride('flightBom', +v)} />}
+          {showS && <Field label={`Flight MAA→${sRef?.destApt} (hr)`} value={overrides.flightMaa ?? sRef?.flightHrs ?? 0} type="number" step="0.1" onChange={v => setOverride('flightMaa', +v)} />}
+        </div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: (showB && showS) ? '1fr 1fr' : '1fr', gap: 12 }}>
+        {showB && <HubTimeline hubName="BOM" accent="#1c1259" slots={r.bhiwandi} />}
+        {showS && <HubTimeline hubName="MAA" accent="#b8860b" slots={r.sriperumbudur} />}
+      </div>
+    </div>
+  );
+}
+
+function HubTimeline({ hubName, accent, slots }) {
+  if (!slots || slots.length === 0) return null;
+  const ref = slots[0];
+  return (
+    <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12, paddingBottom: 8, borderBottom: `2px solid ${accent}` }}>
+        <div className="h-display" style={{ fontSize: 14, color: accent, letterSpacing: '0.06em' }}>{hubName.toUpperCase()}</div>
+        <div style={{ fontSize: 10, color: '#7a7390' }}>{ref.same ? 'Same airport — road only' : `via ${ref.destApt}`}</div>
+      </div>
+      {ref.same ? (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 10, background: '#f3f1e8', borderRadius: 4 }}>
+          <Truck size={14} color={accent} />
+          <div style={{ flex: 1, fontSize: 11, color: '#4a4366' }}>Warehouse load + road to dealer</div>
+          <div className="h-display" style={{ fontSize: 18, color: accent }}>{fmtHrs(ref.tatHours)}</div>
+        </div>
+      ) : (
+        <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ color: '#7a7390', fontSize: 9, letterSpacing: '0.06em' }}>
+              <th style={{ textAlign: 'left', padding: '4px 6px', fontWeight: 600 }}>SLOT</th>
+              <th style={{ textAlign: 'center', padding: '4px 6px', fontWeight: 600 }}>FLIGHTS</th>
+              <th style={{ textAlign: 'right', padding: '4px 6px', fontWeight: 600 }}>WH CUTOFF</th>
+              <th style={{ textAlign: 'right', padding: '4px 6px', fontWeight: 600 }}>DELIVERY</th>
+              <th style={{ textAlign: 'right', padding: '4px 6px', fontWeight: 600 }}>TAT</th>
+            </tr>
+          </thead>
+          <tbody>
+            {slots.map(s => (
+              <tr key={s.slotId} style={{ borderTop: '1px solid #efece2' }}>
+                <td style={{ padding: '8px 6px', color: '#4a4366' }}>{fmtTime(s.slotStart)}–{fmtTime(s.slotEnd)}</td>
+                <td style={{ padding: '8px 6px', textAlign: 'center', color: s.blocked ? '#991b1b' : '#4a4366', fontWeight: 600 }}>{s.flights}</td>
+                {s.blocked ? (
+                  <td colSpan={3} style={{ padding: '8px 6px', textAlign: 'center', background: '#fef2f2', color: '#991b1b', fontWeight: 700, fontSize: 11 }}>NO FLIGHT</td>
+                ) : (
+                  <>
+                    <td style={{ padding: '8px 6px', textAlign: 'right', color: accent, fontWeight: 600 }}>{fmtTime(s.cutoffStart)}–{fmtTime(s.cutoffEnd)}</td>
+                    <td style={{ padding: '8px 6px', textAlign: 'right', color: '#1c1259', fontWeight: 600 }}>{fmtDelivery(s.deliveryStart)}–{fmtDelivery(s.deliveryEnd)}</td>
+                    <td style={{ padding: '8px 6px', textAlign: 'right', color: '#4a4366' }}>{fmtHrs(s.tatHours)}</td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      {!ref.same && ref.legs && (
+        <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px dashed #e5e2d8' }}>
+          <div style={{ fontSize: 9, color: '#7a7390', letterSpacing: '0.06em', marginBottom: 6, fontWeight: 600 }}>LEG BREAKDOWN (hours)</div>
+          <div style={{ display: 'flex', gap: 4, fontSize: 10, flexWrap: 'wrap' }}>
+            {[['Order+Load', ref.legs.l1], ['WH→APT', ref.legs.l2], ['Clear', ref.legs.l3], ['Flight', ref.legs.l5], ['Clear+Load', ref.legs.l6], ['APT→Dealer', ref.legs.l7]].map(([lbl, v], i) => (
+              <div key={i} style={{ padding: '4px 8px', background: '#f3f1e8', borderRadius: 3 }}>
+                <span style={{ color: '#7a7390' }}>{lbl}:</span> <b style={{ color: accent }}>{v.toFixed(1)}h</b>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CompareCard({ r, slotId }) {
+  const b = r.bhiwandi.find(s => s.slotId === slotId) || r.bhiwandi[r.bhiwandi.length-1];
+  const s = r.sriperumbudur.find(s => s.slotId === slotId) || r.sriperumbudur[r.sriperumbudur.length-1];
+  if (!b || !s) return null;
+  let faster = null;
+  if (!b.blocked && !s.blocked) faster = b.tatHours < s.tatHours ? 'b' : 'sb';
+  else if (b.blocked && !s.blocked) faster = 'sb';
+  else if (!b.blocked && s.blocked) faster = 'b';
+  const delta = (!b.blocked && !s.blocked) ? Math.abs(b.tatHours - s.tatHours) : null;
+
+  return (
+    <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, padding: 14 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
+        <div>
+          <div style={{ color: '#1c1259', fontWeight: 700, fontSize: 13 }}>{r.dealer.showroom}</div>
+          <div style={{ color: '#7a7390', fontSize: 10 }}>{r.dealer.city}, {r.dealer.state}</div>
+        </div>
+        <span className="pill" style={{ background: '#f3f1e8', color: '#4a4366' }}>{b.destApt}</span>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <HubBox label="BOM HUB" accent="#1c1259" slot={b} faster={faster === 'b'} />
+        <HubBox label="MAA HUB" accent="#b8860b" slot={s} faster={faster === 'sb'} />
+      </div>
+      <div style={{ marginTop: 8, fontSize: 10, color: '#7a7390', textAlign: 'center' }}>
+        {b.blocked && s.blocked ? 'No flights available from either hub' :
+         delta == null ? '' :
+         delta < 0.5 ? 'Hubs are comparable' : `${faster === 'b' ? 'BOM' : 'MAA'} hub faster by ${delta.toFixed(1)}h`}
+      </div>
+    </div>
+  );
+}
+function HubBox({ label, accent, slot, faster }) {
+  const bg = slot.blocked ? '#fef2f2' : (faster ? `rgba(${accent === '#1c1259' ? '28,18,89,0.08' : '184,134,11,0.10'})` : '#faf9f5');
+  const border = slot.blocked ? '#fca5a5' : (faster ? accent : '#e5e2d8');
+  return (
+    <div style={{ padding: 10, background: bg, border: `1px solid ${border}`, borderRadius: 4 }}>
+      <div style={{ fontSize: 10, color: accent, letterSpacing: '0.06em', fontWeight: 700 }}>{label}</div>
+      {slot.blocked ? (
+        <div style={{ marginTop: 8, fontSize: 11, color: '#991b1b', fontWeight: 700 }}>NO FLIGHT IN THIS SLOT</div>
+      ) : slot.same ? (
+        <>
+          <div style={{ fontSize: 10, color: '#7a7390', marginTop: 4 }}>Road only — no flight</div>
+          <div className="h-display" style={{ fontSize: 20, color: accent, marginTop: 6 }}>{fmtHrs(slot.tatHours)}</div>
+        </>
+      ) : (
+        <>
+          <div style={{ fontSize: 10, color: '#7a7390', marginTop: 4 }}>Cutoff <span style={{color: accent, fontWeight: 700}}>{fmtTime(slot.cutoffStart)}–{fmtTime(slot.cutoffEnd)}</span></div>
+          <div style={{ fontSize: 10, color: '#7a7390' }}>Delivery <span style={{color: accent, fontWeight: 700}}>{fmtDelivery(slot.deliveryStart)}–{fmtDelivery(slot.deliveryEnd)}</span></div>
+          <div className="h-display" style={{ fontSize: 20, color: accent, marginTop: 6 }}>{fmtHrs(slot.tatHours)}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ============ JOURNEY TIMELINE ============
+function JourneyTimeline({ DEALERS, results, tlDealer, setTlDealer, tlHub, setTlHub, tlSlotId, setTlSlotId, sortedSlots, hubSelect, params }) {
+  const dealer = DEALERS.find(d => d.id === tlDealer);
+  const resultRow = results.find(r => r.dealer.id === tlDealer);
+  if (!resultRow) return null;
+
+  // If hub filter set, restrict tlHub options
+  const availableHubs = hubSelect === 'both' ? ['bhiwandi','sriperumbudur'] : [hubSelect];
+  if (!availableHubs.includes(tlHub)) setTlHub(availableHubs[0]);
+
+  const hubData = resultRow[tlHub];
+  const slot = hubData.find(s => s.slotId === tlSlotId) || hubData[hubData.length - 1];
+  if (!slot) return null;
+
+  const hubAccent = HUBS[tlHub].accent;
+
+  // Build the timeline events with clock times
+  // Sequence: cutoff start (range start), road to apt arrival, clearance complete, flight depart, flight land, clearance done, vehicle loaded, road end (delivery)
+  // We'll use the START of slot range for the timeline (most conservative)
+  const events = [];
+  if (slot.blocked) {
+    return (
+      <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 4, padding: 24, color: '#991b1b' }}>
+        <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
+          <DealerPicker DEALERS={DEALERS} tlDealer={tlDealer} setTlDealer={setTlDealer} />
+          <HubPicker tlHub={tlHub} setTlHub={setTlHub} availableHubs={availableHubs} />
+          <SlotPicker sortedSlots={sortedSlots} tlSlotId={tlSlotId} setTlSlotId={setTlSlotId} />
+        </div>
+        <div className="h-display" style={{ fontSize: 22 }}>NO FLIGHT IN SELECTED SLOT</div>
+        <div style={{ marginTop: 6, fontSize: 12 }}>The {fmtTime(slot.slotStart)}–{fmtTime(slot.slotEnd)} slot has 0 flights configured. Pick another slot or add flights to this slot in the inputs panel.</div>
+      </div>
+    );
+  }
+
+  if (slot.same) {
+    // Pure road journey — no flight
+    const startHr = 8; // arbitrary 08:00 start for visualization
+    const t0 = startHr;
+    const t1 = t0 + slot.legs.l1;                                // loading complete
+    const t2 = t1 + slot.legs.l2;                                // truck at "dest" (= hub airport, but really direct to dealer)
+    const t3 = t2 + slot.legs.l6;                                // vehicle loaded (in same-apt case this is just dest load)
+    const t4 = t3 + slot.legs.l7;                                // delivered
+    events.push({ time: t0, label: 'Order received · processing & loading begins', icon: <Package size={14} />, kind: 'start' });
+    events.push({ time: t1, label: 'Order processed & loaded · truck departs warehouse', icon: <Truck size={14} />, kind: 'mid' });
+    events.push({ time: t2, label: 'Truck arrives at dealer area · vehicle handover', icon: <MapPin size={14} />, kind: 'mid' });
+    events.push({ time: t4, label: `Delivered at ${dealer.showroom}`, icon: <Package size={14} />, kind: 'end' });
+  } else {
+    const flightDepart = slot.slotStart;
+    const cutoffStart  = slot.cutoffStart;
+    // Plan working backwards from flight, then forwards from flight
+    const loadStart = cutoffStart - slot.legs.l1;  // when warehouse starts loading
+    let lStart = loadStart; if (lStart < 0) lStart += 24;
+    const loadDone = cutoffStart;                  // loading complete
+    const aptArrive = loadDone + slot.legs.l2;     // truck at origin airport
+    const clearedOrigin = aptArrive + slot.legs.l3; // == flightDepart
+    const flightLand = flightDepart + slot.legs.l5;
+    const clearedDest = flightLand + params.destClear;
+    const vehicleLoaded = clearedDest + params.destLoad;
+    const dealerArrive = vehicleLoaded + slot.legs.l7;
+
+    events.push({ time: lStart, label: `Order received · processing & loading at ${HUBS[tlHub].short} warehouse`, icon: <Package size={14} />, kind: 'start' });
+    events.push({ time: loadDone, label: `Order ready · CUTOFF · truck departs to ${HUBS[tlHub].airportName}`, icon: <Truck size={14} />, kind: 'cutoff' });
+    events.push({ time: aptArrive, label: `Truck arrives at ${HUBS[tlHub].airportName}`, icon: <MapPin size={14} />, kind: 'mid' });
+    events.push({ time: clearedOrigin, label: `Cargo cleared · loaded onto flight`, icon: <Plane size={14} />, kind: 'mid' });
+    events.push({ time: flightDepart, label: `Flight departs ${HUBS[tlHub].airport} → ${slot.destApt}`, icon: <Plane size={14} />, kind: 'flight' });
+    events.push({ time: flightLand, label: `Flight lands at ${slot.destApt}`, icon: <Plane size={14} />, kind: 'flight' });
+    events.push({ time: clearedDest, label: `Destination clearance complete`, icon: <Clock size={14} />, kind: 'mid' });
+    events.push({ time: vehicleLoaded, label: `Vehicle loaded · truck departs to dealer`, icon: <Truck size={14} />, kind: 'mid' });
+    events.push({ time: dealerArrive, label: `DELIVERED at ${dealer.showroom}, ${dealer.city}`, icon: <Package size={14} />, kind: 'end' });
+  }
+
+  // Calculate total span for visualization
+  const minT = events[0].time;
+  const maxT = events[events.length - 1].time;
+  const span = maxT - minT;
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+        <DealerPicker DEALERS={DEALERS} tlDealer={tlDealer} setTlDealer={setTlDealer} />
+        <HubPicker tlHub={tlHub} setTlHub={setTlHub} availableHubs={availableHubs} />
+        <SlotPicker sortedSlots={sortedSlots} tlSlotId={tlSlotId} setTlSlotId={setTlSlotId} />
+      </div>
+
+      {/* Summary card */}
+      <div style={{ background: 'linear-gradient(135deg, #1c1259 0%, #2d2065 100%)', color: 'white', padding: 18, borderRadius: 4, marginBottom: 20 }}>
+        <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.08em', marginBottom: 6 }}>JOURNEY SUMMARY</div>
+        <div className="h-display" style={{ fontSize: 22, marginBottom: 4 }}>{HUBS[tlHub].short.toUpperCase()} → {dealer.showroom.toUpperCase()}</div>
+        <div style={{ fontSize: 12, color: '#d6d1c0', marginBottom: 12 }}>{dealer.city}, {dealer.state} · via {slot.destApt} · {slot.flights} flights in {fmtTime(slot.slotStart)}–{fmtTime(slot.slotEnd)} slot</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+          <div>
+            <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.06em' }}>WAREHOUSE CUTOFF</div>
+            <div className="h-display" style={{ fontSize: 24 }}>{slot.same ? 'road only' : fmtTime(slot.cutoffStart)}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.06em' }}>DEALER DELIVERY</div>
+            <div className="h-display" style={{ fontSize: 24 }}>{slot.same ? '—' : fmtDelivery(slot.deliveryStart)}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.06em' }}>TOTAL TAT</div>
+            <div className="h-display" style={{ fontSize: 24 }}>{fmtHrs(slot.tatHours)}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Horizontal timeline bar */}
+      <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, padding: 24, marginBottom: 16 }}>
+        <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', marginBottom: 14, fontWeight: 600 }}>VISUAL TIMELINE ({fmtHrs(span)} total)</div>
+        <div style={{ position: 'relative', height: 8, background: 'linear-gradient(90deg, #1c1259 0%, #fcd307 100%)', borderRadius: 4, marginBottom: 30 }}>
+          {events.map((e, i) => {
+            const pct = span > 0 ? ((e.time - minT) / span) * 100 : 0;
+            return (
+              <div key={i} style={{ position: 'absolute', left: `${pct}%`, top: -4, width: 16, height: 16, background: e.kind === 'cutoff' ? '#fcd307' : e.kind === 'end' ? '#1c1259' : '#ffffff', border: `2px solid ${e.kind === 'cutoff' ? '#1c1259' : '#1c1259'}`, borderRadius: '50%', transform: 'translateX(-50%)' }} />
+            );
+          })}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#7a7390', letterSpacing: '0.06em' }}>
+          <span>{fmtTime(minT)}</span>
+          <span>{fmtDelivery(maxT)}</span>
+        </div>
+      </div>
+
+      {/* Detailed event list */}
+      <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, padding: 20 }}>
+        <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', marginBottom: 14, fontWeight: 600 }}>STEP-BY-STEP JOURNEY</div>
+        {events.map((e, i) => {
+          const prev = i > 0 ? events[i-1].time : null;
+          const dt = prev != null ? e.time - prev : null;
+          const isKey = e.kind === 'cutoff' || e.kind === 'end' || e.kind === 'start';
+          return (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: i < events.length - 1 ? '1px solid #efece2' : 'none' }}>
+              <div style={{ width: 80, fontVariantNumeric: 'tabular-nums' }}>
+                <div className="h-display" style={{ fontSize: 18, color: isKey ? (e.kind === 'cutoff' ? '#fcd307' : hubAccent) : '#1c1259', fontWeight: 700 }}>{fmtDelivery(e.time)}</div>
+              </div>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: e.kind === 'cutoff' ? '#fcd307' : e.kind === 'end' ? '#1c1259' : e.kind === 'flight' ? '#b8860b' : '#f3f1e8', color: e.kind === 'cutoff' ? '#1c1259' : e.kind === 'mid' ? '#1c1259' : 'white', display: 'grid', placeItems: 'center', flexShrink: 0 }}>{e.icon}</div>
+              <div style={{ flex: 1, fontSize: 12, color: isKey ? '#1c1259' : '#4a4366', fontWeight: isKey ? 700 : 400 }}>
+                {e.label}
+                {e.kind === 'cutoff' && <span style={{ marginLeft: 8, background: '#fcd307', color: '#1c1259', fontSize: 9, padding: '2px 6px', borderRadius: 3, fontWeight: 700, letterSpacing: '0.06em' }}>WAREHOUSE CUTOFF</span>}
+                {e.kind === 'end' && <span style={{ marginLeft: 8, background: '#1c1259', color: '#fcd307', fontSize: 9, padding: '2px 6px', borderRadius: 3, fontWeight: 700, letterSpacing: '0.06em' }}>DELIVERED</span>}
+              </div>
+              {dt != null && (
+                <div style={{ fontSize: 10, color: '#a8a3b8', width: 60, textAlign: 'right' }}>+{dt.toFixed(1)}h</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Note about range */}
+      {!slot.same && (
+        <div style={{ marginTop: 12, padding: 12, background: '#fffbe6', border: '1px solid #fcd307', borderRadius: 4, fontSize: 11, color: '#4a4366' }}>
+          <b style={{ color: '#1c1259' }}>Note:</b> Timeline shown for the <b>start of the slot range</b> ({fmtTime(slot.slotStart)} flight). If the flight goes later in the slot (up to {fmtTime(slot.slotEnd)}), all downstream times shift accordingly — cutoff range is {fmtTime(slot.cutoffStart)}–{fmtTime(slot.cutoffEnd)}, delivery range is {fmtDelivery(slot.deliveryStart)}–{fmtDelivery(slot.deliveryEnd)}.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DealerPicker({ DEALERS, tlDealer, setTlDealer }) {
+  return (
+    <div>
+      <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', marginBottom: 4, textTransform: 'uppercase', fontWeight: 600 }}>Dealer</div>
+      <select value={tlDealer} onChange={e => setTlDealer(+e.target.value)} style={{ minWidth: 240 }}>
+        {DEALERS.map(d => <option key={d.id} value={d.id}>{d.showroom} — {d.city} ({d.code})</option>)}
+      </select>
+    </div>
+  );
+}
+function HubPicker({ tlHub, setTlHub, availableHubs }) {
+  return (
+    <div>
+      <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', marginBottom: 4, textTransform: 'uppercase', fontWeight: 600 }}>From Hub</div>
+      <select value={tlHub} onChange={e => setTlHub(e.target.value)}>
+        {availableHubs.map(h => <option key={h} value={h}>{HUBS[h].name}</option>)}
+      </select>
+    </div>
+  );
+}
+function SlotPicker({ sortedSlots, tlSlotId, setTlSlotId }) {
+  return (
+    <div>
+      <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', marginBottom: 4, textTransform: 'uppercase', fontWeight: 600 }}>Flight Slot</div>
+      <select value={tlSlotId} onChange={e => setTlSlotId(+e.target.value)}>
+        {sortedSlots.map(s => <option key={s.id} value={s.id}>{fmtTime(s.start)}–{fmtTime(s.end)} ({s.flights} flts){s.flights === 0 ? ' BLOCKED' : ''}</option>)}
+      </select>
+    </div>
+  );
+}
+
+// ============ ALL TIMELINES VIEW ============
+// Compact timeline-list for every dealer × every slot, both hubs (or selected)
+function AllTimelinesView({ filtered, sortedSlots, hubSelect, params }) {
+  const [expandedKey, setExpandedKey] = React.useState(null);
+  const [hubInView, setHubInView] = React.useState(hubSelect === 'both' ? 'bhiwandi' : hubSelect);
+
+  // Keep hubInView aligned with hubSelect
+  React.useEffect(() => {
+    if (hubSelect !== 'both' && hubInView !== hubSelect) setHubInView(hubSelect);
+  }, [hubSelect, hubInView]);
+
+  const accent = hubInView === 'bhiwandi' ? '#1c1259' : '#b8860b';
+
+  // For each row, build event list using slot.start as the anchor (most conservative)
+  const buildEvents = (dealer, slot) => {
+    if (!slot || slot.blocked) return null;
+    if (slot.same) {
+      const t0 = 8; // arbitrary start 08:00
+      const t1 = t0 + slot.legs.l1;
+      const t2 = t1 + slot.legs.l2;
+      const t3 = t2 + slot.legs.l6;
+      const t4 = t3 + slot.legs.l7;
+      return [
+        { time: t0, label: 'Order received · processing & loading begins', kind: 'start' },
+        { time: t1, label: 'Order ready · truck departs warehouse', kind: 'cutoff' },
+        { time: t2, label: 'Truck reaches dealer area', kind: 'mid' },
+        { time: t4, label: `Delivered at ${dealer.showroom}`, kind: 'end' },
+      ];
+    }
+    const flightDepart = slot.slotStart;
+    const cutoffStart = slot.cutoffStart;
+    let loadStart = cutoffStart - slot.legs.l1; if (loadStart < 0) loadStart += 24;
+    const loadDone = cutoffStart;
+    const aptArrive = loadDone + slot.legs.l2;
+    const flightDep = aptArrive + slot.legs.l3;
+    const flightLand = flightDep + slot.legs.l5;
+    const clearedDest = flightLand + params.destClear;
+    const vehicleLoaded = clearedDest + params.destLoad;
+    const dealerArrive = vehicleLoaded + slot.legs.l7;
+    return [
+      { time: loadStart, label: 'Order received · processing & loading at warehouse', kind: 'start' },
+      { time: loadDone, label: 'Order ready · CUTOFF · truck departs to airport', kind: 'cutoff' },
+      { time: aptArrive, label: `Reach ${HUBS[hubInView].airportName}`, kind: 'mid' },
+      { time: flightDep, label: `Flight ${HUBS[hubInView].airport} → ${slot.destApt}`, kind: 'flight' },
+      { time: flightLand, label: `Land at ${slot.destApt}`, kind: 'flight' },
+      { time: clearedDest, label: 'Dest clearance complete', kind: 'mid' },
+      { time: vehicleLoaded, label: 'Vehicle loaded · depart to dealer', kind: 'mid' },
+      { time: dealerArrive, label: `Delivered at ${dealer.showroom}`, kind: 'end' },
+    ];
+  };
+
+  return (
+    <div>
+      {/* Local controls */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'center', flexWrap: 'wrap', padding: 12, background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4 }}>
+        <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600 }}>Showing timelines from:</div>
+        {hubSelect === 'both' ? (
+          <div className="hubseg" style={{ padding: 3 }}>
+            <button onClick={() => setHubInView('bhiwandi')} className={hubInView === 'bhiwandi' ? 'active bhiwandi' : ''} style={{ padding: '4px 12px', fontSize: 10 }}>BOM Hub</button>
+            <button onClick={() => setHubInView('sriperumbudur')} className={hubInView === 'sriperumbudur' ? 'active sriperumbudur' : ''} style={{ padding: '4px 12px', fontSize: 10 }}>MAA Hub</button>
+          </div>
+        ) : (
+          <span className="pill" style={{ background: accent, color: hubInView === 'bhiwandi' ? '#fcd307' : '#ffffff' }}>{HUBS[hubInView].name}</span>
+        )}
+        <div style={{ fontSize: 10, color: '#7a7390', marginLeft: 'auto' }}>{filtered.length} dealers × {sortedSlots.length} slots = {filtered.length * sortedSlots.length} timelines</div>
+      </div>
+
+      {filtered.map(r => {
+        const hubData = r[hubInView];
+        return (
+          <div key={r.dealer.id} style={{ marginBottom: 16, background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, overflow: 'hidden' }}>
+            {/* Dealer header */}
+            <div style={{ padding: '12px 16px', background: '#f3f1e8', borderBottom: '1px solid #e5e2d8', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <div style={{ width: 32, height: 32, background: accent, color: hubInView === 'bhiwandi' ? '#fcd307' : '#ffffff', display: 'grid', placeItems: 'center', borderRadius: 4, fontWeight: 800, fontSize: 11 }}>{r.dealer.id}</div>
+              <div>
+                <div style={{ color: '#1c1259', fontWeight: 700, fontSize: 14 }}>{r.dealer.showroom}</div>
+                <div style={{ fontSize: 10, color: '#7a7390' }}>{r.dealer.city}, {r.dealer.state} · PIN {r.dealer.pin} · via {hubData[0]?.destApt}</div>
+              </div>
+              <div style={{ marginLeft: 'auto', fontSize: 10, color: '#7a7390', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{r.dealer.code}</div>
+            </div>
+
+            {/* Per-slot timeline strips */}
+            <div>
+              {hubData.map(slot => {
+                const key = `${r.dealer.id}-${slot.slotId}-${hubInView}`;
+                const isExp = expandedKey === key;
+                const events = buildEvents(r.dealer, slot);
+
+                if (slot.blocked) {
+                  return (
+                    <div key={slot.slotId} style={{ padding: '12px 16px', borderTop: '1px solid #efece2', background: '#fef2f2', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                      <div style={{ width: 100, fontSize: 11, color: '#991b1b', fontWeight: 700 }}>{fmtTime(slot.slotStart)}–{fmtTime(slot.slotEnd)}</div>
+                      <div style={{ flex: 1, fontSize: 11, color: '#991b1b', fontWeight: 700, letterSpacing: '0.04em' }}>NO FLIGHT IN THIS SLOT</div>
+                      <div style={{ fontSize: 10, color: '#7a7390' }}>{slot.flights} flights</div>
+                    </div>
+                  );
+                }
+
+                const startT = events[0].time;
+                const endT = events[events.length - 1].time;
+                const span = endT - startT;
+
+                return (
+                  <div key={slot.slotId} style={{ borderTop: '1px solid #efece2' }}>
+                    {/* Compact row */}
+                    <div onClick={() => setExpandedKey(isExp ? null : key)} style={{ padding: '14px 16px', cursor: 'pointer', display: 'grid', gridTemplateColumns: '100px 100px 1fr 110px 90px', gap: 14, alignItems: 'center' }} className="row-hover">
+                      {/* Slot */}
+                      <div>
+                        <div style={{ fontSize: 11, color: '#4a4366', fontWeight: 700 }}>{fmtTime(slot.slotStart)}–{fmtTime(slot.slotEnd)}</div>
+                        <div style={{ fontSize: 9, color: '#7a7390' }}>{slot.flights} flights</div>
+                      </div>
+                      {/* Cutoff */}
+                      <div>
+                        <div style={{ fontSize: 9, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Cutoff</div>
+                        <div className="h-display" style={{ fontSize: 16, color: accent }}>{slot.same ? 'road' : fmtTime(slot.cutoffStart)}</div>
+                        {!slot.same && <div style={{ fontSize: 9, color: '#a8a3b8' }}>to {fmtTime(slot.cutoffEnd)}</div>}
+                      </div>
+                      {/* Mini horizontal timeline */}
+                      <div>
+                        <div style={{ position: 'relative', height: 6, background: `linear-gradient(90deg, ${accent} 0%, #fcd307 100%)`, borderRadius: 3 }}>
+                          {events.map((e, i) => {
+                            const pct = span > 0 ? ((e.time - startT) / span) * 100 : 0;
+                            return (
+                              <div key={i} style={{ position: 'absolute', left: `${pct}%`, top: -3, width: 12, height: 12, background: e.kind === 'cutoff' ? '#fcd307' : e.kind === 'end' ? accent : '#ffffff', border: `2px solid ${accent}`, borderRadius: '50%', transform: 'translateX(-50%)' }} title={`${fmtDelivery(e.time)} — ${e.label}`} />
+                            );
+                          })}
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#7a7390', marginTop: 4, letterSpacing: '0.04em' }}>
+                          <span>{fmtTime(startT)}</span>
+                          <span>{fmtDelivery(endT)}</span>
+                        </div>
+                      </div>
+                      {/* Delivery */}
+                      <div>
+                        <div style={{ fontSize: 9, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Delivery</div>
+                        <div className="h-display" style={{ fontSize: 16, color: '#1c1259' }}>{slot.same ? '—' : fmtDelivery(slot.deliveryStart)}</div>
+                        {!slot.same && <div style={{ fontSize: 9, color: '#a8a3b8' }}>to {fmtDelivery(slot.deliveryEnd)}</div>}
+                      </div>
+                      {/* TAT */}
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: 9, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase' }}>TAT</div>
+                        <div className="h-display" style={{ fontSize: 18, color: accent }}>{fmtHrs(slot.tatHours)}</div>
+                        <div style={{ fontSize: 9, color: '#a8a3b8' }}>{isExp ? 'click to collapse' : 'click for steps'}</div>
+                      </div>
+                    </div>
+
+                    {/* Expanded step-by-step */}
+                    {isExp && (
+                      <div style={{ padding: '16px 24px 20px 24px', background: '#faf9f5', borderTop: '1px dashed #e5e2d8' }}>
+                        <div style={{ fontSize: 9, color: '#7a7390', letterSpacing: '0.06em', marginBottom: 10, fontWeight: 600 }}>STEP-BY-STEP JOURNEY</div>
+                        {events.map((e, i) => {
+                          const prev = i > 0 ? events[i-1].time : null;
+                          const dt = prev != null ? e.time - prev : null;
+                          const isKey = e.kind === 'cutoff' || e.kind === 'end' || e.kind === 'start';
+                          return (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '6px 0', borderBottom: i < events.length - 1 ? '1px solid #efece2' : 'none' }}>
+                              <div style={{ width: 72, fontVariantNumeric: 'tabular-nums' }}>
+                                <div className="h-display" style={{ fontSize: 14, color: e.kind === 'cutoff' ? '#b8860b' : isKey ? accent : '#4a4366', fontWeight: 700 }}>{fmtDelivery(e.time)}</div>
+                              </div>
+                              <div style={{ width: 20, height: 20, borderRadius: '50%', background: e.kind === 'cutoff' ? '#fcd307' : e.kind === 'end' ? accent : e.kind === 'flight' ? '#b8860b' : '#f3f1e8', display: 'grid', placeItems: 'center', flexShrink: 0, fontSize: 10, color: e.kind === 'mid' ? '#1c1259' : 'white' }}>•</div>
+                              <div style={{ flex: 1, fontSize: 11, color: isKey ? '#1c1259' : '#4a4366', fontWeight: isKey ? 700 : 400 }}>
+                                {e.label}
+                                {e.kind === 'cutoff' && <span style={{ marginLeft: 8, background: '#fcd307', color: '#1c1259', fontSize: 8, padding: '2px 5px', borderRadius: 2, fontWeight: 700, letterSpacing: '0.06em' }}>WH CUTOFF</span>}
+                                {e.kind === 'end' && <span style={{ marginLeft: 8, background: accent, color: hubInView === 'bhiwandi' ? '#fcd307' : '#ffffff', fontSize: 8, padding: '2px 5px', borderRadius: 2, fontWeight: 700, letterSpacing: '0.06em' }}>DELIVERED</span>}
+                              </div>
+                              {dt != null && <div style={{ fontSize: 9, color: '#a8a3b8', width: 50, textAlign: 'right' }}>+{dt.toFixed(1)}h</div>}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ============ CITIES VIEW ============
+// Aggregates dealers by city, sorted by count desc.
+// Click a city to expand and see its dealers + per-hub TAT summary.
+function CitiesView({ filtered }) {
+  const [expandedCity, setExpandedCity] = useState(null);
+
+  const cities = useMemo(() => {
+    const byCity = {};
+    filtered.forEach(r => {
+      const key = r.dealer.city;
+      if (!byCity[key]) {
+        byCity[key] = {
+          city: r.dealer.city,
+          state: r.dealer.state,
+          destApt: r.bhiwandi[0]?.destApt || '—',
+          destAptName: r.bhiwandi[0]?.destAptName || '—',
+          dealers: [],
+          bhiwandiTotalHrs: 0, bhiwandiCount: 0, bhiwandiBlocked: 0,
+          sripTotalHrs: 0, sripCount: 0, sripBlocked: 0,
+        };
+      }
+      const c = byCity[key];
+      c.dealers.push(r);
+      // Use the latest slot (last of the sorted) — typically the most relevant cutoff
+      const b = r.bhiwandi[r.bhiwandi.length - 1];
+      const s = r.sriperumbudur[r.sriperumbudur.length - 1];
+      if (b) {
+        if (b.blocked) c.bhiwandiBlocked++;
+        else if (b.tatHours != null) { c.bhiwandiTotalHrs += b.tatHours; c.bhiwandiCount++; }
+      }
+      if (s) {
+        if (s.blocked) c.sripBlocked++;
+        else if (s.tatHours != null) { c.sripTotalHrs += s.tatHours; c.sripCount++; }
+      }
+    });
+    return Object.values(byCity)
+      .map(c => ({
+        ...c,
+        count: c.dealers.length,
+        avgB: c.bhiwandiCount ? c.bhiwandiTotalHrs / c.bhiwandiCount : null,
+        avgS: c.sripCount ? c.sripTotalHrs / c.sripCount : null,
+      }))
+      .sort((a, b) => b.count - a.count || a.city.localeCompare(b.city));
+  }, [filtered]);
+
+  const totalDealers = filtered.length;
+  const totalCities = cities.length;
+
+  return (
+    <div>
+      {/* Header summary */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 16 }}>
+        <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, padding: 14 }}>
+          <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Cities</div>
+          <div className="h-display" style={{ fontSize: 28, color: '#1c1259', fontWeight: 700, marginTop: 4, lineHeight: 1 }}>{totalCities}</div>
+          <div style={{ fontSize: 10, color: '#a8a3b8', marginTop: 4 }}>covered by network</div>
+        </div>
+        <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, padding: 14 }}>
+          <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Dealers</div>
+          <div className="h-display" style={{ fontSize: 28, color: '#1c1259', fontWeight: 700, marginTop: 4, lineHeight: 1 }}>{totalDealers}</div>
+          <div style={{ fontSize: 10, color: '#a8a3b8', marginTop: 4 }}>total locations</div>
+        </div>
+        <div style={{ background: '#1c1259', borderRadius: 4, padding: 14, color: '#fcd307' }}>
+          <div style={{ fontSize: 10, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Top city</div>
+          <div className="h-display" style={{ fontSize: 24, color: 'white', fontWeight: 700, marginTop: 4, lineHeight: 1 }}>{cities[0]?.city || '—'}</div>
+          <div style={{ fontSize: 10, color: '#fcd307', marginTop: 4 }}>{cities[0]?.count} dealer{cities[0]?.count === 1 ? '' : 's'}</div>
+        </div>
+      </div>
+
+      {/* Cities table */}
+      <div style={{ border: '1px solid #e5e2d8', borderRadius: 4, overflow: 'hidden', background: '#ffffff' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: '#f3f1e8', borderBottom: '2px solid #1c1259' }}>
+              <th style={{ ...th, width: 40 }}>#</th>
+              <th style={th}>City</th>
+              <th style={th}>State</th>
+              <th style={{ ...th, textAlign: 'right' }}>Dealers</th>
+              <th style={{ ...th, textAlign: 'center' }}>Dest Airport</th>
+              <th style={{ ...th, textAlign: 'right', color: '#1c1259' }}>BOM avg TAT</th>
+              <th style={{ ...th, textAlign: 'right', color: '#b8860b' }}>MAA avg TAT</th>
+              <th style={{ ...th, width: 24 }}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {cities.map((c, i) => {
+              const isExp = expandedCity === c.city;
+              const maxCount = cities[0]?.count || 1;
+              const barPct = (c.count / maxCount) * 100;
+              return (
+                <React.Fragment key={c.city}>
+                  <tr className="row-hover" style={{ borderBottom: '1px solid #efece2', cursor: 'pointer' }} onClick={() => setExpandedCity(isExp ? null : c.city)}>
+                    <td style={{ ...td, color: '#a8a3b8' }}>{i + 1}</td>
+                    <td style={td}>
+                      <div style={{ color: '#1c1259', fontWeight: 700, fontSize: 14 }}>{c.city}</div>
+                    </td>
+                    <td style={{ ...td, color: '#4a4366', fontSize: 11 }}>{c.state}</td>
+                    <td style={{ ...td, textAlign: 'right' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-end' }}>
+                        <div style={{ width: 80, height: 6, background: '#f3f1e8', borderRadius: 3, overflow: 'hidden' }}>
+                          <div style={{ width: `${barPct}%`, height: '100%', background: '#fcd307' }} />
+                        </div>
+                        <div className="h-display" style={{ fontSize: 18, color: '#1c1259', fontWeight: 700, minWidth: 20, textAlign: 'right' }}>{c.count}</div>
+                      </div>
+                    </td>
+                    <td style={{ ...td, textAlign: 'center' }}>
+                      <span className="pill" style={{ background: '#f3f1e8', color: '#1c1259' }}>{c.destApt}</span>
+                    </td>
+                    <td style={{ ...td, textAlign: 'right', color: '#1c1259', fontWeight: 700 }}>
+                      {c.avgB != null ? fmtHrs(c.avgB) : <span style={{ color: '#991b1b', fontSize: 10 }}>BLOCKED</span>}
+                    </td>
+                    <td style={{ ...td, textAlign: 'right', color: '#b8860b', fontWeight: 700 }}>
+                      {c.avgS != null ? fmtHrs(c.avgS) : <span style={{ color: '#991b1b', fontSize: 10 }}>BLOCKED</span>}
+                    </td>
+                    <td style={{ ...td, textAlign: 'center', color: '#a8a3b8' }}>{isExp ? '▾' : '▸'}</td>
+                  </tr>
+                  {isExp && (
+                    <tr style={{ background: '#faf9f5' }}>
+                      <td colSpan={8} style={{ padding: 16, borderBottom: '1px solid #e5e2d8' }}>
+                        <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 10 }}>
+                          {c.count} dealer{c.count === 1 ? '' : 's'} in {c.city}
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
+                          {c.dealers.map(r => (
+                            <div key={r.dealer.id} style={{ padding: 10, background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4 }}>
+                              <div style={{ fontSize: 12, color: '#1c1259', fontWeight: 700 }}>{r.dealer.showroom}</div>
+                              <div style={{ fontSize: 10, color: '#7a7390', marginTop: 2 }}>{r.dealer.name}</div>
+                              <div style={{ fontSize: 10, color: '#a8a3b8', marginTop: 2 }}>{r.dealer.code} · PIN {r.dealer.pin}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// ============ SLOTS × FLIGHTS VIEW ============
+// Dealer × slot matrix showing flight counts per route per slot.
+// Editable: tap any cell to override the ROUTE_FLIGHTS preset.
+function FlightsView({ filtered, sortedSlots, routeFlightOverrides, setRouteFlightOverrides, showB, showS }) {
+  const [editing, setEditing] = useState(null);     // overrideKey being edited
+  const [editVal, setEditVal] = useState('');
+
+  const startEdit = (overrideKey, currentVal) => {
+    setEditing(overrideKey);
+    setEditVal(String(currentVal));
+  };
+  const commitEdit = () => {
+    if (editing == null) return;
+    const n = parseInt(editVal);
+    if (!isNaN(n) && n >= 0) {
+      setRouteFlightOverrides(prev => ({ ...prev, [editing]: n }));
+    }
+    setEditing(null); setEditVal('');
+  };
+  const cancelEdit = () => { setEditing(null); setEditVal(''); };
+
+  const resetAll = () => {
+    if (window.confirm('Reset all flight count overrides to defaults?')) {
+      setRouteFlightOverrides({});
+    }
+  };
+
+  // Compute presented value for a (hub, dest, slotIndex)
+  const getCount = (originAirport, destApt, slotIndex) => {
+    const routeKey = `${originAirport}-${destApt}`;
+    const overrideKey = `${routeKey}-${slotIndex}`;
+    if (routeFlightOverrides[overrideKey] != null) return { val: routeFlightOverrides[overrideKey], overridden: true };
+    if (ROUTE_FLIGHTS[routeKey] === 'same') return { val: 0, same: true };
+    if (Array.isArray(ROUTE_FLIGHTS[routeKey])) return { val: ROUTE_FLIGHTS[routeKey][slotIndex] ?? 0, preset: true };
+    return { val: 0 };
+  };
+
+  const totalForRoute = (originAirport, destApt) => {
+    let sum = 0;
+    for (let i = 0; i < sortedSlots.length; i++) {
+      const { val } = getCount(originAirport, destApt, i);
+      sum += val;
+    }
+    return sum;
+  };
+
+  const cellStyle = (info) => {
+    if (info.same) return { background: '#f3f1e8', color: '#7a7390', fontStyle: 'italic' };
+    if (info.val === 0) return { background: '#fef2f2', color: '#991b1b' };
+    if (info.val >= 4) return { background: '#dcfce7', color: '#166534', fontWeight: 700 };
+    if (info.val >= 2) return { background: '#fef9c3', color: '#854d0e', fontWeight: 600 };
+    return { background: '#fff7ed', color: '#9a3412', fontWeight: 600 };
+  };
+
+  const hasOverrides = Object.keys(routeFlightOverrides).length > 0;
+
+  return (
+    <div>
+      {/* Header summary */}
+      <div style={{ background: '#1c1259', borderRadius: 4, padding: 14, marginBottom: 16, color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600 }}>Flights per Slot</div>
+          <div style={{ fontSize: 12, marginTop: 4, color: '#d6d1c0' }}>Per-route flight count for each time slot. Click any number to edit.</div>
+        </div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {hasOverrides && (
+            <span style={{ fontSize: 10, padding: '4px 10px', background: 'rgba(252,211,7,0.18)', border: '1px solid rgba(252,211,7,0.4)', color: '#fcd307', borderRadius: 4, fontWeight: 600 }}>
+              {Object.keys(routeFlightOverrides).length} edits
+            </span>
+          )}
+          <button onClick={resetAll} disabled={!hasOverrides} className="btn" style={{ fontSize: 10, opacity: hasOverrides ? 1 : 0.4 }}>Reset all</button>
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div style={{ display: 'flex', gap: 14, marginBottom: 12, fontSize: 10, color: '#7a7390', flexWrap: 'wrap' }}>
+        <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#dcfce7', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>≥ 4 flights (high)</span>
+        <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#fef9c3', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>2-3 flights (moderate)</span>
+        <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#fff7ed', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>1 flight (sparse)</span>
+        <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#fef2f2', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>No flight (blocked)</span>
+        <span><span style={{ display: 'inline-block', width: 10, height: 10, background: '#f3f1e8', borderRadius: 2, verticalAlign: 'middle', marginRight: 4 }}/>Same airport (road)</span>
+      </div>
+
+      {/* Table */}
+      <div style={{ border: '1px solid #e5e2d8', borderRadius: 4, overflow: 'auto', background: '#ffffff' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+          <thead>
+            <tr style={{ background: '#f3f1e8', borderBottom: '2px solid #1c1259' }}>
+              <th rowSpan={2} style={{ ...th, textAlign: 'left', minWidth: 200 }}>Dealer</th>
+              <th rowSpan={2} style={{ ...th, textAlign: 'center', width: 60 }}>Dest APT</th>
+              {showB && <th colSpan={sortedSlots.length + 1} style={{ ...th, textAlign: 'center', background: '#1c1259', color: 'white', borderRight: '1px solid #e5e2d8' }}>BOM Hub</th>}
+              {showS && <th colSpan={sortedSlots.length + 1} style={{ ...th, textAlign: 'center', background: '#b8860b', color: 'white' }}>MAA Hub</th>}
+            </tr>
+            <tr style={{ background: '#f3f1e8', borderBottom: '2px solid #1c1259' }}>
+              {showB && sortedSlots.map(s => <th key={`bh-${s.id}`} style={{ ...th, textAlign: 'center', fontSize: 10, padding: '6px 4px' }}>{fmtTime(s.start)}–{fmtTime(s.end)}</th>)}
+              {showB && <th style={{ ...th, textAlign: 'center', fontSize: 10, background: '#e9e5d3', borderRight: '1px solid #e5e2d8' }}>Day Σ</th>}
+              {showS && sortedSlots.map(s => <th key={`sh-${s.id}`} style={{ ...th, textAlign: 'center', fontSize: 10, padding: '6px 4px' }}>{fmtTime(s.start)}–{fmtTime(s.end)}</th>)}
+              {showS && <th style={{ ...th, textAlign: 'center', fontSize: 10, background: '#e9e5d3' }}>Day Σ</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(r => {
+              const destApt = r.dealer ? (CITY_AIRPORT[r.dealer.city]?.code || '—') : '—';
+              const bTotal = totalForRoute('BOM', destApt);
+              const sTotal = totalForRoute('MAA', destApt);
+
+              const renderCell = (originAirport, slotIndex) => {
+                const info = getCount(originAirport, destApt, slotIndex);
+                const overrideKey = `${originAirport}-${destApt}-${slotIndex}`;
+                const isEditing = editing === overrideKey;
+                return (
+                  <td key={overrideKey} style={{ ...td, textAlign: 'center', padding: 4, ...cellStyle(info) }}>
+                    {isEditing ? (
+                      <input
+                        type="number" min="0" max="50" autoFocus
+                        value={editVal}
+                        onChange={e => setEditVal(e.target.value)}
+                        onBlur={commitEdit}
+                        onKeyDown={e => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') cancelEdit(); }}
+                        style={{ width: 40, padding: '2px 4px', fontSize: 11, textAlign: 'center', border: '2px solid #1c1259', background: 'white', color: '#1c1259' }}
+                      />
+                    ) : info.same ? (
+                      <span style={{ fontSize: 9 }}>road</span>
+                    ) : (
+                      <button
+                        onClick={() => startEdit(overrideKey, info.val)}
+                        title={info.overridden ? 'Custom value (click to edit)' : 'Preset (click to override)'}
+                        style={{ width: '100%', minWidth: 32, padding: '4px 6px', background: 'transparent', border: info.overridden ? '1.5px dashed #1c1259' : 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 11, fontWeight: 'inherit', color: 'inherit' }}
+                      >
+                        {info.val}
+                      </button>
+                    )}
+                  </td>
+                );
+              };
+
+              return (
+                <tr key={r.dealer.id} style={{ borderBottom: '1px solid #efece2' }}>
+                  <td style={{ ...td, fontWeight: 600, color: '#1c1259' }}>
+                    <div style={{ fontSize: 12 }}>{r.dealer.showroom}</div>
+                    <div style={{ fontSize: 9, color: '#7a7390', fontWeight: 400 }}>{r.dealer.city}, {r.dealer.state}</div>
+                  </td>
+                  <td style={{ ...td, textAlign: 'center' }}>
+                    <span className="pill" style={{ background: '#f3f1e8', color: '#1c1259' }}>{destApt}</span>
+                  </td>
+                  {showB && sortedSlots.map((s, idx) => renderCell('BOM', idx))}
+                  {showB && (
+                    <td style={{ ...td, textAlign: 'center', background: '#faf9f5', borderRight: '1px solid #e5e2d8', fontWeight: 700, color: '#1c1259' }}>
+                      {bTotal > 0 ? bTotal : '—'}
+                    </td>
+                  )}
+                  {showS && sortedSlots.map((s, idx) => renderCell('MAA', idx))}
+                  {showS && (
+                    <td style={{ ...td, textAlign: 'center', background: '#faf9f5', fontWeight: 700, color: '#b8860b' }}>
+                      {sTotal > 0 ? sTotal : '—'}
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ marginTop: 10, fontSize: 10, color: '#7a7390', lineHeight: 1.5 }}>
+        <b>Source:</b> Realistic India-aviation defaults. Each cell is the typical number of flights per day in that slot on that route. Dashed border = manually overridden. Click any cell to enter actual data from your logistics partner or live API.
+      </div>
+    </div>
+  );
+}
