@@ -192,33 +192,41 @@ const anchorTime = (slot, mode) => {
 };
 
 // ============ CALCULATION ============
-function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes) {
+function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours) {
   const city = CITY_AIRPORT[dealer.city];
   if (!city) return null;
   const hub = HUBS[hubKey];
   const destApt = city.code;
 
-  // Distance: per-dealer override > live drive_times.json > DEALER_KM static > city default
-  let km;
-  let driveHrs = null;
-  if (kmOverride != null) {
-    km = kmOverride;
-  } else if (liveDriveTimes && liveDriveTimes[dealer.id]) {
-    km = liveDriveTimes[dealer.id].km;
-    driveHrs = liveDriveTimes[dealer.id].hours;
-  } else if (DEALER_KM[dealer.id] != null) {
-    km = DEALER_KM[dealer.id];
+  // Distance + drive hours: Google Routes data is the source of truth.
+  // If the user overrides km, scale Google hours proportionally to stay realistic.
+  const live = liveDriveTimes && liveDriveTimes[dealer.id];
+  const liveKm  = live ? live.km    : null;
+  const liveHrs = live ? live.hours : null;
+  const km = kmOverride != null
+    ? kmOverride
+    : (liveKm != null ? liveKm : (DEALER_KM[dealer.id] != null ? DEALER_KM[dealer.id] : city.km));
+  let driveHrs;
+  if (liveHrs != null) {
+    driveHrs = (kmOverride != null && liveKm > 0)
+      ? liveHrs * (kmOverride / liveKm)
+      : liveHrs;
   } else {
-    km = city.km;
+    driveHrs = null;
   }
 
-  const flightHrs = flightOverride != null ? flightOverride : FLIGHT_HRS[hub.airport][destApt];
   const same = hub.airport === destApt;
   const hubHrs = params[`${hubKey}HubHrs`];
+  const routeKey = `${hub.airport}-${destApt}`;
+
+  // Flight duration: user override > live AeroAPI 7-day avg > hardcoded FLIGHT_HRS
+  const liveFh = liveFlightHours && liveFlightHours[routeKey];
+  const flightHrs = flightOverride != null
+    ? flightOverride
+    : (liveFh != null ? liveFh : FLIGHT_HRS[hub.airport][destApt]);
 
   // Per-route per-slot flight count.
   // Priority: user override > live AeroAPI data > hardcoded ROUTE_FLIGHTS preset > 0
-  const routeKey = `${hub.airport}-${destApt}`;
   let routeFlightCount;
   const overrideKey = `${routeKey}-${slotIndex}`;
   if (routeFlightOverrides && routeFlightOverrides[overrideKey] != null) {
@@ -238,8 +246,8 @@ function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOver
   // Time used for the math (within the slot range)
   const flightTime = anchorTime(slot, anchorMode);
 
-  // Airport → dealer drive time: use real Google Routes hours when available, else km / roadSpeed estimate
-  const dealerDriveHrs = driveHrs != null ? driveHrs : (km / params.roadSpeed);
+  // Airport → dealer drive time: prefer real Google Routes hours; fallback ~25 km/h average if missing
+  const dealerDriveHrs = driveHrs != null ? driveHrs : (km / 25);
 
   const preFlight = params.whLoad + hubHrs + (same ? 0 : params.originClear);
   const postFlight = (same ? 0 : params.destClear) + params.destLoad + dealerDriveHrs;
@@ -301,18 +309,17 @@ function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOver
   };
 }
 
-function calcAllSlots(dealer, hubKey, params, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes) {
+function calcAllSlots(dealer, hubKey, params, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours) {
   const sorted = [...params.slots].sort((a,b) => a.start - b.start);
   return sorted.map((s, idx) => ({
     slotId: s.id, slotStart: s.start, slotEnd: s.end,
-    ...calcForSlot(dealer, hubKey, params, s, idx, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes)
+    ...calcForSlot(dealer, hubKey, params, s, idx, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours)
   })).filter(r => r.destApt);
 }
 
 // ============ MAIN ============
 function Dashboard() {
   const [params, setParams] = useState({
-    roadSpeed: 20,
     whLoad: 1.0,
     originClear: 2.0,
     destClear: 1.5,
@@ -341,6 +348,8 @@ function Dashboard() {
 
   // Live data loaded from /data/*.json at startup (overrides hardcoded defaults when present)
   const [liveRouteFlights, setLiveRouteFlights] = useState(null);
+  const [liveFlightHours, setLiveFlightHours] = useState(null);
+  const [liveRouteMeta, setLiveRouteMeta] = useState(null);
   const [liveDriveTimes, setLiveDriveTimes] = useState(null);
   const [dataLoaded, setDataLoaded] = useState({ flights: false, drives: false, flightsErr: null, drivesErr: null });
 
@@ -351,15 +360,27 @@ function Dashboard() {
       .then(json => {
         // Convert AeroAPI output { routes: { 'BOM-DEL': { slots: [{flights:10}, ...] } } } to ROUTE_FLIGHTS shape
         const flat = {};
+        const hours = {};
+        const meta = {};
         if (json.routes) {
           for (const [key, r] of Object.entries(json.routes)) {
             if (r.same_airport) { flat[key] = 'same'; continue; }
             if (Array.isArray(r.slots)) {
               flat[key] = r.slots.map(s => s.rounded_avg ?? s.flights ?? 0);
             }
+            if (r.avg_flight_hours != null) hours[key] = r.avg_flight_hours;
+            meta[key] = {
+              frequency:     r.frequency,
+              frequencyNote: r.frequency_note,
+              daysObserved:  r.days_observed,
+              daysWindow:    r.days_window,
+              avgFlightHrs:  r.avg_flight_hours
+            };
           }
         }
         setLiveRouteFlights(flat);
+        setLiveFlightHours(hours);
+        setLiveRouteMeta(meta);
         setDataLoaded(d => ({ ...d, flights: true }));
       })
       .catch(e => setDataLoaded(d => ({ ...d, flightsErr: String(e) })));
@@ -389,10 +410,10 @@ function Dashboard() {
     const ov = overrides[d.id] || {};
     return {
       dealer: d,
-      bhiwandi: calcAllSlots(d, 'bhiwandi', params, anchorMode, ov.km, ov.flightBom, routeFlightOverrides, liveRouteFlights, liveDriveTimes),
-      sriperumbudur: calcAllSlots(d, 'sriperumbudur', params, anchorMode, ov.km, ov.flightMaa, routeFlightOverrides, liveRouteFlights, liveDriveTimes)
+      bhiwandi: calcAllSlots(d, 'bhiwandi', params, anchorMode, ov.km, ov.flightBom, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours),
+      sriperumbudur: calcAllSlots(d, 'sriperumbudur', params, anchorMode, ov.km, ov.flightMaa, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours)
     };
-  }), [params, overrides, anchorMode, routeFlightOverrides, liveRouteFlights, liveDriveTimes]);
+  }), [params, overrides, anchorMode, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours]);
 
   const filtered = useMemo(() => results.filter(r => {
     if (search) {
@@ -611,11 +632,6 @@ Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and 
               {showS && (
                 <Field label="Sriperumbudur → MAA" value={params.sriperumbudurHubHrs} onChange={v => updateParam('sriperumbudurHubHrs', +v)} type="number" step="0.25" min="0" />
               )}
-            </Section>
-
-            <Section title="Dealer-Side Road Speed">
-              <Field label="Speed (km/hr) for dest airport → dealer" value={params.roadSpeed} onChange={v => updateParam('roadSpeed', +v)} type="number" step="1" min="5" max="80" />
-              <div style={{ fontSize: 10, color: '#7a7390', marginTop: 4 }}>= {(params.roadSpeed * 2).toFixed(0)} km per 2 hrs · applies to per-dealer airport-to-showroom distances</div>
             </Section>
 
             <Section title="Time Buffers (hours)">
