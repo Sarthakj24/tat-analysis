@@ -735,15 +735,6 @@ Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and 
                 </div>
               ))}
             </Section>
-
-            <Section title="Time Anchor Within Slot">
-              <div style={{ fontSize: 10, color: '#7a7390', marginBottom: 6 }}>For single-point math (Cutoff/Delivery shown as time, not range)</div>
-              <select value={anchorMode} onChange={e => setAnchorMode(e.target.value)} style={{ width: '100%' }}>
-                <option value="start">Start of slot (most conservative cutoff)</option>
-                <option value="mid">Midpoint of slot</option>
-                <option value="end">End of slot (latest cutoff)</option>
-              </select>
-            </Section>
           </aside>
         )}
 
@@ -1694,52 +1685,68 @@ function AllTimelinesView({ filtered, sortedSlots, hubSelect, params }) {
                         {slot.mode === 'road_only' && <div style={{ fontSize: 9, color: '#9a3412' }}>by road</div>}
                       </div>
                       {/* Mini horizontal timeline with point labels + inter-point durations */}
-                      <div>
-                        {/* Top row: per-point short labels */}
-                        <div style={{ position: 'relative', height: 14, marginBottom: 2 }}>
-                          {events.map((e, i) => {
-                            const pct = span > 0 ? ((e.time - startT) / span) * 100 : 0;
-                            return (
-                              <div key={i} style={{ position: 'absolute', left: `${pct}%`, transform: 'translateX(-50%)', fontSize: 8, fontWeight: 700, color: e.kind === 'cutoff' ? '#b8860b' : e.kind === 'end' ? accent : e.kind === 'flight' ? '#b8860b' : '#4a4366', letterSpacing: '0.04em', whiteSpace: 'nowrap', textAlign: 'center' }}>
-                                {e.short}
-                              </div>
-                            );
-                          })}
-                        </div>
-                        {/* The bar itself with dots */}
-                        <div style={{ position: 'relative', height: 6, background: `linear-gradient(90deg, ${accent} 0%, #fcd307 100%)`, borderRadius: 3 }}>
-                          {events.map((e, i) => {
-                            const pct = span > 0 ? ((e.time - startT) / span) * 100 : 0;
-                            return (
-                              <div key={i} style={{ position: 'absolute', left: `${pct}%`, top: -3, width: 12, height: 12, background: e.kind === 'cutoff' ? '#fcd307' : e.kind === 'end' ? accent : '#ffffff', border: `2px solid ${accent}`, borderRadius: '50%', transform: 'translateX(-50%)' }} title={`${fmtDelivery(e.time)} — ${e.label}`} />
-                            );
-                          })}
-                        </div>
-                        {/* Time markers under each dot */}
-                        <div style={{ position: 'relative', height: 12, marginTop: 4 }}>
-                          {events.map((e, i) => {
-                            const pct = span > 0 ? ((e.time - startT) / span) * 100 : 0;
-                            return (
-                              <div key={i} style={{ position: 'absolute', left: `${pct}%`, transform: 'translateX(-50%)', fontSize: 8, color: '#7a7390', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
-                                {fmtDelivery(e.time)}
-                              </div>
-                            );
-                          })}
-                        </div>
-                        {/* Inter-point durations (rendered in the gap below) */}
-                        <div style={{ position: 'relative', height: 12, marginTop: 2 }}>
-                          {events.slice(1).map((e, i) => {
-                            const prev = events[i];
-                            const midPct = span > 0 ? (((e.time + prev.time) / 2 - startT) / span) * 100 : 0;
-                            const dt = e.time - prev.time;
-                            return (
-                              <div key={i} style={{ position: 'absolute', left: `${midPct}%`, transform: 'translateX(-50%)', fontSize: 8, color: '#a8a3b8', fontStyle: 'italic', whiteSpace: 'nowrap' }}>
-                                +{dt.toFixed(1)}h
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
+                      {(() => {
+                        // Compute positions and assign vertical rows to avoid collisions.
+                        // If two consecutive labels are < 9% of span apart, stagger them.
+                        const COLLISION_PCT = 9;
+                        let lastRow = 0;
+                        const ev = events.map((e, i) => {
+                          const pct = span > 0 ? ((e.time - startT) / span) * 100 : 0;
+                          let row = 0;
+                          if (i > 0) {
+                            const prevPct = span > 0 ? ((events[i-1].time - startT) / span) * 100 : 0;
+                            if (pct - prevPct < COLLISION_PCT) row = lastRow === 0 ? 1 : 0;
+                          }
+                          lastRow = row;
+                          return { ...e, pct, row };
+                        });
+                        // Gaps: assign rows so gap labels avoid colliding with dot labels above/below.
+                        // Gap label sits at midpoint between dots; we put it on the row opposite to whichever
+                        // adjacent dot label is closer.
+                        const ROW_H = 13;
+                        return (
+                          <div>
+                            {/* Top: per-point short labels (two rows for staggering) */}
+                            <div style={{ position: 'relative', height: ROW_H * 2 }}>
+                              {ev.map((e, i) => (
+                                <div key={i} style={{ position: 'absolute', left: `${e.pct}%`, top: e.row * ROW_H, transform: 'translateX(-50%)', fontSize: 8, fontWeight: 700, color: e.kind === 'cutoff' ? '#b8860b' : e.kind === 'end' ? accent : e.kind === 'flight' ? '#b8860b' : '#4a4366', letterSpacing: '0.04em', whiteSpace: 'nowrap', textAlign: 'center', lineHeight: '12px' }}>
+                                  {e.short}
+                                </div>
+                              ))}
+                            </div>
+                            {/* Bar with dots */}
+                            <div style={{ position: 'relative', height: 6, background: `linear-gradient(90deg, ${accent} 0%, #fcd307 100%)`, borderRadius: 3, marginTop: 2 }}>
+                              {ev.map((e, i) => (
+                                <div key={i} style={{ position: 'absolute', left: `${e.pct}%`, top: -3, width: 12, height: 12, background: e.kind === 'cutoff' ? '#fcd307' : e.kind === 'end' ? accent : '#ffffff', border: `2px solid ${accent}`, borderRadius: '50%', transform: 'translateX(-50%)' }} title={`${fmtDelivery(e.time)} — ${e.label}`} />
+                              ))}
+                            </div>
+                            {/* Bottom: clock times (two staggered rows) */}
+                            <div style={{ position: 'relative', height: ROW_H * 2, marginTop: 4 }}>
+                              {ev.map((e, i) => (
+                                <div key={i} style={{ position: 'absolute', left: `${e.pct}%`, top: e.row * ROW_H, transform: 'translateX(-50%)', fontSize: 8, color: '#7a7390', fontFamily: 'monospace', whiteSpace: 'nowrap', lineHeight: '12px' }}>
+                                  {fmtDelivery(e.time)}
+                                </div>
+                              ))}
+                            </div>
+                            {/* Inter-point durations (italic, on the row opposite the wider gap neighbor) */}
+                            <div style={{ position: 'relative', height: ROW_H * 2, marginTop: 1 }}>
+                              {ev.slice(1).map((e, i) => {
+                                const prev = ev[i];
+                                const midPct = (e.pct + prev.pct) / 2;
+                                const dt = e.time - prev.time;
+                                // place on opposite row of nearer dot to keep labels readable
+                                const nearer = (e.pct - midPct) < (midPct - prev.pct) ? e : prev;
+                                const farRow = nearer.row === 0 ? 1 : 0;
+                                return (
+                                  <div key={i} style={{ position: 'absolute', left: `${midPct}%`, top: farRow * ROW_H, transform: 'translateX(-50%)', fontSize: 8, color: '#a8a3b8', fontStyle: 'italic', whiteSpace: 'nowrap', lineHeight: '12px' }}>
+                                    +{dt.toFixed(1)}h
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })()}
                       {/* Delivery */}
                       <div>
                         <div style={{ fontSize: 9, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Delivery</div>
