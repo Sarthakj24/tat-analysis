@@ -1,0 +1,19 @@
+name: Mirror main to Render deploy branch
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fast-forward claude/new-session-K8yL6 to main
+        run: |
+          git push origin HEAD:refs/heads/claude/new-session-K8yL6
