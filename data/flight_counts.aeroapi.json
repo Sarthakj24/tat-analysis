@@ -1,0 +1,2997 @@
+{
+  "fetched_at": "2026-05-17T13:23:09.968Z",
+  "source": "aeroapi_departures_historical",
+  "window": {
+    "ist_dates": [
+      "2026-05-10",
+      "2026-05-11",
+      "2026-05-12",
+      "2026-05-13",
+      "2026-05-14",
+      "2026-05-15",
+      "2026-05-16"
+    ],
+    "utc_start": "2026-05-09T18:30:00.000Z",
+    "utc_end": "2026-05-16T18:30:00.000Z",
+    "days": 7
+  },
+  "window_note": "Per-slot counts are rounded daily averages over the past 7 IST days.",
+  "slots": [
+    {
+      "id": 1,
+      "label": "01-12",
+      "start": 1,
+      "end": 12
+    },
+    {
+      "id": 2,
+      "label": "12-15",
+      "start": 12,
+      "end": 15
+    },
+    {
+      "id": 3,
+      "label": "15-18",
+      "start": 15,
+      "end": 18
+    },
+    {
+      "id": 4,
+      "label": "18-24",
+      "start": 18,
+      "end": 24
+    }
+  ],
+  "routes": {
+    "BOM-AMD": {
+      "origin": "BOM",
+      "destination": "AMD",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.29,
+      "duration_sample_size": 146,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 49,
+          "avg_per_day": 7,
+          "rounded_avg": 7,
+          "flights": 7
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 13,
+          "avg_per_day": 1.86,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 18,
+          "avg_per_day": 2.57,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 67,
+          "avg_per_day": 9.57,
+          "rounded_avg": 10,
+          "flights": 10
+        }
+      ],
+      "total_flights": 147,
+      "avg_daily_flights": 21,
+      "per_day_totals": [
+        21,
+        23,
+        21,
+        22,
+        19,
+        21,
+        20
+      ]
+    },
+    "BOM-BLR": {
+      "origin": "BOM",
+      "destination": "BLR",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.88,
+      "duration_sample_size": 220,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 87,
+          "avg_per_day": 12.43,
+          "rounded_avg": 12,
+          "flights": 12
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 28,
+          "avg_per_day": 4,
+          "rounded_avg": 4,
+          "flights": 4
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 85,
+          "avg_per_day": 12.14,
+          "rounded_avg": 12,
+          "flights": 12
+        }
+      ],
+      "total_flights": 221,
+      "avg_daily_flights": 31.57,
+      "per_day_totals": [
+        31,
+        30,
+        32,
+        33,
+        32,
+        32,
+        31
+      ]
+    },
+    "BOM-JAI": {
+      "origin": "BOM",
+      "destination": "JAI",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.85,
+      "duration_sample_size": 52,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 8,
+          "avg_per_day": 1.14,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 23,
+          "avg_per_day": 3.29,
+          "rounded_avg": 3,
+          "flights": 3
+        }
+      ],
+      "total_flights": 52,
+      "avg_daily_flights": 7.43,
+      "per_day_totals": [
+        7,
+        7,
+        7,
+        10,
+        7,
+        7,
+        7
+      ]
+    },
+    "BOM-MAA": {
+      "origin": "BOM",
+      "destination": "MAA",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2,
+      "duration_sample_size": 140,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 63,
+          "avg_per_day": 9,
+          "rounded_avg": 9,
+          "flights": 9
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 42,
+          "avg_per_day": 6,
+          "rounded_avg": 6,
+          "flights": 6
+        }
+      ],
+      "total_flights": 140,
+      "avg_daily_flights": 20,
+      "per_day_totals": [
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20
+      ]
+    },
+    "BOM-HYD": {
+      "origin": "BOM",
+      "destination": "HYD",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.51,
+      "duration_sample_size": 119,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 56,
+          "avg_per_day": 8,
+          "rounded_avg": 8,
+          "flights": 8
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 42,
+          "avg_per_day": 6,
+          "rounded_avg": 6,
+          "flights": 6
+        }
+      ],
+      "total_flights": 119,
+      "avg_daily_flights": 17,
+      "per_day_totals": [
+        17,
+        17,
+        17,
+        17,
+        17,
+        17,
+        17
+      ]
+    },
+    "BOM-DEL": {
+      "origin": "BOM",
+      "destination": "DEL",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.25,
+      "duration_sample_size": 408,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 147,
+          "avg_per_day": 21,
+          "rounded_avg": 21,
+          "flights": 21
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 66,
+          "avg_per_day": 9.43,
+          "rounded_avg": 9,
+          "flights": 9
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 69,
+          "avg_per_day": 9.86,
+          "rounded_avg": 10,
+          "flights": 10
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 126,
+          "avg_per_day": 18,
+          "rounded_avg": 18,
+          "flights": 18
+        }
+      ],
+      "total_flights": 408,
+      "avg_daily_flights": 58.29,
+      "per_day_totals": [
+        59,
+        58,
+        60,
+        55,
+        59,
+        60,
+        57
+      ]
+    },
+    "BOM-NAG": {
+      "origin": "BOM",
+      "destination": "NAG",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.54,
+      "duration_sample_size": 49,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        }
+      ],
+      "total_flights": 49,
+      "avg_daily_flights": 7,
+      "per_day_totals": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ]
+    },
+    "BOM-CCU": {
+      "origin": "BOM",
+      "destination": "CCU",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.7,
+      "duration_sample_size": 107,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 43,
+          "avg_per_day": 6.14,
+          "rounded_avg": 6,
+          "flights": 6
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 15,
+          "avg_per_day": 2.14,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 35,
+          "avg_per_day": 5,
+          "rounded_avg": 5,
+          "flights": 5
+        }
+      ],
+      "total_flights": 107,
+      "avg_daily_flights": 15.29,
+      "per_day_totals": [
+        15,
+        15,
+        16,
+        15,
+        15,
+        16,
+        15
+      ]
+    },
+    "BOM-IXC": {
+      "origin": "BOM",
+      "destination": "IXC",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.31,
+      "duration_sample_size": 45,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 13,
+          "avg_per_day": 1.86,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 11,
+          "avg_per_day": 1.57,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        }
+      ],
+      "total_flights": 45,
+      "avg_daily_flights": 6.43,
+      "per_day_totals": [
+        6,
+        7,
+        6,
+        7,
+        6,
+        7,
+        6
+      ]
+    },
+    "BOM-LKO": {
+      "origin": "BOM",
+      "destination": "LKO",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.17,
+      "duration_sample_size": 56,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 29,
+          "avg_per_day": 4.14,
+          "rounded_avg": 4,
+          "flights": 4
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 6,
+          "avg_per_day": 0.86,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        }
+      ],
+      "total_flights": 56,
+      "avg_daily_flights": 8,
+      "per_day_totals": [
+        9,
+        8,
+        8,
+        6,
+        8,
+        8,
+        9
+      ]
+    },
+    "BOM-BBI": {
+      "origin": "BOM",
+      "destination": "BBI",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.33,
+      "duration_sample_size": 35,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        }
+      ],
+      "total_flights": 35,
+      "avg_daily_flights": 5,
+      "per_day_totals": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ]
+    },
+    "BOM-COK": {
+      "origin": "BOM",
+      "destination": "COK",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.97,
+      "duration_sample_size": 74,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 35,
+          "avg_per_day": 5,
+          "rounded_avg": 5,
+          "flights": 5
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 12,
+          "avg_per_day": 1.71,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 13,
+          "avg_per_day": 1.86,
+          "rounded_avg": 2,
+          "flights": 2
+        }
+      ],
+      "total_flights": 74,
+      "avg_daily_flights": 10.57,
+      "per_day_totals": [
+        11,
+        11,
+        9,
+        11,
+        11,
+        11,
+        10
+      ]
+    },
+    "BOM-IDR": {
+      "origin": "BOM",
+      "destination": "IDR",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.42,
+      "duration_sample_size": 56,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        }
+      ],
+      "total_flights": 56,
+      "avg_daily_flights": 8,
+      "per_day_totals": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ]
+    },
+    "BOM-CJB": {
+      "origin": "BOM",
+      "destination": "CJB",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.91,
+      "duration_sample_size": 28,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        }
+      ],
+      "total_flights": 28,
+      "avg_daily_flights": 4,
+      "per_day_totals": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ]
+    },
+    "BOM-BDQ": {
+      "origin": "BOM",
+      "destination": "BDQ",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.13,
+      "duration_sample_size": 13,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 6,
+          "avg_per_day": 0.86,
+          "rounded_avg": 1,
+          "flights": 1
+        }
+      ],
+      "total_flights": 13,
+      "avg_daily_flights": 1.86,
+      "per_day_totals": [
+        2,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    "BOM-PAT": {
+      "origin": "BOM",
+      "destination": "PAT",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.22,
+      "duration_sample_size": 35,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        }
+      ],
+      "total_flights": 35,
+      "avg_daily_flights": 5,
+      "per_day_totals": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ]
+    },
+    "BOM-IXM": {
+      "origin": "BOM",
+      "destination": "IXM",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.18,
+      "duration_sample_size": 7,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        }
+      ],
+      "total_flights": 7,
+      "avg_daily_flights": 1,
+      "per_day_totals": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "BOM-VGA": {
+      "origin": "BOM",
+      "destination": "VGA",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.85,
+      "duration_sample_size": 11,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 4,
+          "avg_per_day": 0.57,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 11,
+      "avg_daily_flights": 1.57,
+      "per_day_totals": [
+        2,
+        2,
+        1,
+        2,
+        1,
+        2,
+        1
+      ]
+    },
+    "BOM-RPR": {
+      "origin": "BOM",
+      "destination": "RPR",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.83,
+      "duration_sample_size": 21,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 21,
+      "avg_daily_flights": 3,
+      "per_day_totals": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    "BOM-DED": {
+      "origin": "BOM",
+      "destination": "DED",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.33,
+      "duration_sample_size": 28,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 28,
+      "avg_daily_flights": 4,
+      "per_day_totals": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ]
+    },
+    "BOM-IXJ": {
+      "origin": "BOM",
+      "destination": "IXJ",
+      "days_observed": 2,
+      "days_window": 7,
+      "frequency": "infrequent",
+      "frequency_note": "Only 2/7 days had departures",
+      "avg_flight_hours": 2.71,
+      "duration_sample_size": 2,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 2,
+          "avg_per_day": 0.29,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 2,
+      "avg_daily_flights": 0.29,
+      "per_day_totals": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "BOM-KLH": {
+      "origin": "BOM",
+      "destination": "KLH",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.08,
+      "duration_sample_size": 9,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 2,
+          "avg_per_day": 0.29,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 9,
+      "avg_daily_flights": 1.29,
+      "per_day_totals": [
+        1,
+        1,
+        2,
+        1,
+        2,
+        1,
+        1
+      ]
+    },
+    "BOM-STV": {
+      "origin": "BOM",
+      "destination": "STV",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "BOM-PNQ": {
+      "origin": "BOM",
+      "destination": "PNQ",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "BOM-AGR": {
+      "origin": "BOM",
+      "destination": "AGR",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "BOM-BOM": {
+      "origin": "BOM",
+      "destination": "BOM",
+      "same_airport": true
+    },
+    "BOM-VTZ": {
+      "origin": "BOM",
+      "destination": "VTZ",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "BOM-RAJ": {
+      "origin": "BOM",
+      "destination": "RAJ",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "BOM-ISK": {
+      "origin": "BOM",
+      "destination": "ISK",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "BOM-MYQ": {
+      "origin": "BOM",
+      "destination": "MYQ",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "MAA-CCU": {
+      "origin": "MAA",
+      "destination": "CCU",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.24,
+      "duration_sample_size": 62,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 27,
+          "avg_per_day": 3.86,
+          "rounded_avg": 4,
+          "flights": 4
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 28,
+          "avg_per_day": 4,
+          "rounded_avg": 4,
+          "flights": 4
+        }
+      ],
+      "total_flights": 62,
+      "avg_daily_flights": 8.86,
+      "per_day_totals": [
+        8,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9
+      ]
+    },
+    "MAA-BLR": {
+      "origin": "MAA",
+      "destination": "BLR",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1,
+      "duration_sample_size": 94,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 48,
+          "avg_per_day": 6.86,
+          "rounded_avg": 7,
+          "flights": 7
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 18,
+          "avg_per_day": 2.57,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        }
+      ],
+      "total_flights": 94,
+      "avg_daily_flights": 13.43,
+      "per_day_totals": [
+        13,
+        14,
+        14,
+        13,
+        14,
+        13,
+        13
+      ]
+    },
+    "MAA-BOM": {
+      "origin": "MAA",
+      "destination": "BOM",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.01,
+      "duration_sample_size": 140,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 56,
+          "avg_per_day": 8,
+          "rounded_avg": 8,
+          "flights": 8
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 28,
+          "avg_per_day": 4,
+          "rounded_avg": 4,
+          "flights": 4
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 42,
+          "avg_per_day": 6,
+          "rounded_avg": 6,
+          "flights": 6
+        }
+      ],
+      "total_flights": 140,
+      "avg_daily_flights": 20,
+      "per_day_totals": [
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20
+      ]
+    },
+    "MAA-HYD": {
+      "origin": "MAA",
+      "destination": "HYD",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.26,
+      "duration_sample_size": 57,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 8,
+          "avg_per_day": 1.14,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 29,
+          "avg_per_day": 4.14,
+          "rounded_avg": 4,
+          "flights": 4
+        }
+      ],
+      "total_flights": 58,
+      "avg_daily_flights": 8.29,
+      "per_day_totals": [
+        9,
+        8,
+        8,
+        9,
+        8,
+        8,
+        8
+      ]
+    },
+    "MAA-PNQ": {
+      "origin": "MAA",
+      "destination": "PNQ",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.62,
+      "duration_sample_size": 47,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 27,
+          "avg_per_day": 3.86,
+          "rounded_avg": 4,
+          "flights": 4
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 13,
+          "avg_per_day": 1.86,
+          "rounded_avg": 2,
+          "flights": 2
+        }
+      ],
+      "total_flights": 47,
+      "avg_daily_flights": 6.71,
+      "per_day_totals": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7,
+        5
+      ]
+    },
+    "MAA-DEL": {
+      "origin": "MAA",
+      "destination": "DEL",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.88,
+      "duration_sample_size": 123,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 55,
+          "avg_per_day": 7.86,
+          "rounded_avg": 8,
+          "flights": 8
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 13,
+          "avg_per_day": 1.86,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 34,
+          "avg_per_day": 4.86,
+          "rounded_avg": 5,
+          "flights": 5
+        }
+      ],
+      "total_flights": 123,
+      "avg_daily_flights": 17.57,
+      "per_day_totals": [
+        18,
+        18,
+        18,
+        16,
+        18,
+        18,
+        17
+      ]
+    },
+    "MAA-COK": {
+      "origin": "MAA",
+      "destination": "COK",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.23,
+      "duration_sample_size": 34,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 6,
+          "avg_per_day": 0.86,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        }
+      ],
+      "total_flights": 34,
+      "avg_daily_flights": 4.86,
+      "per_day_totals": [
+        5,
+        5,
+        4,
+        5,
+        5,
+        5,
+        5
+      ]
+    },
+    "MAA-CJB": {
+      "origin": "MAA",
+      "destination": "CJB",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.01,
+      "duration_sample_size": 56,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 21,
+          "avg_per_day": 3,
+          "rounded_avg": 3,
+          "flights": 3
+        }
+      ],
+      "total_flights": 56,
+      "avg_daily_flights": 8,
+      "per_day_totals": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ]
+    },
+    "MAA-IXM": {
+      "origin": "MAA",
+      "destination": "IXM",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.31,
+      "duration_sample_size": 62,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 28,
+          "avg_per_day": 4,
+          "rounded_avg": 4,
+          "flights": 4
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 13,
+          "avg_per_day": 1.86,
+          "rounded_avg": 2,
+          "flights": 2
+        }
+      ],
+      "total_flights": 62,
+      "avg_daily_flights": 8.86,
+      "per_day_totals": [
+        9,
+        9,
+        9,
+        9,
+        9,
+        8,
+        9
+      ]
+    },
+    "MAA-JAI": {
+      "origin": "MAA",
+      "destination": "JAI",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.49,
+      "duration_sample_size": 8,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 1,
+          "avg_per_day": 0.14,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        }
+      ],
+      "total_flights": 8,
+      "avg_daily_flights": 1.14,
+      "per_day_totals": [
+        1,
+        1,
+        1,
+        2,
+        1,
+        1,
+        1
+      ]
+    },
+    "MAA-VGA": {
+      "origin": "MAA",
+      "destination": "VGA",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.36,
+      "duration_sample_size": 14,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 3,
+          "avg_per_day": 0.43,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 4,
+          "avg_per_day": 0.57,
+          "rounded_avg": 1,
+          "flights": 1
+        }
+      ],
+      "total_flights": 14,
+      "avg_daily_flights": 2,
+      "per_day_totals": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    "MAA-IDR": {
+      "origin": "MAA",
+      "destination": "IDR",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.99,
+      "duration_sample_size": 10,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 3,
+          "avg_per_day": 0.43,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        }
+      ],
+      "total_flights": 10,
+      "avg_daily_flights": 1.43,
+      "per_day_totals": [
+        1,
+        1,
+        2,
+        1,
+        2,
+        1,
+        2
+      ]
+    },
+    "MAA-AMD": {
+      "origin": "MAA",
+      "destination": "AMD",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.3,
+      "duration_sample_size": 24,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 13,
+          "avg_per_day": 1.86,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 3,
+          "avg_per_day": 0.43,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 1,
+          "avg_per_day": 0.14,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 24,
+      "avg_daily_flights": 3.43,
+      "per_day_totals": [
+        3,
+        3,
+        5,
+        2,
+        4,
+        3,
+        4
+      ]
+    },
+    "MAA-MYQ": {
+      "origin": "MAA",
+      "destination": "MYQ",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.27,
+      "duration_sample_size": 7,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 7,
+      "avg_daily_flights": 1,
+      "per_day_totals": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "MAA-BBI": {
+      "origin": "MAA",
+      "destination": "BBI",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.71,
+      "duration_sample_size": 14,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 14,
+      "avg_daily_flights": 2,
+      "per_day_totals": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    "MAA-VTZ": {
+      "origin": "MAA",
+      "destination": "VTZ",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.29,
+      "duration_sample_size": 21,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 14,
+          "avg_per_day": 2,
+          "rounded_avg": 2,
+          "flights": 2
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 21,
+      "avg_daily_flights": 3,
+      "per_day_totals": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    "MAA-IXC": {
+      "origin": "MAA",
+      "destination": "IXC",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.99,
+      "duration_sample_size": 7,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 7,
+      "avg_daily_flights": 1,
+      "per_day_totals": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "MAA-RPR": {
+      "origin": "MAA",
+      "destination": "RPR",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 1.73,
+      "duration_sample_size": 7,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 7,
+      "avg_daily_flights": 1,
+      "per_day_totals": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "MAA-LKO": {
+      "origin": "MAA",
+      "destination": "LKO",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.39,
+      "duration_sample_size": 7,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 7,
+      "avg_daily_flights": 1,
+      "per_day_totals": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "MAA-PAT": {
+      "origin": "MAA",
+      "destination": "PAT",
+      "days_observed": 7,
+      "days_window": 7,
+      "frequency": "daily",
+      "frequency_note": "Operates every day (7/7)",
+      "avg_flight_hours": 2.38,
+      "duration_sample_size": 7,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 7,
+          "avg_per_day": 1,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 7,
+      "avg_daily_flights": 1,
+      "per_day_totals": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "MAA-STV": {
+      "origin": "MAA",
+      "destination": "STV",
+      "days_observed": 4,
+      "days_window": 7,
+      "frequency": "alternate-day",
+      "frequency_note": "Operates 4/7 days (roughly every other day)",
+      "avg_flight_hours": 2.1,
+      "duration_sample_size": 4,
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 4,
+          "avg_per_day": 0.57,
+          "rounded_avg": 1,
+          "flights": 1
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 4,
+      "avg_daily_flights": 0.57,
+      "per_day_totals": [
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ]
+    },
+    "MAA-MAA": {
+      "origin": "MAA",
+      "destination": "MAA",
+      "same_airport": true
+    },
+    "MAA-AGR": {
+      "origin": "MAA",
+      "destination": "AGR",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "MAA-NAG": {
+      "origin": "MAA",
+      "destination": "NAG",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "MAA-BDQ": {
+      "origin": "MAA",
+      "destination": "BDQ",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "MAA-IXJ": {
+      "origin": "MAA",
+      "destination": "IXJ",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "MAA-RAJ": {
+      "origin": "MAA",
+      "destination": "RAJ",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "MAA-DED": {
+      "origin": "MAA",
+      "destination": "DED",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "MAA-ISK": {
+      "origin": "MAA",
+      "destination": "ISK",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "MAA-KLH": {
+      "origin": "MAA",
+      "destination": "KLH",
+      "days_observed": 0,
+      "days_window": 7,
+      "frequency": "none",
+      "frequency_note": "No direct flights observed in 7-day window",
+      "slots": [
+        {
+          "slot": "01-12",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "12-15",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "15-18",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        },
+        {
+          "slot": "18-24",
+          "total_flights": 0,
+          "avg_per_day": 0,
+          "rounded_avg": 0,
+          "flights": 0
+        }
+      ],
+      "total_flights": 0,
+      "avg_daily_flights": 0,
+      "per_day_totals": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "stats": {
+    "BOM": {
+      "total_departures_in_window": 3276,
+      "in_scope_to_targets": 1663,
+      "days_in_window": 7
+    },
+    "MAA": {
+      "total_departures_in_window": 1462,
+      "in_scope_to_targets": 806,
+      "days_in_window": 7
+    }
+  }
+}
