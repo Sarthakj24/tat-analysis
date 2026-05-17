@@ -1,0 +1,46 @@
+{
+  "_comment": "Per-hub × per-dealer transport mode overrides. Default behavior is fly hub_airport -> dealer.apt then road to dealer. These overrides change that. Also: default_road_only_below_km applies the road-only rule to any dealer whose warehouse-to-dealer drive is shorter than the threshold (and that isn't already covered by a more specific override).",
+  "shorthand": {
+    "via_airport":  "Fly hub_airport -> intermediate_airport, then road intermediate_airport -> dealer.",
+    "road_only":    "No flight. Road warehouse -> dealer."
+  },
+  "hubs": {
+    "bhiwandi": {
+      "default_road_only_below_km": 500,
+      "overrides": {
+        "16": { "mode": "via_airport", "intermediate": "DEL", "note": "Agra from Delhi" },
+        "26": { "mode": "via_airport", "intermediate": "IXC", "note": "Jammu via Chandigarh" },
+        "27": { "mode": "via_airport", "intermediate": "BLR", "note": "Madurai from Bengaluru" },
+        "29": { "mode": "via_airport", "intermediate": "AMD", "note": "Rajkot from Ahmedabad" },
+        "30": { "mode": "via_airport", "intermediate": "DEL", "note": "Dehradun from Delhi" },
+        "37": { "mode": "road_only", "note": "Sangli by road" },
+        "38": { "mode": "road_only", "note": "Kolhapur by road" },
+        "39": { "mode": "via_airport", "intermediate": "BLR", "note": "Mysore from Bengaluru" }
+      }
+    },
+    "sriperumbudur": {
+      "default_road_only_below_km": 500,
+      "overrides": {
+        "4":  { "mode": "via_airport", "intermediate": "AMD", "note": "Surat from Ahmedabad" },
+        "5":  { "mode": "via_airport", "intermediate": "BOM", "note": "Pune from Mumbai" },
+        "6":  { "mode": "via_airport", "intermediate": "BOM", "note": "Pune from Mumbai" },
+        "16": { "mode": "via_airport", "intermediate": "DEL", "note": "Agra from Delhi" },
+        "18": { "mode": "via_airport", "intermediate": "DEL", "note": "Jaipur from Delhi" },
+        "20": { "mode": "via_airport", "intermediate": "BOM", "note": "Nagpur from Mumbai" },
+        "23": { "mode": "via_airport", "intermediate": "DEL", "note": "Ludhiana from Delhi" },
+        "25": { "mode": "via_airport", "intermediate": "AMD", "note": "Vadodara from Ahmedabad" },
+        "26": { "mode": "via_airport", "intermediate": "DEL", "note": "Jammu from Delhi" },
+        "29": { "mode": "road_only", "note": "Rajkot by road" },
+        "30": { "mode": "via_airport", "intermediate": "DEL", "note": "Dehradun from Delhi" },
+        "33": { "mode": "via_airport", "intermediate": "DEL", "note": "Chandigarh from Delhi" },
+        "35": { "mode": "via_airport", "intermediate": "DEL", "note": "Lucknow from Delhi" },
+        "36": { "mode": "via_airport", "intermediate": "BOM", "note": "Nashik from Mumbai" },
+        "37": { "mode": "via_airport", "intermediate": "BOM", "note": "Sangli from Mumbai" },
+        "38": { "mode": "via_airport", "intermediate": "BOM", "note": "Kolhapur from Mumbai" },
+        "39": { "mode": "via_airport", "intermediate": "BLR", "note": "Mysore from Bengaluru" },
+        "41": { "mode": "road_only", "note": "Erode by road" },
+        "45": { "mode": "via_airport", "intermediate": "DEL", "note": "Lucknow from Delhi" }
+      }
+    }
+  }
+}

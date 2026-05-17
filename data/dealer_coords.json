@@ -1,5 +1,9 @@
 {
   "_comment": "Per-dealer coordinates from Google Places lookups, used by fetch_drive_times.js. id matches the dealer id in the dashboard's DEALERS constant.",
+  "warehouses": {
+    "bhiwandi":      { "lat": 19.2967, "lng": 73.0631, "name": "Bhiwandi Warehouse",      "hub_airport": "BOM" },
+    "sriperumbudur": { "lat": 12.9670, "lng": 79.9434, "name": "Sriperumbudur Warehouse", "hub_airport": "MAA" }
+  },
   "airports": {
     "COK": { "lat": 10.1532129, "lng": 76.3933204 },
     "MAA": { "lat": 12.9939595, "lng": 80.1706653 },

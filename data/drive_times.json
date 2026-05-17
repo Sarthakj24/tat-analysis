@@ -1,8 +1,8 @@
 {
-  "fetched_at": "2026-05-17T13:02:14.042Z",
+  "fetched_at": "2026-05-17T14:37:15.679Z",
   "source": "google_routes_api_traffic_aware",
   "departure_time": "2026-05-19T03:30:00.000Z",
-  "note": "hours = traffic-aware drive time (next Tuesday 09:00 IST). hours_no_traffic = ideal/empty road.",
+  "note": "hours = traffic-aware drive time (next Tuesday 09:00 IST). hours_no_traffic = ideal/empty road. dealers[id] = dealer's own airport -> dealer. warehouses[hubKey].dealers[id] = warehouse -> dealer. intermediate_airport_to_dealer[airportCode][dealerId] = override transshipment leg.",
   "dealers": {
     "1": {
       "dealer_code": "KL301",
@@ -363,6 +363,804 @@
       "km": 9.2,
       "hours": 0.27,
       "hours_no_traffic": 0.28
+    }
+  },
+  "warehouses": {
+    "bhiwandi": {
+      "name": "Bhiwandi Warehouse",
+      "lat": 19.2967,
+      "lng": 73.0631,
+      "dealers": {
+        "1": {
+          "dealer_code": "KL301",
+          "city": "Ernakulam",
+          "km": 1420.6,
+          "hours": 26.29,
+          "hours_no_traffic": 26.29
+        },
+        "2": {
+          "dealer_code": "TN101",
+          "city": "Chennai",
+          "km": 1308.1,
+          "hours": 23.42,
+          "hours_no_traffic": 22.89
+        },
+        "3": {
+          "dealer_code": "KA101",
+          "city": "Bengaluru",
+          "km": 1012.8,
+          "hours": 17.87,
+          "hours_no_traffic": 17.56
+        },
+        "4": {
+          "dealer_code": "GJ101",
+          "city": "Surat",
+          "km": 256.4,
+          "hours": 5.56,
+          "hours_no_traffic": 5.66
+        },
+        "5": {
+          "dealer_code": "MH101",
+          "city": "Pune",
+          "km": 165.2,
+          "hours": 3.83,
+          "hours_no_traffic": 3.84
+        },
+        "6": {
+          "dealer_code": "MH101-2",
+          "city": "Pune",
+          "km": 157.2,
+          "hours": 3.46,
+          "hours_no_traffic": 3.5
+        },
+        "7": {
+          "dealer_code": "AP102",
+          "city": "Vijayawada",
+          "km": 999.5,
+          "hours": 18.17,
+          "hours_no_traffic": 17.85
+        },
+        "8": {
+          "dealer_code": "TG101",
+          "city": "Hyderabad",
+          "km": 711.7,
+          "hours": 13.4,
+          "hours_no_traffic": 13.26
+        },
+        "9": {
+          "dealer_code": "TG101-2",
+          "city": "Hyderabad",
+          "km": 711.6,
+          "hours": 13.53,
+          "hours_no_traffic": 13.38
+        },
+        "10": {
+          "dealer_code": "OD102",
+          "city": "Bhubaneswar",
+          "km": 1579.7,
+          "hours": 24.55,
+          "hours_no_traffic": 24.78
+        },
+        "11": {
+          "dealer_code": "HR303",
+          "city": "Gurugram",
+          "km": 1307,
+          "hours": 20.43,
+          "hours_no_traffic": 20.43
+        },
+        "12": {
+          "dealer_code": "DL101",
+          "city": "Faridabad",
+          "km": 1314.5,
+          "hours": 20.84,
+          "hours_no_traffic": 20.5
+        },
+        "13": {
+          "dealer_code": "DL101-2",
+          "city": "Faridabad",
+          "km": 1314.5,
+          "hours": 20.84,
+          "hours_no_traffic": 20.5
+        },
+        "14": {
+          "dealer_code": "WB301",
+          "city": "Kolkata",
+          "km": 1866.1,
+          "hours": 31.73,
+          "hours_no_traffic": 31.73
+        },
+        "15": {
+          "dealer_code": "GJ303",
+          "city": "Ahmedabad",
+          "km": 494.5,
+          "hours": 8.57,
+          "hours_no_traffic": 8.85
+        },
+        "16": {
+          "dealer_code": "UP302",
+          "city": "Agra",
+          "km": 1321.1,
+          "hours": 21.19,
+          "hours_no_traffic": 21.19
+        },
+        "17": {
+          "dealer_code": "UP302-2",
+          "city": "Noida",
+          "km": 1334.1,
+          "hours": 21.12,
+          "hours_no_traffic": 20.82
+        },
+        "18": {
+          "dealer_code": "RJ302",
+          "city": "Jaipur",
+          "km": 1135.3,
+          "hours": 18.49,
+          "hours_no_traffic": 18.51
+        },
+        "19": {
+          "dealer_code": "MH102",
+          "city": "Mumbai",
+          "km": 47.6,
+          "hours": 1.84,
+          "hours_no_traffic": 1.44
+        },
+        "20": {
+          "dealer_code": "MH306",
+          "city": "Nagpur",
+          "km": 735.6,
+          "hours": 8.87,
+          "hours_no_traffic": 9.42
+        },
+        "21": {
+          "dealer_code": "AP102-2",
+          "city": "Vishakhapatnam",
+          "km": 1302.8,
+          "hours": 23.25,
+          "hours_no_traffic": 23.25
+        },
+        "22": {
+          "dealer_code": "HR304",
+          "city": "Gurugram",
+          "km": 1313.3,
+          "hours": 20.71,
+          "hours_no_traffic": 20.52
+        },
+        "23": {
+          "dealer_code": "PB301",
+          "city": "Ludhiana",
+          "km": 1635.7,
+          "hours": 25.2,
+          "hours_no_traffic": 25.2
+        },
+        "24": {
+          "dealer_code": "KA101-2",
+          "city": "Bengaluru",
+          "km": 987.5,
+          "hours": 17.43,
+          "hours_no_traffic": 17.43
+        },
+        "25": {
+          "dealer_code": "GJ102",
+          "city": "Vadodara",
+          "km": 379,
+          "hours": 6.78,
+          "hours_no_traffic": 6.97
+        },
+        "26": {
+          "dealer_code": "JK301",
+          "city": "Jammu",
+          "km": 1895.8,
+          "hours": 30.28,
+          "hours_no_traffic": 30.28
+        },
+        "27": {
+          "dealer_code": "TN302",
+          "city": "Madurai",
+          "km": 1414.6,
+          "hours": 24.37,
+          "hours_no_traffic": 24.37
+        },
+        "28": {
+          "dealer_code": "UP101",
+          "city": "Ghaziabad",
+          "km": 1349.2,
+          "hours": 21.31,
+          "hours_no_traffic": 21.31
+        },
+        "29": {
+          "dealer_code": "GJ103",
+          "city": "Rajkot",
+          "km": 658.9,
+          "hours": 11.13,
+          "hours_no_traffic": 11.35
+        },
+        "30": {
+          "dealer_code": "UK202",
+          "city": "Dehradun",
+          "km": 1548.5,
+          "hours": 23.86,
+          "hours_no_traffic": 23.86
+        },
+        "31": {
+          "dealer_code": "CG301",
+          "city": "Raipur",
+          "km": 1018.4,
+          "hours": 13.97,
+          "hours_no_traffic": 14.41
+        },
+        "32": {
+          "dealer_code": "HR101",
+          "city": "Faridabad",
+          "km": 1300.8,
+          "hours": 20.58,
+          "hours_no_traffic": 20.27
+        },
+        "33": {
+          "dealer_code": "CH301",
+          "city": "Chandigarh",
+          "km": 1584.3,
+          "hours": 24.8,
+          "hours_no_traffic": 24.8
+        },
+        "34": {
+          "dealer_code": "IN00003",
+          "city": "Indore",
+          "km": 668.3,
+          "hours": 10.6,
+          "hours_no_traffic": 10.84
+        },
+        "35": {
+          "dealer_code": "UP214",
+          "city": "Lucknow",
+          "km": 1594.6,
+          "hours": 24.16,
+          "hours_no_traffic": 24.16
+        },
+        "36": {
+          "dealer_code": "MH308",
+          "city": "Nashik",
+          "km": 133.7,
+          "hours": 2.22,
+          "hours_no_traffic": 2.24
+        },
+        "37": {
+          "dealer_code": "MH309",
+          "city": "Sangli",
+          "km": 488,
+          "hours": 8.82,
+          "hours_no_traffic": 9.02
+        },
+        "38": {
+          "dealer_code": "MH307",
+          "city": "Kolhapur",
+          "km": 379.2,
+          "hours": 6.98,
+          "hours_no_traffic": 7.16
+        },
+        "39": {
+          "dealer_code": "IN00006",
+          "city": "Mysore",
+          "km": 1006.3,
+          "hours": 18.81,
+          "hours_no_traffic": 18.41
+        },
+        "40": {
+          "dealer_code": "IN00009",
+          "city": "Vijayawada",
+          "km": 996.5,
+          "hours": 18.11,
+          "hours_no_traffic": 17.8
+        },
+        "41": {
+          "dealer_code": "IN00010",
+          "city": "Erode",
+          "km": 1256.3,
+          "hours": 22.05,
+          "hours_no_traffic": 22.05
+        },
+        "42": {
+          "dealer_code": "IN00002",
+          "city": "Delhi",
+          "km": 1334.6,
+          "hours": 21.2,
+          "hours_no_traffic": 20.98
+        },
+        "43": {
+          "dealer_code": "IN00012",
+          "city": "Patna",
+          "km": 1730.7,
+          "hours": 27.43,
+          "hours_no_traffic": 27.43
+        },
+        "44": {
+          "dealer_code": "IN00008",
+          "city": "Bengaluru",
+          "km": 987.2,
+          "hours": 17.34,
+          "hours_no_traffic": 17.27
+        },
+        "45": {
+          "dealer_code": "IN00004",
+          "city": "Lucknow",
+          "km": 1576.3,
+          "hours": 23.92,
+          "hours_no_traffic": 23.92
+        }
+      }
+    },
+    "sriperumbudur": {
+      "name": "Sriperumbudur Warehouse",
+      "lat": 12.967,
+      "lng": 79.9434,
+      "dealers": {
+        "1": {
+          "dealer_code": "KL301",
+          "city": "Ernakulam",
+          "km": 650.7,
+          "hours": 11.44,
+          "hours_no_traffic": 11.55
+        },
+        "2": {
+          "dealer_code": "TN101",
+          "city": "Chennai",
+          "km": 38.4,
+          "hours": 1.22,
+          "hours_no_traffic": 1.16
+        },
+        "3": {
+          "dealer_code": "KA101",
+          "city": "Bengaluru",
+          "km": 293.1,
+          "hours": 4.96,
+          "hours_no_traffic": 5.07
+        },
+        "4": {
+          "dealer_code": "GJ101",
+          "city": "Surat",
+          "km": 1525.4,
+          "hours": 26.52,
+          "hours_no_traffic": 26.52
+        },
+        "5": {
+          "dealer_code": "MH101",
+          "city": "Pune",
+          "km": 1133,
+          "hours": 19.55,
+          "hours_no_traffic": 19.55
+        },
+        "6": {
+          "dealer_code": "MH101-2",
+          "city": "Pune",
+          "km": 1125.1,
+          "hours": 19.21,
+          "hours_no_traffic": 19.21
+        },
+        "7": {
+          "dealer_code": "AP102",
+          "city": "Vijayawada",
+          "km": 485.5,
+          "hours": 7.95,
+          "hours_no_traffic": 8.39
+        },
+        "8": {
+          "dealer_code": "TG101",
+          "city": "Hyderabad",
+          "km": 712.8,
+          "hours": 12.62,
+          "hours_no_traffic": 12.66
+        },
+        "9": {
+          "dealer_code": "TG101-2",
+          "city": "Hyderabad",
+          "km": 707.4,
+          "hours": 12.37,
+          "hours_no_traffic": 12.44
+        },
+        "10": {
+          "dealer_code": "OD102",
+          "city": "Bhubaneswar",
+          "km": 1274.2,
+          "hours": 21.68,
+          "hours_no_traffic": 21.68
+        },
+        "11": {
+          "dealer_code": "HR303",
+          "city": "Gurugram",
+          "km": 2197.1,
+          "hours": 37.73,
+          "hours_no_traffic": 37.73
+        },
+        "12": {
+          "dealer_code": "DL101",
+          "city": "Faridabad",
+          "km": 2204.5,
+          "hours": 37.79,
+          "hours_no_traffic": 37.79
+        },
+        "13": {
+          "dealer_code": "DL101-2",
+          "city": "Faridabad",
+          "km": 2204.5,
+          "hours": 37.79,
+          "hours_no_traffic": 37.79
+        },
+        "14": {
+          "dealer_code": "WB301",
+          "city": "Kolkata",
+          "km": 2030.1,
+          "hours": 39.55,
+          "hours_no_traffic": 39.55
+        },
+        "15": {
+          "dealer_code": "GJ303",
+          "city": "Ahmedabad",
+          "km": 1763.5,
+          "hours": 29.71,
+          "hours_no_traffic": 29.71
+        },
+        "16": {
+          "dealer_code": "UP302",
+          "city": "Agra",
+          "km": 2021.7,
+          "hours": 36.36,
+          "hours_no_traffic": 36.36
+        },
+        "17": {
+          "dealer_code": "UP302-2",
+          "city": "Noida",
+          "km": 2224.1,
+          "hours": 38.12,
+          "hours_no_traffic": 38.12
+        },
+        "18": {
+          "dealer_code": "RJ302",
+          "city": "Jaipur",
+          "km": 2025.4,
+          "hours": 35.81,
+          "hours_no_traffic": 35.81
+        },
+        "19": {
+          "dealer_code": "MH102",
+          "city": "Mumbai",
+          "km": 1268.4,
+          "hours": 21.31,
+          "hours_no_traffic": 21.31
+        },
+        "20": {
+          "dealer_code": "MH306",
+          "city": "Nagpur",
+          "km": 1114.4,
+          "hours": 21.49,
+          "hours_no_traffic": 21.3
+        },
+        "21": {
+          "dealer_code": "AP102-2",
+          "city": "Vishakhapatnam",
+          "km": 847.2,
+          "hours": 14.47,
+          "hours_no_traffic": 14.8
+        },
+        "22": {
+          "dealer_code": "HR304",
+          "city": "Gurugram",
+          "km": 2203.4,
+          "hours": 37.81,
+          "hours_no_traffic": 37.81
+        },
+        "23": {
+          "dealer_code": "PB301",
+          "city": "Ludhiana",
+          "km": 2525.8,
+          "hours": 42.5,
+          "hours_no_traffic": 42.5
+        },
+        "24": {
+          "dealer_code": "KA101-2",
+          "city": "Bengaluru",
+          "km": 306.8,
+          "hours": 5.5,
+          "hours_no_traffic": 5.57
+        },
+        "25": {
+          "dealer_code": "GJ102",
+          "city": "Vadodara",
+          "km": 1648,
+          "hours": 27.83,
+          "hours_no_traffic": 27.83
+        },
+        "26": {
+          "dealer_code": "JK301",
+          "city": "Jammu",
+          "km": 2785.9,
+          "hours": 47.58,
+          "hours_no_traffic": 47.58
+        },
+        "27": {
+          "dealer_code": "TN302",
+          "city": "Madurai",
+          "km": 458.2,
+          "hours": 7.17,
+          "hours_no_traffic": 7.45
+        },
+        "28": {
+          "dealer_code": "UP101",
+          "city": "Ghaziabad",
+          "km": 2239.3,
+          "hours": 38.6,
+          "hours_no_traffic": 38.6
+        },
+        "29": {
+          "dealer_code": "GJ103",
+          "city": "Rajkot",
+          "km": 1927.9,
+          "hours": 32.2,
+          "hours_no_traffic": 32.2
+        },
+        "30": {
+          "dealer_code": "UK202",
+          "city": "Dehradun",
+          "km": 2438.6,
+          "hours": 41.15,
+          "hours_no_traffic": 41.15
+        },
+        "31": {
+          "dealer_code": "CG301",
+          "city": "Raipur",
+          "km": 1214.1,
+          "hours": 22.96,
+          "hours_no_traffic": 22.96
+        },
+        "32": {
+          "dealer_code": "HR101",
+          "city": "Faridabad",
+          "km": 2190.9,
+          "hours": 37.56,
+          "hours_no_traffic": 37.56
+        },
+        "33": {
+          "dealer_code": "CH301",
+          "city": "Chandigarh",
+          "km": 2474.4,
+          "hours": 42.09,
+          "hours_no_traffic": 42.09
+        },
+        "34": {
+          "dealer_code": "IN00003",
+          "city": "Indore",
+          "km": 1471.9,
+          "hours": 27.3,
+          "hours_no_traffic": 27.3
+        },
+        "35": {
+          "dealer_code": "UP214",
+          "city": "Lucknow",
+          "km": 2299.6,
+          "hours": 42.85,
+          "hours_no_traffic": 42.85
+        },
+        "36": {
+          "dealer_code": "MH308",
+          "city": "Nashik",
+          "km": 1308.3,
+          "hours": 23.37,
+          "hours_no_traffic": 23.37
+        },
+        "37": {
+          "dealer_code": "MH309",
+          "city": "Sangli",
+          "km": 908.2,
+          "hours": 15.53,
+          "hours_no_traffic": 15.5
+        },
+        "38": {
+          "dealer_code": "MH307",
+          "city": "Kolhapur",
+          "km": 892.8,
+          "hours": 14.71,
+          "hours_no_traffic": 14.58
+        },
+        "39": {
+          "dealer_code": "IN00006",
+          "city": "Mysore",
+          "km": 443.1,
+          "hours": 7.14,
+          "hours_no_traffic": 7.27
+        },
+        "40": {
+          "dealer_code": "IN00009",
+          "city": "Vijayawada",
+          "km": 482.5,
+          "hours": 7.9,
+          "hours_no_traffic": 8.34
+        },
+        "41": {
+          "dealer_code": "IN00010",
+          "city": "Erode",
+          "km": 398.4,
+          "hours": 6.49,
+          "hours_no_traffic": 6.72
+        },
+        "42": {
+          "dealer_code": "IN00002",
+          "city": "Delhi",
+          "km": 2224.7,
+          "hours": 38.28,
+          "hours_no_traffic": 38.28
+        },
+        "43": {
+          "dealer_code": "IN00012",
+          "city": "Patna",
+          "km": 1917.2,
+          "hours": 37.87,
+          "hours_no_traffic": 37.87
+        },
+        "44": {
+          "dealer_code": "IN00008",
+          "city": "Bengaluru",
+          "km": 283,
+          "hours": 5.32,
+          "hours_no_traffic": 5.36
+        },
+        "45": {
+          "dealer_code": "IN00004",
+          "city": "Lucknow",
+          "km": 2281.3,
+          "hours": 42.62,
+          "hours_no_traffic": 42.62
+        }
+      }
+    }
+  },
+  "intermediate_airport_to_dealer": {
+    "DEL": {
+      "16": {
+        "dealer_code": "UP302",
+        "city": "Agra",
+        "km": 227.3,
+        "hours": 3.44,
+        "hours_no_traffic": 3.44
+      },
+      "18": {
+        "dealer_code": "RJ302",
+        "city": "Jaipur",
+        "km": 288.7,
+        "hours": 4.05,
+        "hours_no_traffic": 4.03
+      },
+      "23": {
+        "dealer_code": "PB301",
+        "city": "Ludhiana",
+        "km": 332.8,
+        "hours": 5.15,
+        "hours_no_traffic": 4.99
+      },
+      "26": {
+        "dealer_code": "JK301",
+        "city": "Jammu",
+        "km": 592.8,
+        "hours": 10.49,
+        "hours_no_traffic": 10.07
+      },
+      "30": {
+        "dealer_code": "UK202",
+        "city": "Dehradun",
+        "km": 235.1,
+        "hours": 3.61,
+        "hours_no_traffic": 3.72
+      },
+      "33": {
+        "dealer_code": "CH301",
+        "city": "Chandigarh",
+        "km": 273.3,
+        "hours": 4.5,
+        "hours_no_traffic": 4.5
+      },
+      "35": {
+        "dealer_code": "UP214",
+        "city": "Lucknow",
+        "km": 559.9,
+        "hours": 7.88,
+        "hours_no_traffic": 8.13
+      },
+      "45": {
+        "dealer_code": "IN00004",
+        "city": "Lucknow",
+        "km": 542,
+        "hours": 7.31,
+        "hours_no_traffic": 7.63
+      }
+    },
+    "IXC": {
+      "26": {
+        "dealer_code": "JK301",
+        "city": "Jammu",
+        "km": 372.4,
+        "hours": 6.86,
+        "hours_no_traffic": 6.74
+      }
+    },
+    "BLR": {
+      "27": {
+        "dealer_code": "TN302",
+        "city": "Madurai",
+        "km": 454.8,
+        "hours": 8.68,
+        "hours_no_traffic": 8.35
+      },
+      "39": {
+        "dealer_code": "IN00006",
+        "city": "Mysore",
+        "km": 186,
+        "hours": 3.12,
+        "hours_no_traffic": 3.15
+      }
+    },
+    "AMD": {
+      "4": {
+        "dealer_code": "GJ101",
+        "city": "Surat",
+        "km": 258.1,
+        "hours": 4.43,
+        "hours_no_traffic": 4.5
+      },
+      "25": {
+        "dealer_code": "GJ102",
+        "city": "Vadodara",
+        "km": 129.9,
+        "hours": 2.37,
+        "hours_no_traffic": 2.44
+      },
+      "29": {
+        "dealer_code": "GJ103",
+        "city": "Rajkot",
+        "km": 242.7,
+        "hours": 4.26,
+        "hours_no_traffic": 4.36
+      }
+    },
+    "BOM": {
+      "5": {
+        "dealer_code": "MH101",
+        "city": "Pune",
+        "km": 158.3,
+        "hours": 3.46,
+        "hours_no_traffic": 3.37
+      },
+      "6": {
+        "dealer_code": "MH101-2",
+        "city": "Pune",
+        "km": 150.3,
+        "hours": 3.1,
+        "hours_no_traffic": 3.03
+      },
+      "20": {
+        "dealer_code": "MH306",
+        "city": "Nagpur",
+        "km": 770.1,
+        "hours": 10.01,
+        "hours_no_traffic": 10.38
+      },
+      "36": {
+        "dealer_code": "MH308",
+        "city": "Nashik",
+        "km": 168.2,
+        "hours": 3.21,
+        "hours_no_traffic": 3.21
+      },
+      "37": {
+        "dealer_code": "MH309",
+        "city": "Sangli",
+        "km": 481.1,
+        "hours": 8.44,
+        "hours_no_traffic": 8.55
+      },
+      "38": {
+        "dealer_code": "MH307",
+        "city": "Kolhapur",
+        "km": 372.3,
+        "hours": 6.62,
+        "hours_no_traffic": 6.69
+      }
     }
   }
 }

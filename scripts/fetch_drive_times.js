@@ -27,12 +27,17 @@ if (!API_KEY) {
   process.exit(1);
 }
 
-const COORDS_PATH = path.join(__dirname, '..', 'data', 'dealer_coords.json');
-const OUT_PATH    = path.join(__dirname, '..', 'data', 'drive_times.json');
+const COORDS_PATH    = path.join(__dirname, '..', 'data', 'dealer_coords.json');
+const OVERRIDES_PATH = path.join(__dirname, '..', 'data', 'dealer_transport_overrides.json');
+const OUT_PATH       = path.join(__dirname, '..', 'data', 'drive_times.json');
 
 const coords = JSON.parse(fs.readFileSync(COORDS_PATH, 'utf8'));
 const dealers = coords.dealers;
 const airports = coords.airports;
+const warehouses = coords.warehouses || {};
+const overrides = fs.existsSync(OVERRIDES_PATH)
+  ? JSON.parse(fs.readFileSync(OVERRIDES_PATH, 'utf8'))
+  : { hubs: {} };
 
 // Departure time: next Tuesday at 9:00 IST (a representative weekday morning).
 // Routes API uses RFC3339; we send a future UTC timestamp.
@@ -102,6 +107,22 @@ async function fetchOne(originLat, originLng, destLat, destLng, departureTime) {
   };
 }
 
+// Build extra leg list from overrides:
+//   - "via_airport" => need intermediate_airport -> dealer drive
+//   - "road_only"   => need warehouse -> dealer drive (covered by warehouse loop)
+function buildExtraLegs() {
+  const legs = new Map(); // key = `${airportCode}-${dealerId}` -> { airport, dealerId }
+  for (const hub of Object.values(overrides.hubs || {})) {
+    for (const [dealerId, rule] of Object.entries(hub.overrides || {})) {
+      if (rule.mode === 'via_airport' && rule.intermediate) {
+        const k = rule.intermediate + '-' + dealerId;
+        if (!legs.has(k)) legs.set(k, { airport: rule.intermediate, dealerId });
+      }
+    }
+  }
+  return [...legs.values()];
+}
+
 async function main() {
   const departureTime = nextTuesday9amIST_RFC3339();
   console.log('Departure time for traffic-aware calc: ' + departureTime + ' (next Tuesday 09:00 IST)\n');
@@ -110,13 +131,18 @@ async function main() {
     fetched_at:     new Date().toISOString(),
     source:         'google_routes_api_traffic_aware',
     departure_time: departureTime,
-    note:           "hours = traffic-aware drive time (next Tuesday 09:00 IST). hours_no_traffic = ideal/empty road.",
-    dealers:        {}
+    note:           "hours = traffic-aware drive time (next Tuesday 09:00 IST). hours_no_traffic = ideal/empty road. dealers[id] = dealer's own airport -> dealer. warehouses[hubKey].dealers[id] = warehouse -> dealer. intermediate_airport_to_dealer[airportCode][dealerId] = override transshipment leg.",
+    dealers:        {},
+    warehouses:     {},
+    intermediate_airport_to_dealer: {}
   };
 
   const dealerIds = Object.keys(dealers).sort((a, b) => +a - +b);
+
+  // Leg 1: dealer.apt -> dealer (existing behavior)
   let done = 0;
   let failed = 0;
+  console.log('=== Leg 1: dealer airport -> dealer ('+dealerIds.length+' calls) ===');
   for (const id of dealerIds) {
     const d = dealers[id];
     const apt = airports[d.apt];
@@ -125,40 +151,92 @@ async function main() {
       d.code.padEnd(10) + ' ' + d.city.padEnd(15) + ' from ' + d.apt + ' ... ');
     try {
       const result = await fetchOne(apt.lat, apt.lng, d.lat, d.lng, departureTime);
-      if (!result) {
-        console.log('NO ROUTE');
-        failed++;
-      } else {
+      if (!result) { console.log('NO ROUTE'); failed++; }
+      else {
         out.dealers[id] = {
-          dealer_code:  d.code,
-          city:         d.city,
-          apt:          d.apt,
-          km:           result.km,
-          hours:        result.hours_with_traffic,
-          hours_no_traffic: result.hours_no_traffic
+          dealer_code: d.code, city: d.city, apt: d.apt,
+          km: result.km, hours: result.hours_with_traffic, hours_no_traffic: result.hours_no_traffic
         };
-        console.log(result.km + ' km · ' +
-          result.hours_with_traffic + 'h (traffic) · ' +
-          result.hours_no_traffic + 'h (free)');
+        console.log(result.km + 'km · ' + result.hours_with_traffic + 'h');
       }
-    } catch (e) {
-      console.log('ERROR ' + e.message);
-      failed++;
+    } catch (e) { console.log('ERROR ' + e.message); failed++; }
+    await new Promise(r => setTimeout(r, 200));
+  }
+
+  // Leg 2: warehouse -> all dealers (for road-only mode + <500km default rule)
+  for (const [hubKey, wh] of Object.entries(warehouses)) {
+    console.log('\n=== Leg 2: ' + wh.name + ' -> all dealers ('+dealerIds.length+' calls) ===');
+    out.warehouses[hubKey] = { name: wh.name, lat: wh.lat, lng: wh.lng, dealers: {} };
+    let n = 0;
+    for (const id of dealerIds) {
+      const d = dealers[id];
+      n++;
+      process.stdout.write('[' + n + '/' + dealerIds.length + '] ' + wh.name + ' -> ' +
+        d.code.padEnd(10) + ' ' + d.city.padEnd(15) + ' ... ');
+      try {
+        const result = await fetchOne(wh.lat, wh.lng, d.lat, d.lng, departureTime);
+        if (!result) { console.log('NO ROUTE'); failed++; }
+        else {
+          out.warehouses[hubKey].dealers[id] = {
+            dealer_code: d.code, city: d.city,
+            km: result.km, hours: result.hours_with_traffic, hours_no_traffic: result.hours_no_traffic
+          };
+          console.log(result.km + 'km · ' + result.hours_with_traffic + 'h');
+        }
+      } catch (e) { console.log('ERROR ' + e.message); failed++; }
+      await new Promise(r => setTimeout(r, 200));
     }
-    await new Promise(r => setTimeout(r, 250));
+  }
+
+  // Leg 3: intermediate airport -> dealer (only for explicit via_airport overrides)
+  const extraLegs = buildExtraLegs();
+  console.log('\n=== Leg 3: intermediate airport -> dealer ('+extraLegs.length+' calls) ===');
+  let m = 0;
+  for (const { airport, dealerId } of extraLegs) {
+    const apt = airports[airport];
+    const d = dealers[dealerId];
+    if (!apt || !d) continue;
+    m++;
+    process.stdout.write('[' + m + '/' + extraLegs.length + '] ' + airport + ' -> ' +
+      d.code.padEnd(10) + ' ' + d.city.padEnd(15) + ' ... ');
+    try {
+      const result = await fetchOne(apt.lat, apt.lng, d.lat, d.lng, departureTime);
+      if (!result) { console.log('NO ROUTE'); failed++; }
+      else {
+        if (!out.intermediate_airport_to_dealer[airport]) out.intermediate_airport_to_dealer[airport] = {};
+        out.intermediate_airport_to_dealer[airport][dealerId] = {
+          dealer_code: d.code, city: d.city,
+          km: result.km, hours: result.hours_with_traffic, hours_no_traffic: result.hours_no_traffic
+        };
+        console.log(result.km + 'km · ' + result.hours_with_traffic + 'h');
+      }
+    } catch (e) { console.log('ERROR ' + e.message); failed++; }
+    await new Promise(r => setTimeout(r, 200));
   }
 
   fs.writeFileSync(OUT_PATH, JSON.stringify(out, null, 2));
   console.log('\nWritten: ' + OUT_PATH);
-  console.log('Success: ' + (dealerIds.length - failed) + '/' + dealerIds.length);
+  const totalCalls = dealerIds.length + dealerIds.length * Object.keys(warehouses).length + extraLegs.length;
+  console.log('Total calls: ' + totalCalls + ' · failures: ' + failed);
 
-  // Summary
-  console.log('\nLongest drives (top 10):');
+  // Summary: longest dealer-side drives
+  console.log('\nLongest dealer airport -> dealer drives (top 10):');
   const all = Object.entries(out.dealers).map(([id, v]) => ({ id, ...v }));
   all.sort((a, b) => b.hours - a.hours);
   for (const d of all.slice(0, 10)) {
-    console.log('  ' + d.dealer_code.padEnd(10) + ' ' + d.city.padEnd(15) +
-      ' ' + d.km + 'km / ' + d.hours + 'h');
+    console.log('  ' + d.dealer_code.padEnd(10) + ' ' + d.city.padEnd(15) + ' ' + d.km + 'km / ' + d.hours + 'h');
+  }
+
+  // Summary: warehouse -> dealer where < 500km (default road-only candidates)
+  for (const [hubKey, w] of Object.entries(out.warehouses)) {
+    console.log('\n' + w.name + ' road candidates (warehouse-to-dealer <= 500km):');
+    const within = Object.entries(w.dealers)
+      .map(([id, v]) => ({ id, ...v }))
+      .filter(x => x.km <= 500)
+      .sort((a, b) => a.km - b.km);
+    for (const d of within) {
+      console.log('  ' + d.dealer_code.padEnd(10) + ' ' + d.city.padEnd(15) + ' ' + d.km + 'km / ' + d.hours + 'h');
+    }
   }
 }
 

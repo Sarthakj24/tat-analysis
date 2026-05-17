@@ -192,20 +192,83 @@ const anchorTime = (slot, mode) => {
 };
 
 // ============ CALCULATION ============
-function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours) {
+// Resolve transport mode for (dealer, hub):
+//   - explicit override:        { mode: 'road_only' } or { mode: 'via_airport', intermediate: 'XXX' }
+//   - else if warehouse-to-dealer drive <= threshold km: { mode: 'road_only' }
+//   - else                                              { mode: 'direct' }
+function resolveTransport(dealer, hubKey, transportOverrides, liveDriveTimes) {
+  const hubOv = transportOverrides && transportOverrides.hubs ? transportOverrides.hubs[hubKey] : null;
+  const explicit = hubOv && hubOv.overrides ? hubOv.overrides[dealer.id] : null;
+  const whInfo = (liveDriveTimes && liveDriveTimes.warehouses && liveDriveTimes.warehouses[hubKey])
+    ? liveDriveTimes.warehouses[hubKey].dealers[dealer.id]
+    : null;
+  if (explicit) return { ...explicit, source: 'explicit', whInfo };
+  const threshold = hubOv ? hubOv.default_road_only_below_km : null;
+  if (whInfo && threshold != null && whInfo.km <= threshold) {
+    return { mode: 'road_only', source: 'within-' + threshold + 'km', whInfo };
+  }
+  return { mode: 'direct', source: 'default', whInfo };
+}
+
+function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours, transportOverrides) {
   const city = CITY_AIRPORT[dealer.city];
   if (!city) return null;
   const hub = HUBS[hubKey];
-  const destApt = city.code;
+  const defaultDestApt = city.code;
+  const hubHrs = params[`${hubKey}HubHrs`];
 
-  // Distance + drive hours: Google Routes data is the source of truth.
-  // If the user overrides km, scale Google hours proportionally to stay realistic.
-  const live = liveDriveTimes && liveDriveTimes[dealer.id];
+  // ===== Resolve transport mode =====
+  const transport = resolveTransport(dealer, hubKey, transportOverrides, liveDriveTimes);
+
+  // ===== ROAD ONLY: warehouse -> dealer, no flight =====
+  if (transport.mode === 'road_only') {
+    const wh = transport.whInfo;
+    if (!wh) {
+      return {
+        destApt: defaultDestApt, destAptName: city.name, destKm: 0,
+        mode: 'road_only', transportSource: transport.source,
+        flightHrs: 0, same: false, blocked: true,
+        cutoff: null, cutoffStart: null, cutoffEnd: null,
+        flightDepart: null, flightDepartStart: null, flightDepartEnd: null,
+        delivery: null, deliveryStart: null, deliveryEnd: null,
+        tatHours: null, flights: 0, legs: null,
+        note: 'No warehouse-to-dealer drive data'
+      };
+    }
+    const tat = params.whLoad + wh.hours;
+    return {
+      destApt: 'ROAD', destAptName: 'Road from ' + hub.name.split(' ')[0],
+      destKm: wh.km, roadKm: wh.km,
+      mode: 'road_only', transportSource: transport.source,
+      flightHrs: 0, same: false, blocked: false,
+      cutoff: null, cutoffStart: null, cutoffEnd: null,
+      flightDepart: null, flightDepartStart: null, flightDepartEnd: null,
+      delivery: null, deliveryStart: null, deliveryEnd: null,
+      tatHours: tat, flights: 0,
+      driveSource: 'google',
+      legs: { l1: params.whLoad, l2: 0, l3: 0, l5: 0, l6: 0, l7: wh.hours }
+    };
+  }
+
+  // ===== Distance + drive hours for the leg AFTER the flight =====
+  // Default mode: dealer's own airport -> dealer
+  // Via-airport mode: intermediate airport -> dealer (Google Routes precomputed)
+  let destApt, live;
+  if (transport.mode === 'via_airport') {
+    destApt = transport.intermediate;
+    live = (liveDriveTimes && liveDriveTimes.intermediate_airport_to_dealer
+              && liveDriveTimes.intermediate_airport_to_dealer[destApt])
+            ? liveDriveTimes.intermediate_airport_to_dealer[destApt][dealer.id]
+            : null;
+  } else {
+    destApt = defaultDestApt;
+    live = liveDriveTimes && liveDriveTimes.dealers ? liveDriveTimes.dealers[dealer.id] : null;
+  }
   const liveKm  = live ? live.km    : null;
   const liveHrs = live ? live.hours : null;
   const km = kmOverride != null
     ? kmOverride
-    : (liveKm != null ? liveKm : (DEALER_KM[dealer.id] != null ? DEALER_KM[dealer.id] : city.km));
+    : (liveKm != null ? liveKm : (transport.mode === 'via_airport' ? 0 : (DEALER_KM[dealer.id] != null ? DEALER_KM[dealer.id] : city.km)));
   let driveHrs;
   if (liveHrs != null) {
     driveHrs = (kmOverride != null && liveKm > 0)
@@ -216,8 +279,7 @@ function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOver
   }
 
   const same = hub.airport === destApt;
-  const hubHrs = params[`${hubKey}HubHrs`];
-  const routeKey = `${hub.airport}-${destApt}`;
+  const routeKey = hub.airport + '-' + destApt;
 
   // Flight duration: user override > live AeroAPI 7-day avg > hardcoded FLIGHT_HRS
   const liveFh = liveFlightHours && liveFlightHours[routeKey];
@@ -252,10 +314,15 @@ function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOver
   const preFlight = params.whLoad + hubHrs + (same ? 0 : params.originClear);
   const postFlight = (same ? 0 : params.destClear) + params.destLoad + dealerDriveHrs;
 
+  const destAptName = transport.mode === 'via_airport'
+    ? city.name + ' via ' + destApt
+    : city.name;
+
   if (same) {
     const tat = params.whLoad + hubHrs + params.destLoad + dealerDriveHrs;
     return {
-      destApt, destAptName: city.name, destKm: km, flightHrs: 0, same: true, blocked: false,
+      destApt, destAptName, destKm: km, flightHrs: 0, same: true, blocked: false,
+      mode: transport.mode, transportSource: transport.source,
       cutoff: null, cutoffStart: null, cutoffEnd: null,
       flightDepart: null, flightDepartStart: null, flightDepartEnd: null,
       delivery: null, deliveryStart: null, deliveryEnd: null,
@@ -268,7 +335,8 @@ function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOver
 
   if (blocked) {
     return {
-      destApt, destAptName: city.name, destKm: km, flightHrs, same: false, blocked: true,
+      destApt, destAptName, destKm: km, flightHrs, same: false, blocked: true,
+      mode: transport.mode, transportSource: transport.source,
       cutoff: null, cutoffStart: null, cutoffEnd: null,
       flightDepart: null, flightDepartStart: null, flightDepartEnd: null,
       delivery: null, deliveryStart: null, deliveryEnd: null,
@@ -291,7 +359,8 @@ function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOver
   const deliveryEnd   = slot.end   + flightHrs + postFlight;
 
   return {
-    destApt, destAptName: city.name, destKm: km, flightHrs, same: false, blocked: false,
+    destApt, destAptName, destKm: km, flightHrs, same: false, blocked: false,
+    mode: transport.mode, transportSource: transport.source,
     cutoff, cutoffStart, cutoffEnd,
     flightDepart: flightTime, flightDepartStart: slot.start, flightDepartEnd: slot.end,
     delivery, deliveryStart, deliveryEnd,
@@ -309,11 +378,11 @@ function calcForSlot(dealer, hubKey, params, slot, slotIndex, anchorMode, kmOver
   };
 }
 
-function calcAllSlots(dealer, hubKey, params, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours) {
+function calcAllSlots(dealer, hubKey, params, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours, transportOverrides) {
   const sorted = [...params.slots].sort((a,b) => a.start - b.start);
   return sorted.map((s, idx) => ({
     slotId: s.id, slotStart: s.start, slotEnd: s.end,
-    ...calcForSlot(dealer, hubKey, params, s, idx, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours)
+    ...calcForSlot(dealer, hubKey, params, s, idx, anchorMode, kmOverride, flightOverride, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours, transportOverrides)
   })).filter(r => r.destApt);
 }
 
@@ -351,6 +420,7 @@ function Dashboard() {
   const [liveFlightHours, setLiveFlightHours] = useState(null);
   const [liveRouteMeta, setLiveRouteMeta] = useState(null);
   const [liveDriveTimes, setLiveDriveTimes] = useState(null);
+  const [transportOverrides, setTransportOverrides] = useState(null);
   const [dataLoaded, setDataLoaded] = useState({ flights: false, drives: false, flightsErr: null, drivesErr: null });
 
   useEffect(() => {
@@ -388,11 +458,21 @@ function Dashboard() {
     fetch('data/drive_times.json')
       .then(r => r.ok ? r.json() : Promise.reject('not-found'))
       .then(json => {
-        // Output shape: { dealers: { '1': { km: 19, hours: 0.45 }, ... } }
-        setLiveDriveTimes(json.dealers || {});
+        // New shape: { dealers, warehouses, intermediate_airport_to_dealer }.
+        // Store the full object so the calc can access warehouse + intermediate legs.
+        setLiveDriveTimes({
+          dealers: json.dealers || {},
+          warehouses: json.warehouses || {},
+          intermediate_airport_to_dealer: json.intermediate_airport_to_dealer || {}
+        });
         setDataLoaded(d => ({ ...d, drives: true }));
       })
       .catch(e => setDataLoaded(d => ({ ...d, drivesErr: String(e) })));
+
+    fetch('data/dealer_transport_overrides.json')
+      .then(r => r.ok ? r.json() : Promise.reject('not-found'))
+      .then(json => setTransportOverrides(json))
+      .catch(() => setTransportOverrides(null));
   }, []);
 
   // Timeline tab state
@@ -410,10 +490,10 @@ function Dashboard() {
     const ov = overrides[d.id] || {};
     return {
       dealer: d,
-      bhiwandi: calcAllSlots(d, 'bhiwandi', params, anchorMode, ov.km, ov.flightBom, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours),
-      sriperumbudur: calcAllSlots(d, 'sriperumbudur', params, anchorMode, ov.km, ov.flightMaa, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours)
+      bhiwandi: calcAllSlots(d, 'bhiwandi', params, anchorMode, ov.km, ov.flightBom, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours, transportOverrides),
+      sriperumbudur: calcAllSlots(d, 'sriperumbudur', params, anchorMode, ov.km, ov.flightMaa, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours, transportOverrides)
     };
-  }), [params, overrides, anchorMode, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours]);
+  }), [params, overrides, anchorMode, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours, transportOverrides]);
 
   const filtered = useMemo(() => results.filter(r => {
     if (search) {
@@ -690,6 +770,7 @@ Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and 
               { k: 'compare', label: 'Hub Comparison', disabled: hubSelect !== 'both' },
               { k: 'timeline', label: 'Journey Timeline', icon: <MapPin size={11} /> },
               { k: 'all-timelines', label: 'All Timelines', icon: <MapPin size={11} /> },
+              { k: 'roads', label: 'Road >200km', icon: <Truck size={11} /> },
               { k: 'chart', label: 'Chart' },
               { k: 'ai', label: 'AI Analyst', icon: <Sparkles size={11} /> }
             ].map(t => (
@@ -761,6 +842,10 @@ Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and 
 
           {view === 'all-timelines' && (
             <AllTimelinesView filtered={filtered} sortedSlots={sortedSlots} hubSelect={hubSelect} params={params} />
+          )}
+
+          {view === 'roads' && (
+            <RoadRoutesTable filtered={filtered} hubSelect={hubSelect} />
           )}
 
           {view === 'chart' && (
@@ -1373,6 +1458,87 @@ function SlotPicker({ sortedSlots, tlSlotId, setTlSlotId }) {
 
 // ============ ALL TIMELINES VIEW ============
 // Compact timeline-list for every dealer × every slot, both hubs (or selected)
+function RoadRoutesTable({ filtered, hubSelect }) {
+  const rows = [];
+  for (const r of filtered) {
+    for (const hubKey of ['bhiwandi', 'sriperumbudur']) {
+      if (hubSelect !== 'both' && hubSelect !== hubKey) continue;
+      const slots = r[hubKey];
+      if (!slots || !slots.length) continue;
+      const s = slots[0]; // road km same across slots for a dealer×hub
+      if (!s) continue;
+      const roadKm = s.destKm || s.roadKm || 0;
+      if (roadKm <= 200) continue;
+      const roadHrs = s.legs ? s.legs.l7 : 0;
+      rows.push({
+        dealerId: r.dealer.id, code: r.dealer.code, city: r.dealer.city,
+        showroom: r.dealer.showroom, hubKey,
+        mode: s.mode || 'direct', transportSource: s.transportSource || '',
+        roadKm, roadHrs,
+        via: (s.mode === 'via_airport') ? s.destApt : null,
+        tatHours: s.tatHours, blocked: s.blocked
+      });
+    }
+  }
+  rows.sort((a, b) => b.roadKm - a.roadKm);
+
+  const modeColor = m =>
+    m === 'road_only'   ? '#8b0000' :
+    m === 'via_airport' ? '#1c1259' :
+    '#7a7390';
+  const modeLabel = (m, via) =>
+    m === 'road_only'   ? 'ROAD ONLY' :
+    m === 'via_airport' ? 'FLY VIA ' + via :
+    'DIRECT';
+
+  return (
+    <div>
+      <div style={{ fontSize: 11, color: '#7a7390', marginBottom: 12 }}>
+        <b style={{ color: '#1c1259' }}>{rows.length}</b> dealer-hub combinations have road travel <b>&gt; 200km</b>. Includes warehouse→dealer (road-only), intermediate-airport→dealer (via_airport), and dealer-airport→dealer (direct) legs.
+      </div>
+      <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, overflow: 'hidden' }}>
+        <table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: '#f5f4ee', textAlign: 'left' }}>
+              <th style={{ padding: '8px 12px' }}>Dealer</th>
+              <th style={{ padding: '8px 12px' }}>City</th>
+              <th style={{ padding: '8px 12px' }}>Hub</th>
+              <th style={{ padding: '8px 12px' }}>Mode</th>
+              <th style={{ padding: '8px 12px', textAlign: 'right' }}>Road km</th>
+              <th style={{ padding: '8px 12px', textAlign: 'right' }}>Road hrs</th>
+              <th style={{ padding: '8px 12px', textAlign: 'right' }}>Total TAT (h)</th>
+              <th style={{ padding: '8px 12px', color: '#7a7390', fontWeight: 400 }}>Rule</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={i} style={{ borderTop: '1px solid #f0eee5' }}>
+                <td style={{ padding: '8px 12px', fontWeight: 600 }}>{row.code}</td>
+                <td style={{ padding: '8px 12px' }}>{row.city}</td>
+                <td style={{ padding: '8px 12px' }}>{row.hubKey === 'bhiwandi' ? 'BOM' : 'MAA'}</td>
+                <td style={{ padding: '8px 12px' }}>
+                  <span style={{ background: modeColor(row.mode), color: '#fff', padding: '2px 6px', borderRadius: 3, fontSize: 10, fontWeight: 600, letterSpacing: '0.05em' }}>
+                    {modeLabel(row.mode, row.via)}
+                  </span>
+                </td>
+                <td style={{ padding: '8px 12px', textAlign: 'right', fontFamily: 'monospace' }}>{row.roadKm.toFixed(1)}</td>
+                <td style={{ padding: '8px 12px', textAlign: 'right', fontFamily: 'monospace' }}>{row.roadHrs.toFixed(2)}</td>
+                <td style={{ padding: '8px 12px', textAlign: 'right', fontFamily: 'monospace' }}>
+                  {row.blocked ? '—' : (row.tatHours != null ? row.tatHours.toFixed(1) : '—')}
+                </td>
+                <td style={{ padding: '8px 12px', color: '#7a7390', fontSize: 10 }}>{row.transportSource}</td>
+              </tr>
+            ))}
+            {rows.length === 0 && (
+              <tr><td colSpan="8" style={{ padding: 20, textAlign: 'center', color: '#7a7390' }}>No road legs greater than 200km.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function AllTimelinesView({ filtered, sortedSlots, hubSelect, params }) {
   const [expandedKey, setExpandedKey] = React.useState(null);
   const [hubInView, setHubInView] = React.useState(hubSelect === 'both' ? 'bhiwandi' : hubSelect);
