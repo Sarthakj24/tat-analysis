@@ -752,17 +752,16 @@ Refer to the hub as "MAA Hub" in your answer. Use specific times and dealer name
             </select>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 20 }}>
             <Stat label="Dealers" value={stats.total} sub="locations" />
-            {showB && <Stat label="BOM avg TAT" value={fmtHrs(stats.avgB)} sub="end-to-end" accent="#1c1259" />}
-            {showS && <Stat label="MAA avg TAT" value={fmtHrs(stats.avgS)} sub="end-to-end" accent="#b8860b" />}
-            {showB && showS && <Stat label="Faster hub" value={stats.bw > stats.sw ? 'BOM' : stats.sw > stats.bw ? 'MAA' : 'Tie'} sub={`${stats.bw}B / ${stats.sw}M / ${stats.eq}≈`} />}
-            {(!showB || !showS) && <Stat label="Slot flights" value={selectedSlot?.flights ?? 0} sub={selectedSlot ? `${fmtTime(selectedSlot.start)}–${fmtTime(selectedSlot.end)}` : ''} accent="#fcd307" />}
+            <Stat label="MAA avg TAT" value={fmtHrs(stats.avgS)} sub="end-to-end" accent="#b8860b" />
+            <Stat label="Slot flights" value={selectedSlot?.flights ?? 0} sub={selectedSlot ? `${fmtTime(selectedSlot.start)}–${fmtTime(selectedSlot.end)}` : ''} accent="#fcd307" />
           </div>
 
           <div style={{ display: 'flex', gap: 4, borderBottom: '1px solid #e5e2d8', marginBottom: 16, overflowX: 'auto' }}>
             {[
               { k: 'cities', label: 'Cities' },
+              { k: 'ideal', label: 'Ideal Slot', icon: <Clock size={11} /> },
               { k: 'flights', label: 'Slots × Flights', icon: <Plane size={11} /> },
               { k: 'table', label: 'Master Table' },
               // Hub Comparison removed in Chennai-only build
@@ -813,6 +812,10 @@ Refer to the hub as "MAA Hub" in your answer. Use specific times and dealer name
 
           {view === 'cities' && (
             <CitiesView filtered={filtered} />
+          )}
+
+          {view === 'ideal' && (
+            <IdealSlotView filtered={filtered} sortedSlots={sortedSlots} />
           )}
 
           {view === 'flights' && (
@@ -1556,6 +1559,164 @@ function RoadRoutesTable({ filtered, hubSelect }) {
   );
 }
 
+// ============ IDEAL SLOT (24h delivery promise) ============
+// Rule: goods must be delivered within 24h of order.
+//  - Air routes: buffer = 24h − TAT. Ideal slot = the LATEST slot with flights
+//    such that even if the flight is missed and cargo rolls to the next
+//    available slot, delivery still lands within 24h (TAT + gap-to-next ≤ 24).
+//  - Road routes: need a 5h buffer, i.e. TAT + 5 ≤ 24. Any slot works; latest
+//    dispatch (slot end) shown as the ideal.
+function IdealSlotView({ filtered, sortedSlots }) {
+  const MAX_HRS = 24;
+  const ROAD_BUFFER = 5;
+
+  const rows = filtered.map(r => {
+    const slots = r.sriperumbudur;
+    if (!slots || !slots.length) return null;
+    const mode = slots[0].mode || 'direct';
+    const base = {
+      id: r.dealer.id, code: r.dealer.code, city: r.dealer.city,
+      showroom: r.dealer.showroom, state: r.dealer.state, mode,
+      destApt: slots[0].destApt
+    };
+
+    if (mode === 'road_only') {
+      const s = slots[slots.length - 1]; // road TAT identical across slots
+      const tat = s.tatHours;
+      const buffer = MAX_HRS - tat;
+      const ok = buffer >= ROAD_BUFFER;
+      return {
+        ...base, tat, buffer,
+        idealSlot: ok ? `${fmtTime(s.slotStart)}–${fmtTime(s.slotEnd)} (latest)` : '—',
+        idealCutoff: ok ? fmtTime(s.cutoff) : null,
+        status: ok ? 'OK' : (tat <= MAX_HRS ? 'TIGHT' : 'EXCEEDS 24H'),
+        note: ok
+          ? `Road dispatch — any slot works. Latest dispatch ${fmtTime(s.cutoff)} keeps ${buffer.toFixed(1)}h buffer (need ${ROAD_BUFFER}h).`
+          : tat <= MAX_HRS
+            ? `Delivers in ${tat.toFixed(1)}h but buffer ${buffer.toFixed(1)}h is under the ${ROAD_BUFFER}h road buffer.`
+            : `Road TAT ${tat.toFixed(1)}h exceeds the 24h window — needs air routing or overnight relay.`
+      };
+    }
+
+    // Air (direct or via intermediate airport)
+    const avail = slots.filter(s => !s.blocked && s.tatHours != null && s.flights > 0);
+    if (!avail.length) {
+      return { ...base, tat: null, buffer: null, idealSlot: '—', idealCutoff: null, status: 'NO FLIGHTS', note: 'No slot has flights on this route.' };
+    }
+    // Gap from slot i's departure to the NEXT available slot's departure (cyclic, next day if needed)
+    const withGap = avail.map(s => {
+      const later = avail.filter(o => o.slotStart > s.slotStart).sort((a, b) => a.slotStart - b.slotStart);
+      const next = later.length ? later[0] : avail.slice().sort((a, b) => a.slotStart - b.slotStart)[0];
+      const gap = next.slotStart > s.slotStart ? next.slotStart - s.slotStart : 24 - s.slotStart + next.slotStart;
+      return { ...s, gap, survivesMiss: s.tatHours + gap <= MAX_HRS };
+    });
+    const surviving = withGap.filter(s => s.survivesMiss).sort((a, b) => b.slotStart - a.slotStart);
+    if (surviving.length) {
+      const pick = surviving[0];
+      const buffer = MAX_HRS - pick.tatHours;
+      return {
+        ...base, tat: pick.tatHours, buffer,
+        idealSlot: `${fmtTime(pick.slotStart)}–${fmtTime(pick.slotEnd)}`,
+        idealCutoff: fmtTime(pick.cutoffStart),
+        status: 'OK',
+        note: `TAT ${pick.tatHours.toFixed(1)}h leaves ${buffer.toFixed(1)}h buffer — if the flight is missed, the next departure (+${pick.gap.toFixed(0)}h) still delivers inside 24h.`
+      };
+    }
+    // No slot survives a missed flight — recommend the fastest one and flag it
+    const fastest = withGap.slice().sort((a, b) => a.tatHours - b.tatHours)[0];
+    const buffer = MAX_HRS - fastest.tatHours;
+    return {
+      ...base, tat: fastest.tatHours, buffer,
+      idealSlot: `${fmtTime(fastest.slotStart)}–${fmtTime(fastest.slotEnd)}`,
+      idealCutoff: fmtTime(fastest.cutoffStart),
+      status: buffer >= 0 ? 'NO MISS BUFFER' : 'EXCEEDS 24H',
+      note: buffer >= 0
+        ? `Delivers in ${fastest.tatHours.toFixed(1)}h, but a missed flight (next dep +${fastest.gap.toFixed(0)}h) would breach 24h — flight must not be missed.`
+        : `Best TAT ${fastest.tatHours.toFixed(1)}h already exceeds the 24h promise.`
+    };
+  }).filter(Boolean).sort((a, b) => (b.tat ?? 99) - (a.tat ?? 99));
+
+  const counts = {
+    ok: rows.filter(r => r.status === 'OK').length,
+    nomiss: rows.filter(r => r.status === 'NO MISS BUFFER').length,
+    risk: rows.filter(r => r.status === 'TIGHT' || r.status === 'EXCEEDS 24H' || r.status === 'NO FLIGHTS').length
+  };
+
+  const statusStyle = (st) =>
+    st === 'OK' ? { background: '#dcfce7', color: '#166534' } :
+    st === 'NO MISS BUFFER' || st === 'TIGHT' ? { background: '#fef9c3', color: '#854d0e' } :
+    { background: '#fee2e2', color: '#991b1b' };
+
+  return (
+    <div>
+      <div style={{ background: '#1c1259', borderRadius: 4, padding: 14, marginBottom: 16, color: 'white' }}>
+        <div style={{ fontSize: 10, color: '#fcd307', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600 }}>24-hour delivery promise</div>
+        <div style={{ fontSize: 15, fontWeight: 700, marginTop: 4 }}>Ideal dispatch slot per location</div>
+        <div style={{ fontSize: 11, marginTop: 6, color: '#d6d1c0', lineHeight: 1.5 }}>
+          <b style={{ color: '#fcd307' }}>Air rule:</b> pick the latest slot whose buffer (24h − TAT) survives a missed flight — cargo rolls to the next departure and still lands within 24h.<br/>
+          <b style={{ color: '#fcd307' }}>Road rule:</b> TAT + 5h buffer must fit inside 24h.
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 16 }}>
+        <div style={{ background: '#dcfce7', color: '#166534', borderRadius: 4, padding: 12, textAlign: 'center' }}>
+          <div className="h-display" style={{ fontSize: 24 }}>{counts.ok}</div>
+          <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: '0.04em' }}>SAFE — BUFFER COVERS A MISSED FLIGHT</div>
+        </div>
+        <div style={{ background: '#fef9c3', color: '#854d0e', borderRadius: 4, padding: 12, textAlign: 'center' }}>
+          <div className="h-display" style={{ fontSize: 24 }}>{counts.nomiss}</div>
+          <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: '0.04em' }}>DELIVERS IN 24H — BUT FLIGHT MUST NOT BE MISSED</div>
+        </div>
+        <div style={{ background: '#fee2e2', color: '#991b1b', borderRadius: 4, padding: 12, textAlign: 'center' }}>
+          <div className="h-display" style={{ fontSize: 24 }}>{counts.risk}</div>
+          <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: '0.04em' }}>AT RISK — CANNOT MEET 24H RELIABLY</div>
+        </div>
+      </div>
+
+      <div style={{ background: '#ffffff', border: '1px solid #e5e2d8', borderRadius: 4, overflow: 'hidden' }}>
+        <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: '#f5f4ee', textAlign: 'left' }}>
+              <th style={{ padding: '8px 12px' }}>Dealer</th>
+              <th style={{ padding: '8px 12px' }}>City</th>
+              <th style={{ padding: '8px 12px', textAlign: 'center' }}>Route</th>
+              <th style={{ padding: '8px 12px', textAlign: 'right' }}>TAT</th>
+              <th style={{ padding: '8px 12px', textAlign: 'right' }}>Buffer vs 24h</th>
+              <th style={{ padding: '8px 12px', textAlign: 'center' }}>Ideal Slot</th>
+              <th style={{ padding: '8px 12px', textAlign: 'center' }}>Cutoff</th>
+              <th style={{ padding: '8px 12px', textAlign: 'center' }}>Status</th>
+              <th style={{ padding: '8px 12px', color: '#7a7390', fontWeight: 400 }}>Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(r => (
+              <tr key={r.id} style={{ borderTop: '1px solid #efece2' }}>
+                <td style={{ padding: '7px 12px', fontWeight: 600 }}>{r.code}<div style={{ fontSize: 9, color: '#7a7390', fontWeight: 400 }}>{r.showroom}</div></td>
+                <td style={{ padding: '7px 12px' }}>{r.city}</td>
+                <td style={{ padding: '7px 12px', textAlign: 'center' }}>
+                  {r.mode === 'road_only'
+                    ? <span className="pill" style={{ background: '#fff7ed', color: '#9a3412' }}>ROAD</span>
+                    : r.mode === 'via_airport'
+                      ? <span className="pill" style={{ background: '#e0e7ff', color: '#1c1259' }}>via {r.destApt}</span>
+                      : <span className="pill" style={{ background: '#f3f1e8', color: '#1c1259' }}>{r.destApt}</span>}
+                </td>
+                <td style={{ padding: '7px 12px', textAlign: 'right', fontFamily: 'monospace', fontWeight: 700 }}>{r.tat != null ? r.tat.toFixed(1) + 'h' : '—'}</td>
+                <td style={{ padding: '7px 12px', textAlign: 'right', fontFamily: 'monospace', color: r.buffer != null && r.buffer < 5 ? '#991b1b' : '#166534' }}>{r.buffer != null ? r.buffer.toFixed(1) + 'h' : '—'}</td>
+                <td style={{ padding: '7px 12px', textAlign: 'center', fontWeight: 700, color: '#1c1259' }}>{r.idealSlot}</td>
+                <td style={{ padding: '7px 12px', textAlign: 'center', fontFamily: 'monospace' }}>{r.idealCutoff || '—'}</td>
+                <td style={{ padding: '7px 12px', textAlign: 'center' }}>
+                  <span style={{ ...statusStyle(r.status), padding: '3px 8px', borderRadius: 3, fontSize: 9, fontWeight: 700, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>{r.status}</span>
+                </td>
+                <td style={{ padding: '7px 12px', color: '#7a7390', fontSize: 10, maxWidth: 280 }}>{r.note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 // ============ ALL-ROAD SCENARIO (350 km/day) ============
 // Hypothetical: every dealer served by truck only from the warehouse, with a
 // daily driving capacity of 350km. TAT in days = ceil(km / 350).
@@ -1938,32 +2099,29 @@ function CitiesView({ filtered }) {
         byCity[key] = {
           city: r.dealer.city,
           state: r.dealer.state,
-          destApt: r.bhiwandi[0]?.destApt || '—',
-          destAptName: r.bhiwandi[0]?.destAptName || '—',
+          destApt: r.sriperumbudur[0]?.destApt || '—',
+          destAptName: r.sriperumbudur[0]?.destAptName || '—',
+          mode: r.sriperumbudur[0]?.mode || 'direct',
           dealers: [],
-          bhiwandiTotalHrs: 0, bhiwandiCount: 0, bhiwandiBlocked: 0,
           sripTotalHrs: 0, sripCount: 0, sripBlocked: 0,
         };
       }
       const c = byCity[key];
       c.dealers.push(r);
-      // Use the latest slot (last of the sorted) — typically the most relevant cutoff
-      const b = r.bhiwandi[r.bhiwandi.length - 1];
-      const s = r.sriperumbudur[r.sriperumbudur.length - 1];
-      if (b) {
-        if (b.blocked) c.bhiwandiBlocked++;
-        else if (b.tatHours != null) { c.bhiwandiTotalHrs += b.tatHours; c.bhiwandiCount++; }
-      }
-      if (s) {
-        if (s.blocked) c.sripBlocked++;
-        else if (s.tatHours != null) { c.sripTotalHrs += s.tatHours; c.sripCount++; }
+      // Best available TAT: minimum across non-blocked slots (a route is only
+      // BLOCKED if no slot at all has flights / road option)
+      const usable = r.sriperumbudur.filter(s => !s.blocked && s.tatHours != null);
+      if (usable.length) {
+        const best = Math.min(...usable.map(s => s.tatHours));
+        c.sripTotalHrs += best; c.sripCount++;
+      } else {
+        c.sripBlocked++;
       }
     });
     return Object.values(byCity)
       .map(c => ({
         ...c,
         count: c.dealers.length,
-        avgB: c.bhiwandiCount ? c.bhiwandiTotalHrs / c.bhiwandiCount : null,
         avgS: c.sripCount ? c.sripTotalHrs / c.sripCount : null,
       }))
       .sort((a, b) => b.count - a.count || a.city.localeCompare(b.city));
@@ -2002,9 +2160,8 @@ function CitiesView({ filtered }) {
               <th style={th}>City</th>
               <th style={th}>State</th>
               <th style={{ ...th, textAlign: 'right' }}>Dealers</th>
-              <th style={{ ...th, textAlign: 'center' }}>Dest Airport</th>
-              <th style={{ ...th, textAlign: 'right', color: '#1c1259' }}>BOM avg TAT</th>
-              <th style={{ ...th, textAlign: 'right', color: '#b8860b' }}>MAA avg TAT</th>
+              <th style={{ ...th, textAlign: 'center' }}>Route</th>
+              <th style={{ ...th, textAlign: 'right', color: '#b8860b' }}>Best TAT (MAA)</th>
               <th style={{ ...th, width: 24 }}></th>
             </tr>
           </thead>
@@ -2030,19 +2187,20 @@ function CitiesView({ filtered }) {
                       </div>
                     </td>
                     <td style={{ ...td, textAlign: 'center' }}>
-                      <span className="pill" style={{ background: '#f3f1e8', color: '#1c1259' }}>{c.destApt}</span>
-                    </td>
-                    <td style={{ ...td, textAlign: 'right', color: '#1c1259', fontWeight: 700 }}>
-                      {c.avgB != null ? fmtHrs(c.avgB) : <span style={{ color: '#991b1b', fontSize: 10 }}>BLOCKED</span>}
+                      {c.mode === 'road_only'
+                        ? <span className="pill" style={{ background: '#fff7ed', color: '#9a3412' }}>BY ROAD</span>
+                        : c.mode === 'via_airport'
+                          ? <span className="pill" style={{ background: '#e0e7ff', color: '#1c1259' }}>via {c.destApt}</span>
+                          : <span className="pill" style={{ background: '#f3f1e8', color: '#1c1259' }}>{c.destApt}</span>}
                     </td>
                     <td style={{ ...td, textAlign: 'right', color: '#b8860b', fontWeight: 700 }}>
-                      {c.avgS != null ? fmtHrs(c.avgS) : <span style={{ color: '#991b1b', fontSize: 10 }}>BLOCKED</span>}
+                      {c.avgS != null ? fmtHrs(c.avgS) : <span style={{ color: '#991b1b', fontSize: 10 }}>NO ROUTE</span>}
                     </td>
                     <td style={{ ...td, textAlign: 'center', color: '#a8a3b8' }}>{isExp ? '▾' : '▸'}</td>
                   </tr>
                   {isExp && (
                     <tr style={{ background: '#faf9f5' }}>
-                      <td colSpan={8} style={{ padding: 16, borderBottom: '1px solid #e5e2d8' }}>
+                      <td colSpan={7} style={{ padding: 16, borderBottom: '1px solid #e5e2d8' }}>
                         <div style={{ fontSize: 10, color: '#7a7390', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600, marginBottom: 10 }}>
                           {c.count} dealer{c.count === 1 ? '' : 's'} in {c.city}
                         </div>
