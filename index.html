@@ -1585,15 +1585,19 @@ function IdealSlotView({ filtered, sortedSlots }) {
       const tat = s.tatHours;
       const buffer = MAX_HRS - tat;
       const ok = buffer >= ROAD_BUFFER;
+      // Road dispatch is not flight-bound, so the ideal is the EARLIEST start of
+      // the day (01:00) — gives the whole day of road time and avoids the
+      // "is 18:00 the start or the end?" ambiguity of a late slot.
+      const DISPATCH = 1;
       return {
         ...base, tat, buffer,
-        idealSlot: ok ? `${fmtTime(s.slotStart)}–${fmtTime(s.slotEnd)} (latest)` : '—',
-        idealCutoff: ok ? fmtTime(s.cutoff) : null,
+        idealSlot: ok ? `01:00 dispatch (early)` : '—',
+        idealCutoff: ok ? fmtTime(DISPATCH) : null,
         status: ok ? 'OK' : (tat <= MAX_HRS ? 'TIGHT' : 'EXCEEDS 24H'),
         note: ok
-          ? `Road dispatch — any slot works. Latest dispatch ${fmtTime(s.cutoff)} keeps ${buffer.toFixed(1)}h buffer (need ${ROAD_BUFFER}h).`
+          ? `Road dispatch — not flight-bound. Depart 01:00 to use the full day; delivers in ${tat.toFixed(1)}h with ${buffer.toFixed(1)}h buffer (need ${ROAD_BUFFER}h).`
           : tat <= MAX_HRS
-            ? `Delivers in ${tat.toFixed(1)}h but buffer ${buffer.toFixed(1)}h is under the ${ROAD_BUFFER}h road buffer.`
+            ? `Delivers in ${tat.toFixed(1)}h but buffer ${buffer.toFixed(1)}h is under the ${ROAD_BUFFER}h road buffer — dispatch at 01:00.`
             : `Road TAT ${tat.toFixed(1)}h exceeds the 24h window — needs air routing or overnight relay.`
       };
     }
