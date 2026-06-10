@@ -552,11 +552,9 @@ function Dashboard() {
 
     const prompt = `You are a logistics analyst presenting transit-time data for Warehouse Now to a client. Be concise (2-4 sentences; bullets only if listing >3 items).
 
-Current hub selection: ${hubSelect === 'bhiwandi' ? 'BOM hub only' : hubSelect === 'sriperumbudur' ? 'MAA hub only' : 'both hubs'}. Time anchor mode: ${anchorMode}.
+Hub: MAA Hub (Sriperumbudur warehouse → Chennai MAA airport). This dashboard covers only this hub.
 
-The two hubs are referred to by their origin airports: BOM Hub (Bhiwandi warehouse → Mumbai BOM airport) and MAA Hub (Sriperumbudur warehouse → Chennai MAA airport).
-
-Dataset (${filtered.length} dealers; slots are time ranges, cutoff/delivery shown as ranges; bom_hub and maa_hub keys carry per-slot data):
+Dataset (${filtered.length} dealers; slots are time ranges, cutoff/delivery shown as ranges; maa_hub key carries per-slot data):
 ${JSON.stringify(dataSummary, null, 1)}
 
 Question: ${userQ}
@@ -567,7 +565,7 @@ Concepts:
 - Same-airport routes are road-only.
 - Cutoff = latest the warehouse must finish loading. Delivery = when goods reach dealer.
 
-Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and dealer names.`;
+Refer to the hub as "MAA Hub" in your answer. Use specific times and dealer names.`;
 
     try {
       const resp = await fetch("https://api.anthropic.com/v1/messages", {

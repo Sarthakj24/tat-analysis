@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Warehouse Now · TAT Analyzer</title>
+<title>Warehouse Now · TAT Analyzer (Chennai)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -407,7 +407,7 @@ function Dashboard() {
   });
 
   const [anchorMode, setAnchorMode] = useState('start'); // start | mid | end
-  const [hubSelect, setHubSelect] = useState('both'); // bhiwandi | sriperumbudur | both
+  const [hubSelect, setHubSelect] = useState('sriperumbudur'); // CHENNAI-ONLY BUILD: locked to MAA hub, BOM stripped from calc
   const [view, setView] = useState('cities');
   const [tableMode, setTableMode] = useState('all-slots');
   const [selectedSlotId, setSelectedSlotId] = useState(3);
@@ -491,9 +491,14 @@ function Dashboard() {
 
   const results = useMemo(() => DEALERS.map(d => {
     const ov = overrides[d.id] || {};
+    // CHENNAI-ONLY BUILD: do not compute Bhiwandi (BOM) results at all.
+    // Provide a blocked placeholder so downstream UI doesn't crash on missing data.
+    const emptyBom = params.slots
+      .slice().sort((a,b) => a.start - b.start)
+      .map(s => ({ slotId: s.id, slotStart: s.start, slotEnd: s.end, blocked: true, tatHours: null }));
     return {
       dealer: d,
-      bhiwandi: calcAllSlots(d, 'bhiwandi', params, anchorMode, ov.km, ov.flightBom, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours, transportOverrides),
+      bhiwandi: emptyBom,
       sriperumbudur: calcAllSlots(d, 'sriperumbudur', params, anchorMode, ov.km, ov.flightMaa, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours, transportOverrides)
     };
   }), [params, overrides, anchorMode, routeFlightOverrides, liveRouteFlights, liveDriveTimes, liveFlightHours, transportOverrides]);
@@ -547,11 +552,9 @@ function Dashboard() {
 
     const prompt = `You are a logistics analyst presenting transit-time data for Warehouse Now to a client. Be concise (2-4 sentences; bullets only if listing >3 items).
 
-Current hub selection: ${hubSelect === 'bhiwandi' ? 'BOM hub only' : hubSelect === 'sriperumbudur' ? 'MAA hub only' : 'both hubs'}. Time anchor mode: ${anchorMode}.
+Hub: MAA Hub (Sriperumbudur warehouse → Chennai MAA airport). This dashboard covers only this hub.
 
-The two hubs are referred to by their origin airports: BOM Hub (Bhiwandi warehouse → Mumbai BOM airport) and MAA Hub (Sriperumbudur warehouse → Chennai MAA airport).
-
-Dataset (${filtered.length} dealers; slots are time ranges, cutoff/delivery shown as ranges; bom_hub and maa_hub keys carry per-slot data):
+Dataset (${filtered.length} dealers; slots are time ranges, cutoff/delivery shown as ranges; maa_hub key carries per-slot data):
 ${JSON.stringify(dataSummary, null, 1)}
 
 Question: ${userQ}
@@ -562,7 +565,7 @@ Concepts:
 - Same-airport routes are road-only.
 - Cutoff = latest the warehouse must finish loading. Delivery = when goods reach dealer.
 
-Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and dealer names.`;
+Refer to the hub as "MAA Hub" in your answer. Use specific times and dealer names.`;
 
     try {
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
@@ -671,9 +674,12 @@ Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and 
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ width: 36, height: 36, background: '#1c1259', display: 'grid', placeItems: 'center', fontWeight: 800, fontSize: 13, color: '#fcd307', borderRadius: 4, letterSpacing: '0.04em' }}>TAT</div>
           <div>
-            <h1 className="h-display" style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#1c1259' }}>TRANSIT TIME ANALYZER</h1>
-            <div style={{ fontSize: 10, color: '#7a7390', marginTop: 2, letterSpacing: '0.06em' }}>WAREHOUSE NOW · 45 VINFAST DEALERS</div>
+            <h1 className="h-display" style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#1c1259' }}>TRANSIT TIME ANALYZER · CHENNAI</h1>
+            <div style={{ fontSize: 10, color: '#7a7390', marginTop: 2, letterSpacing: '0.06em' }}>WAREHOUSE NOW · MAA HUB (SRIPERUMBUDUR) · 45 VINFAST DEALERS</div>
             <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 3, background: '#b8860b', color: '#ffffff', fontWeight: 700, letterSpacing: '0.06em' }}>
+                BUILD: CHENNAI ONLY
+              </span>
               <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 3, background: liveRouteFlights ? '#dcfce7' : '#fef9c3', color: liveRouteFlights ? '#166534' : '#854d0e', fontWeight: 600, letterSpacing: '0.04em' }}>
                 FLIGHTS: {liveRouteFlights ? 'LIVE (AeroAPI)' : 'EST.'}
               </span>
@@ -684,11 +690,9 @@ Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and 
           </div>
         </div>
 
-        {/* Hub selector */}
+        {/* Hub selector removed in Chennai-only build */}
         <div className="hubseg">
-          <button className={hubSelect === 'bhiwandi' ? 'active bhiwandi' : ''} onClick={() => setHubSelect('bhiwandi')}>● BOM Hub</button>
-          <button className={hubSelect === 'sriperumbudur' ? 'active sriperumbudur' : ''} onClick={() => setHubSelect('sriperumbudur')}>● MAA Hub</button>
-          <button className={hubSelect === 'both' ? 'active both' : ''} onClick={() => setHubSelect('both')}>● Both</button>
+          <button className="active sriperumbudur" disabled>● MAA Hub (Sriperumbudur)</button>
         </div>
 
         <div style={{ display: 'flex', gap: 8 }}>
@@ -761,7 +765,7 @@ Refer to hubs as "BOM Hub" and "MAA Hub" in your answer. Use specific times and 
               { k: 'cities', label: 'Cities' },
               { k: 'flights', label: 'Slots × Flights', icon: <Plane size={11} /> },
               { k: 'table', label: 'Master Table' },
-              { k: 'compare', label: 'Hub Comparison', disabled: hubSelect !== 'both' },
+              // Hub Comparison removed in Chennai-only build
               { k: 'timeline', label: 'Journey Timeline', icon: <MapPin size={11} /> },
               { k: 'all-timelines', label: 'All Timelines', icon: <MapPin size={11} /> },
               { k: 'roads', label: 'Road >200km', icon: <Truck size={11} /> },
